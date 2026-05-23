@@ -536,6 +536,14 @@ function ExperienceScreen({ experience, step, total, onComplete }) {
           <PickThree experience={experience} onComplete={onComplete} />
         ) : null}
 
+        {experience.type === 'discard-two' ? (
+          <DiscardTwo experience={experience} onComplete={onComplete} />
+        ) : null}
+
+        {experience.type === 'build-team' ? (
+          <BuildTeam experience={experience} onComplete={onComplete} />
+        ) : null}
+
         {experience.type === 'order-cards' ? (
           <OrderCards experience={experience} onComplete={onComplete} />
         ) : null}

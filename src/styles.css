@@ -816,3 +816,30 @@ p {
     font-size: 18px;
   }
 }
+
+/* fix: show game cards below large headers */
+
+.quiz {
+  overflow: visible;
+}
+
+.quiz h1 {
+  font-size: clamp(38px, 4.6vw, 64px);
+  line-height: .92;
+  max-width: 850px;
+}
+
+.questionHead {
+  margin-bottom: 22px;
+}
+
+.options {
+  margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+  .quiz h1 {
+    font-size: 34px;
+    line-height: .96;
+  }
+}
