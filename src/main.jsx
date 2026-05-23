@@ -433,12 +433,12 @@ function EnergyMeter({ experience, onComplete }) {
   const [startedAt] = useState(Date.now());
   const [values, setValues] = useState({});
 
-  const labels = {
-    '-1': 'me trava',
-    0: 'tanto faz',
-    1: 'me chama',
-    2: 'me acende',
-  };
+  const choices = [
+    { value: -1, label: 'Me trava', emoji: '🧱', className: 'energyBlock' },
+    { value: 0, label: 'Tanto faz', emoji: '➖', className: 'energyNeutral' },
+    { value: 1, label: 'Me chama', emoji: '👀', className: 'energyCall' },
+    { value: 2, label: 'Me acende', emoji: '⚡', className: 'energyFire' },
+  ];
 
   function setValue(prompt, value) {
     setValues((prev) => ({
@@ -449,6 +449,7 @@ function EnergyMeter({ experience, onComplete }) {
 
   function finish() {
     const items = Object.values(values).filter((item) => item.energyValue > 0);
+
     onComplete({
       type: experience.type,
       experienceId: experience.id,
@@ -457,30 +458,41 @@ function EnergyMeter({ experience, onComplete }) {
     });
   }
 
+  const allAnswered = Object.keys(values).length === experience.prompts.length;
+
   return (
     <>
-      <div className="meterList">
+      <div className="energyList">
         {experience.prompts.map((prompt) => (
-          <div className="meterRow" key={prompt.label}>
-            <strong>{prompt.label}</strong>
-            <div className="meterButtons">
-              {[-1, 0, 1, 2].map((value) => (
-                <button
-                  key={value}
-                  className={values[prompt.label]?.energyValue === value ? 'activeMeter' : ''}
-                  onClick={() => setValue(prompt, value)}
-                >
-                  {labels[value]}
-                </button>
-              ))}
+          <article className="energyCard" key={prompt.label}>
+            <div className="energyPrompt">
+              <span>MISSÃO</span>
+              <strong>{prompt.label}</strong>
             </div>
-          </div>
+
+            <div className="energyChoices">
+              {choices.map((choice) => {
+                const active = values[prompt.label]?.energyValue === choice.value;
+
+                return (
+                  <button
+                    key={choice.value}
+                    className={`energyChoice ${choice.className} ${active ? 'activeEnergy' : ''}`}
+                    onClick={() => setValue(prompt, choice.value)}
+                  >
+                    <span className="energyEmoji">{choice.emoji}</span>
+                    <b>{choice.label}</b>
+                  </button>
+                );
+              })}
+            </div>
+          </article>
         ))}
       </div>
 
       <button
-        className="primary stickyAction"
-        disabled={Object.keys(values).length < experience.prompts.length}
+        className="primary stickyAction energyAction"
+        disabled={!allAnswered}
         onClick={finish}
       >
         Ver o que isso revela
@@ -488,20 +500,7 @@ function EnergyMeter({ experience, onComplete }) {
     </>
   );
 }
-function ChapterScreen({ chapter, onContinue }) {
-  return (
-    <main className="page">
-      <section className={`chapterScreen chapter-${chapter.color}`}>
-        <div className="chapterNumber">{chapter.title}</div>
-        <h1>{chapter.name}</h1>
-        <p>{chapter.text}</p>
-        <button className="primary" onClick={onContinue}>
-          Entrar nessa fase
-        </button>
-      </section>
-    </main>
-  );
-}
+
 function ExperienceScreen({ experience, step, total, onComplete }) {
   const ExperienceIcon = experience.icon;
   const progress = ((step + 1) / total) * 100;
@@ -554,7 +553,6 @@ function ExperienceScreen({ experience, step, total, onComplete }) {
           )}
         </div>
 
-        <div className="debugType">tipo: {experience.type}</div>
       </section>
     </main>
   );
