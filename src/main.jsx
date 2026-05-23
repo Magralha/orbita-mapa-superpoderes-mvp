@@ -251,7 +251,130 @@ function BuildTeam({ experience, onComplete }) {
     </>
   );
 }
+function DiscardTwo({ experience, onComplete }) {
+  const [startedAt] = useState(Date.now());
+  const [discarded, setDiscarded] = useState([]);
+  const discardCount = experience.discardCount || 2;
 
+  function toggle(option) {
+    const exists = discarded.some((item) => item.label === option.label);
+
+    if (exists) {
+      setDiscarded((prev) => prev.filter((item) => item.label !== option.label));
+      return;
+    }
+
+    if (discarded.length < discardCount) {
+      setDiscarded((prev) => [...prev, option]);
+    }
+  }
+
+  function finish() {
+    const kept = experience.options.filter(
+      (option) => !discarded.some((item) => item.label === option.label)
+    );
+
+    onComplete({
+      type: experience.type,
+      experienceId: experience.id,
+      items: kept,
+      discarded,
+      responseMs: Date.now() - startedAt,
+    });
+  }
+
+  return (
+    <>
+      <div className="selectionCounter">
+        Descartadas: {discarded.length}/{discardCount}
+      </div>
+
+      <div className="options">
+        {experience.options.map((option) => {
+          const index = discarded.findIndex((item) => item.label === option.label);
+
+          return (
+            <ChoiceCard
+              key={option.label}
+              option={option}
+              selected={index >= 0}
+              order={index >= 0 ? 'X' : null}
+              onClick={() => toggle(option)}
+            />
+          );
+        })}
+      </div>
+
+      <button
+        className="primary stickyAction"
+        disabled={discarded.length !== discardCount}
+        onClick={finish}
+      >
+        Ficar com as outras cartas
+      </button>
+    </>
+  );
+}
+
+function BuildTeam({ experience, onComplete }) {
+  const [startedAt] = useState(Date.now());
+  const [selected, setSelected] = useState([]);
+  const max = experience.max || 4;
+
+  function toggle(option) {
+    const exists = selected.some((item) => item.label === option.label);
+
+    if (exists) {
+      setSelected((prev) => prev.filter((item) => item.label !== option.label));
+      return;
+    }
+
+    if (selected.length < max) {
+      setSelected((prev) => [...prev, option]);
+    }
+  }
+
+  function finish() {
+    onComplete({
+      type: experience.type,
+      experienceId: experience.id,
+      items: selected,
+      responseMs: Date.now() - startedAt,
+    });
+  }
+
+  return (
+    <>
+      <div className="selectionCounter">
+        Time montado: {selected.length}/{max}
+      </div>
+
+      <div className="options">
+        {experience.options.map((option) => {
+          const index = selected.findIndex((item) => item.label === option.label);
+
+          return (
+            <ChoiceCard
+              key={option.label}
+              option={option}
+              selected={index >= 0}
+              order={index >= 0 ? index + 1 : null}
+              onClick={() => toggle(option)}
+            />
+          );
+        })}
+      </div>
+
+      <button
+        className="primary stickyAction"
+        disabled={selected.length !== max}
+        onClick={finish}
+      >
+        Confirmar meu time
+      </button>
+    </>
+  );
+}
 function OrderCards({ experience, onComplete }) {
   const [startedAt] = useState(Date.now());
   const [ordered, setOrdered] = useState([]);
