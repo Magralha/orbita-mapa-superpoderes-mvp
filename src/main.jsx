@@ -317,20 +317,46 @@ function ResultDashboard({ entries, onReset }) {
 
   const MainIcon = mainPower.icon;
   const avgSeconds = avgResponseMs ? (avgResponseMs / 1000).toFixed(1) : null;
+  const identityName = `${mainMode.label} ${mainPower.label}`;
+
+  function printResult() {
+    window.print();
+  }
 
   return (
     <main className="page">
       <section className="result dashboard">
-        <div className="badge">Dashboard do seu mapa</div>
+        <div className="badge">Dashboard v0.4</div>
 
-        <div className="resultHead">
-          <div className="bigIcon">
-            <MainIcon size={42} />
+        <div className="dashboardHeroCard">
+          <div className="heroCardContent">
+            <span className="heroCardLabel">Meu Mapa de Superpoderes</span>
+            <h1 className="heroCardTitle">
+              {topPowers.map((power) => power.label).join(' + ')}
+            </h1>
+            <p className="heroCardSubtitle">
+              Seu mapa mostra uma mistura de {mainPower.label.toLowerCase()},
+              energia de {mainEnergy.label.toLowerCase()} e modo de decisão
+              {` ${mainMode.label.toLowerCase()}`}.
+            </p>
           </div>
-          <div>
-            <h1>{topPowers.map((power) => power.label).join(' + ')}</h1>
-            <p>{mainPower.text}</p>
-          </div>
+        </div>
+
+        <div className="identityStrip">
+          <article className="identityCard">
+            <small>Avatar simbólico</small>
+            <strong>{identityName}</strong>
+          </article>
+
+          <article className="identityCard">
+            <small>Energia dominante</small>
+            <strong>{mainEnergy.label}</strong>
+          </article>
+
+          <article className="identityCard">
+            <small>Modo de decisão</small>
+            <strong>{mainMode.label}</strong>
+          </article>
         </div>
 
         <div className="dashboardGrid">
@@ -345,7 +371,7 @@ function ResultDashboard({ entries, onReset }) {
           <article className="panel">
             <div className="panelTitle">
               <Compass size={22} />
-              <h2>Modo de decisão</h2>
+              <h2>Como você entra nos desafios</h2>
             </div>
             <h3>{mainMode.label}</h3>
             <p>{mainMode.text}</p>
@@ -354,7 +380,7 @@ function ResultDashboard({ entries, onReset }) {
           <article className="panel">
             <div className="panelTitle">
               <Sparkles size={22} />
-              <h2>Energia principal</h2>
+              <h2>O que te acende</h2>
             </div>
             <h3>{mainEnergy.label}</h3>
             <p>{mainEnergy.text}</p>
@@ -424,10 +450,33 @@ function ResultDashboard({ entries, onReset }) {
           </div>
         </div>
 
+        <article className="storyCard">
+          <span className="storyBadge">Card para print</span>
+          <h2>Eu sou {identityName}</h2>
+          <p>
+            Meu mapa mostra que eu posso explorar futuros possíveis usando
+            meus superpoderes de:
+          </p>
+          <div className="storyPowers">
+            {topPowers.map((power) => (
+              <span key={power.key}>{power.label}</span>
+            ))}
+          </div>
+          <h3>Minha próxima missão</h3>
+          <p>{missions[0]}</p>
+          <div className="printHint">
+            Dica: use o botão de imprimir/salvar para guardar este resultado.
+          </div>
+        </article>
+
         <div className="notice">
           Esse mapa não escolhe sua profissão. Ele mostra pistas do que te acende
           agora e quais tipos de missão podem te ajudar a explorar futuros possíveis.
         </div>
+
+        <button className="primary" onClick={printResult}>
+          Salvar / imprimir resultado
+        </button>
 
         <button className="secondary" onClick={onReset}>
           <RotateCcw size={18} />
