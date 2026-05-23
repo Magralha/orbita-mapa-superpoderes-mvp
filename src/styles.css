@@ -843,3 +843,95 @@ p {
     line-height: .96;
   }
 }
+
+.interactionArea {
+  display: block;
+  margin-top: 24px;
+  position: relative;
+  z-index: 5;
+}
+
+.debugType {
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 900;
+  opacity: .45;
+}
+
+/* fix v0.6.2: energy meter styling */
+
+.meterList {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.meterRow {
+  border: 4px solid var(--ink);
+  border-radius: 24px;
+  background: #fff0b3;
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+}
+
+.meterRow strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+
+.meterButtons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.meterButtons button {
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  padding: 10px 12px;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+
+.meterButtons button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.meterButtons button.activeMeter {
+  background: var(--green);
+  color: var(--ink);
+}
+
+.meterButtons button:nth-child(1).activeMeter {
+  background: var(--pink);
+}
+
+.meterButtons button:nth-child(2).activeMeter {
+  background: #e8ddff;
+}
+
+.meterButtons button:nth-child(3).activeMeter {
+  background: var(--cyan);
+}
+
+.meterButtons button:nth-child(4).activeMeter {
+  background: var(--green);
+}
+
+@media (max-width: 760px) {
+  .meterButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meterRow strong {
+    font-size: 18px;
+  }
+}

@@ -528,29 +528,33 @@ function ExperienceScreen({ experience, step, total, onComplete }) {
           </div>
         </div>
 
-        {experience.type === 'visual-choice' || experience.type === 'quick-choice' ? (
-          <VisualChoice experience={experience} onComplete={onComplete} />
-        ) : null}
+        <div className="interactionArea">
+          {(experience.type === 'visual-choice' || experience.type === 'quick-choice') && (
+            <VisualChoice experience={experience} onComplete={onComplete} />
+          )}
 
-        {experience.type === 'pick-three' ? (
-          <PickThree experience={experience} onComplete={onComplete} />
-        ) : null}
+          {experience.type === 'pick-three' && (
+            <PickThree experience={experience} onComplete={onComplete} />
+          )}
 
-        {experience.type === 'discard-two' ? (
-          <DiscardTwo experience={experience} onComplete={onComplete} />
-        ) : null}
+          {experience.type === 'discard-two' && (
+            <DiscardTwo experience={experience} onComplete={onComplete} />
+          )}
 
-        {experience.type === 'build-team' ? (
-          <BuildTeam experience={experience} onComplete={onComplete} />
-        ) : null}
+          {experience.type === 'build-team' && (
+            <BuildTeam experience={experience} onComplete={onComplete} />
+          )}
 
-        {experience.type === 'order-cards' ? (
-          <OrderCards experience={experience} onComplete={onComplete} />
-        ) : null}
+          {experience.type === 'order-cards' && (
+            <OrderCards experience={experience} onComplete={onComplete} />
+          )}
 
-        {experience.type === 'energy-meter' ? (
-          <EnergyMeter experience={experience} onComplete={onComplete} />
-        ) : null}
+          {experience.type === 'energy-meter' && (
+            <EnergyMeter experience={experience} onComplete={onComplete} />
+          )}
+        </div>
+
+        <div className="debugType">tipo: {experience.type}</div>
       </section>
     </main>
   );
