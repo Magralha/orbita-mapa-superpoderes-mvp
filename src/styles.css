@@ -714,3 +714,105 @@ p {
   cursor: not-allowed;
   transform: none;
 }
+
+/* v0.6 chapter screens */
+
+.chapterScreen {
+  width: min(920px, 100%);
+  border: 5px solid var(--ink);
+  border-radius: 34px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  padding: 42px;
+  position: relative;
+  overflow: hidden;
+}
+
+.chapterScreen::before {
+  content: "";
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  right: -70px;
+  top: -70px;
+  border: 5px solid var(--ink);
+  border-radius: 56px;
+  transform: rotate(18deg);
+  background: var(--cyan);
+}
+
+.chapterScreen::after {
+  content: "";
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  left: -50px;
+  bottom: -50px;
+  border: 5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--yellow);
+}
+
+.chapterScreen > * {
+  position: relative;
+  z-index: 1;
+}
+
+.chapterNumber {
+  display: inline-flex;
+  border: 4px solid var(--ink);
+  background: var(--ink);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 18px;
+}
+
+.chapterScreen h1 {
+  font-size: clamp(58px, 10vw, 118px);
+}
+
+.chapterScreen p {
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 800;
+  max-width: 720px;
+}
+
+.chapter-cyan::before {
+  background: var(--cyan);
+}
+
+.chapter-yellow::before {
+  background: var(--yellow);
+}
+
+.chapter-purple::before {
+  background: #e8ddff;
+}
+
+.chapter-green::before {
+  background: #d8ffe9;
+}
+
+.chapter-pink::before {
+  background: var(--pink);
+}
+
+@media (max-width: 760px) {
+  .chapterScreen {
+    padding: 28px;
+    border-radius: 26px;
+  }
+
+  .chapterScreen h1 {
+    font-size: 58px;
+  }
+
+  .chapterScreen p {
+    font-size: 18px;
+  }
+}

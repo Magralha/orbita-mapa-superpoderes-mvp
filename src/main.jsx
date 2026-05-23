@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { chapterForStep, isChapterStart } from './data/chapters';
 import { createRoot } from 'react-dom/client';
 import { Sparkles, RotateCcw, Compass, AlertTriangle, Timer, Layers } from 'lucide-react';
 import { experiences as baseExperiences } from './data/experiences';
@@ -364,7 +365,20 @@ function EnergyMeter({ experience, onComplete }) {
     </>
   );
 }
-
+function ChapterScreen({ chapter, onContinue }) {
+  return (
+    <main className="page">
+      <section className={`chapterScreen chapter-${chapter.color}`}>
+        <div className="chapterNumber">{chapter.title}</div>
+        <h1>{chapter.name}</h1>
+        <p>{chapter.text}</p>
+        <button className="primary" onClick={onContinue}>
+          Entrar nessa fase
+        </button>
+      </section>
+    </main>
+  );
+}
 function ExperienceScreen({ experience, step, total, onComplete }) {
   const ExperienceIcon = experience.icon;
   const progress = ((step + 1) / total) * 100;
@@ -624,27 +638,46 @@ function App() {
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
   const [entries, setEntries] = useState([]);
+  const [showChapter, setShowChapter] = useState(true);
 
   const finished = step >= experiences.length;
+  const currentChapter = chapterForStep(step);
 
   function complete(entry) {
+    const nextStep = step + 1;
     setEntries((prev) => [...prev, entry]);
-    setStep((prev) => prev + 1);
+    setStep(nextStep);
+    setShowChapter(isChapterStart(nextStep));
   }
 
   function reset() {
     setStarted(false);
     setStep(0);
     setEntries([]);
+    setShowChapter(true);
+  }
+
+  function startJourney() {
+    setStarted(true);
+    setShowChapter(true);
   }
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [step, started]);
+  }, [step, started, showChapter]);
 
-  if (!started) return <StartScreen onStart={() => setStarted(true)} />;
+  if (!started) return <StartScreen onStart={startJourney} />;
 
   if (finished) return <ResultDashboard entries={entries} onReset={reset} />;
+
+  if (showChapter) {
+    return (
+      <ChapterScreen
+        chapter={currentChapter}
+        onContinue={() => setShowChapter(false)}
+      />
+    );
+  }
 
   return (
     <ExperienceScreen
