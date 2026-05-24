@@ -503,6 +503,22 @@ function EnergyMeter({ experience, onComplete }) {
   );
 }
 
+
+function ChapterScreen({ chapter, onContinue }) {
+  return (
+    <main className="page">
+      <section className={`chapterScreen chapter-${chapter.color}`}>
+        <div className="chapterNumber">{chapter.title}</div>
+        <h1>{chapter.name}</h1>
+        <p>{chapter.text}</p>
+        <button className="primary" onClick={onContinue}>
+          Entrar nessa fase
+        </button>
+      </section>
+    </main>
+  );
+}
+
 function ExperienceScreen({ experience, step, total, onComplete }) {
   const ExperienceIcon = experience.icon;
   const progress = ((step + 1) / total) * 100;
