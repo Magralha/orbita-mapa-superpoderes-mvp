@@ -1056,3 +1056,195 @@ p {
     min-height: 72px;
   }
 }
+
+/* v0.7 visual board journey */
+
+.boardJourney {
+  position: relative;
+  border: 5px solid var(--ink);
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--cream);
+  box-shadow: var(--shadow-sm);
+  margin: 0 0 28px;
+  min-height: 420px;
+}
+
+.boardCompact {
+  min-height: 230px;
+  margin-bottom: 24px;
+}
+
+.boardBg {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  display: block;
+}
+
+.boardOverlay {
+  position: absolute;
+  inset: 0;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  pointer-events: none;
+}
+
+.boardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.boardEyebrow {
+  display: inline-flex;
+  border: 3px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.boardTop h2 {
+  margin-top: 10px;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: .9;
+  max-width: 420px;
+  background: var(--white);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.boardCounter {
+  border: 4px solid var(--ink);
+  background: var(--white);
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 22px;
+  font-weight: 950;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.miniPath {
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 720px;
+  padding: 12px;
+  background: rgba(255, 252, 245, .78);
+  border: 4px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.miniNode {
+  position: relative;
+  width: 42px;
+  height: 42px;
+}
+
+.miniNode img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.miniNode.current {
+  transform: scale(1.18);
+  z-index: 2;
+}
+
+.playerToken {
+  position: absolute;
+  width: 34px !important;
+  height: 34px !important;
+  right: -13px;
+  top: -18px;
+  filter: drop-shadow(3px 3px 0 #111);
+}
+
+.worldBadge {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: clamp(110px, 16vw, 190px);
+  aspect-ratio: 1;
+  border: 4px solid var(--ink);
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  place-items: center;
+  padding: 10px;
+}
+
+.worldBadge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.avatarIdentity img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  display: block;
+  margin: 4px 0 10px;
+  filter: drop-shadow(4px 4px 0 #111);
+}
+
+@media (max-width: 760px) {
+  .boardJourney {
+    min-height: 520px;
+    border-radius: 24px;
+  }
+
+  .boardCompact {
+    min-height: 330px;
+  }
+
+  .boardOverlay {
+    padding: 14px;
+  }
+
+  .boardTop {
+    flex-direction: column;
+  }
+
+  .boardTop h2 {
+    font-size: 32px;
+  }
+
+  .worldBadge {
+    width: 118px;
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .miniPath {
+    max-width: calc(100% - 120px);
+    gap: 5px;
+    padding: 8px;
+  }
+
+  .miniNode {
+    width: 30px;
+    height: 30px;
+  }
+
+  .playerToken {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}

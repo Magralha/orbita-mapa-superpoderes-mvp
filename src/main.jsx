@@ -1,3 +1,5 @@
+import BoardJourney from './components/BoardJourney';
+import { boardAssets } from './data/boardAssets';
 import React, { useEffect, useMemo, useState } from 'react';
 import { chapterForStep, isChapterStart } from './data/chapters';
 import { createRoot } from 'react-dom/client';
@@ -508,6 +510,7 @@ function ExperienceScreen({ experience, step, total, onComplete }) {
   return (
     <main className="page">
       <section className="quiz">
+        <BoardJourney step={step} total={total} compact />
         <div className="topbar">
           <div className="badge">
             {experience.eyebrow} · Etapa {step + 1} de {total}
@@ -607,6 +610,7 @@ function ResultDashboard({ entries, onReset }) {
     <main className="page">
       <section className="result dashboard">
         <div className="badge">Dashboard v0.4</div>
+        <BoardJourney step={13} total={14} />
 
         <div className="dashboardHeroCard">
           <div className="heroCardContent">
@@ -623,10 +627,11 @@ function ResultDashboard({ entries, onReset }) {
         </div>
 
         <div className="identityStrip">
-          <article className="identityCard">
+         <article className="identityCard avatarIdentity">
             <small>Avatar simbólico</small>
+            <img src={avatarSrc} alt="" />
             <strong>{identityName}</strong>
-          </article>
+         </article>
 
           <article className="identityCard">
             <small>Energia dominante</small>
