@@ -199,19 +199,34 @@ function TradeoffNode({ selected, onToggle, onContinue }) {
   );
 }
 
-function MissionNode({ onChoose }) {
+function MissionNode({ scores, onChoose }) {
+  const ranked = rankScores(scores);
+  const topKeys = ranked.slice(0, 3).map((power) => power.key);
+
+  const relevantMissions = missionsExpanded
+    .map((mission) => {
+      const matchScore = Object.keys(mission.powers || {}).reduce((total, key) => {
+        return total + (topKeys.includes(key) ? 1 : 0);
+      }, 0);
+
+      return { ...mission, matchScore };
+    })
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, 4);
+
   return (
     <div className="floatingChoices missionChoices">
-      {missionsExpanded.map((mission) => (
-        <button className="sceneChoice" key={mission.id} onClick={() => onChoose(mission)}>
+      {relevantMissions.map((mission) => (
+        <button className="sceneChoice missionChoiceCard" key={mission.id} onClick={() => onChoose(mission)}>
           <span>{mission.label}</span>
+          <small>Combina com: {Object.keys(mission.powers).slice(0, 3).join(' · ')}</small>
         </button>
       ))}
     </div>
   );
 }
 
-function PowerCard({ agent, scores, mission, path }) {
+function PowerCard({ agent, scores, mission, path, decisiveItem }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
   const characterName = getCharacterName(top);
@@ -257,6 +272,17 @@ function PowerCard({ agent, scores, mission, path }) {
             ))}
           </section>
 
+          {decisiveItem && (
+            <section className="decisiveItemBox">
+              <img src={assets.items[decisiveItem.id]} alt="" />
+              <div>
+                <strong>Item decisivo</strong>
+                <p>{decisiveItem.label}</p>
+                <small>{decisiveItem.useText}</small>
+              </div>
+            </section>
+          )}
+
           <section className="orbitaStats">
             <h3>Poderes ativados</h3>
 
@@ -293,6 +319,7 @@ function GameApp() {
   const [inventory, setInventory] = useState([]);
   const [tradeoffSelection, setTradeoffSelection] = useState([]);
   const [mission, setMission] = useState(null);
+  const [decisiveItem, setDecisiveItem] = useState(null);
 
   const node = expandedNodes[nodeId];
 
@@ -330,6 +357,7 @@ function GameApp() {
 
   function chooseItemUse(item) {
     setScores((prev) => addScores(prev, item.powers));
+    setDecisiveItem(item);
     setPath((prev) => [...prev, 'Item: ' + item.label]);
     setNodeId('tradeoff');
   }
@@ -362,7 +390,7 @@ function GameApp() {
   if (!agent) return <AgentSelect onSelect={chooseAgent} />;
 
   if (mission) {
-    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} />;
+    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} />;
   }
 
 
@@ -394,7 +422,7 @@ function GameApp() {
         />
       )}
 
-      {node.type === 'mission' && <MissionNode onChoose={chooseMission} />}
+      {node.type === 'mission' && <MissionNode scores={scores} onChoose={chooseMission} />}
     </SceneShell>
   );
 }
