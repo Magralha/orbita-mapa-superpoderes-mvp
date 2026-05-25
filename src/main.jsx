@@ -1,598 +1,48 @@
-import BoardJourney from './components/BoardJourney';
-import { boardAssets } from './data/boardAssets';
-import React, { useEffect, useMemo, useState } from 'react';
-import { chapterForStep, isChapterStart } from './data/chapters';
+import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Sparkles, RotateCcw, Compass, AlertTriangle, Timer, Layers } from 'lucide-react';
-import { experiences as baseExperiences } from './data/experiences';
-import { extraExperiences } from './data/extraExperiences';
-const experiences = [
-  ...baseExperiences.slice(0, 2),
-  extraExperiences[0],
-  ...baseExperiences.slice(2, 5),
-  extraExperiences[1],
-  ...baseExperiences.slice(5, 8),
-  extraExperiences[2],
-  ...baseExperiences.slice(8),
-  extraExperiences[3],
-];
-import { analyzeAnswers } from './logic/scoring';
-import { powerKeys } from './data/powers';
+import { assets } from './game/data/assets';
+import { agents, inventoryItems, missions, nodes, tradeoffs } from './game/data/gameData';
+import { addScores, emptyScores, getCharacterName, rankScores } from './game/logic/scoring';
 import './styles.css';
 
-function StartScreen({ onStart }) {
+function AgentSelect({ onSelect }) {
   return (
-    <main className="page">
-      <section className="hero brutalHero">
-        <div className="badge">Órbita Municipal · MVP 0.3</div>
-        <h1>Descubra seus superpoderes para mudar o mundo</h1>
+    <main className="gamePage">
+      <section className="gameIntro">
+        <div className="gameBadge">Órbita · Caminho dos Superpoderes</div>
+        <h1>Escolha seu Agente Órbita</h1>
         <p>
-          Uma jornada visual com games, metáforas, mochila mágica, fases difíceis,
-          escolhas rápidas e missões. Você não responde prova. Você joga escolhas.
+          Você não está escolhendo quem você é para sempre. Está escolhendo quem vai
+          te acompanhar no tabuleiro. Cada agente enxerga o mundo de um jeito.
         </p>
-        <div className="notice">
-          O sistema observa padrões de escolha, ordem, energia e tempo de resposta.
-          Isso não mede QI, QE, diagnóstico psicológico ou profissão. É uma leitura
-          pedagógica provisória dos seus jeitos de aprender e agir.
+
+        <div className="agentGrid">
+          {agents.map((agent) => (
+            <button className="agentCard" key={agent.id} onClick={() => onSelect(agent)}>
+              <img src={assets.agents[agent.id]} alt="" />
+              <strong>{agent.name}</strong>
+              <span>{agent.role}</span>
+              <small>{agent.phrase}</small>
+            </button>
+          ))}
         </div>
-        <button className="primary" onClick={onStart}>
-          <Sparkles size={18} />
-          Entrar na jornada
-        </button>
       </section>
     </main>
   );
 }
 
-function ChoiceCard({ option, selected, order, onClick }) {
-  return (
-    <button className={`option gameCard ${selected ? 'selected' : ''}`} onClick={onClick}>
-      {order ? <span className="orderBadge">{order}</span> : null}
-      <span className="emoji">{option.emoji}</span>
-      <strong>{option.label}</strong>
-      {option.desc ? <span>{option.desc}</span> : null}
-    </button>
-  );
-}
-
-function VisualChoice({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-
-  function choose(option) {
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      item: option,
-      responseMs: Date.now() - startedAt,
-    });
-  }
+function JourneyTrail({ path, current }) {
+  const route = [...path, current].slice(-6);
 
   return (
-    <div className="options">
-      {experience.options.map((option) => (
-        <ChoiceCard key={option.label} option={option} onClick={() => choose(option)} />
-      ))}
-    </div>
-  );
-}
-
-function PickThree({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [selected, setSelected] = useState([]);
-
-  const max = experience.max || 3;
-function DiscardTwo({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [discarded, setDiscarded] = useState([]);
-  const discardCount = experience.discardCount || 2;
-
-  function toggle(option) {
-    const exists = discarded.some((item) => item.label === option.label);
-
-    if (exists) {
-      setDiscarded((prev) => prev.filter((item) => item.label !== option.label));
-      return;
-    }
-
-    if (discarded.length < discardCount) {
-      setDiscarded((prev) => [...prev, option]);
-    }
-  }
-
-  function finish() {
-    const kept = experience.options.filter(
-      (option) => !discarded.some((item) => item.label === option.label)
-    );
-
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: kept,
-      discarded,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Descartadas: {discarded.length}/{discardCount}
-      </div>
-
-      <div className="options">
-        {experience.options.map((option) => {
-          const index = discarded.findIndex((item) => item.label === option.label);
-          return (
-            <ChoiceCard
-              key={option.label}
-              option={option}
-              selected={index >= 0}
-              order={index >= 0 ? 'X' : null}
-              onClick={() => toggle(option)}
-            />
-          );
-        })}
-      </div>
-
-      <button
-        className="primary stickyAction"
-        disabled={discarded.length !== discardCount}
-        onClick={finish}
-      >
-        Ficar com as outras cartas
-      </button>
-    </>
-  );
-}
-
-function BuildTeam({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [selected, setSelected] = useState([]);
-  const max = experience.max || 4;
-
-  function toggle(option) {
-    const exists = selected.some((item) => item.label === option.label);
-
-    if (exists) {
-      setSelected((prev) => prev.filter((item) => item.label !== option.label));
-      return;
-    }
-
-    if (selected.length < max) {
-      setSelected((prev) => [...prev, option]);
-    }
-  }
-
-  function finish() {
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: selected,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Time montado: {selected.length}/{max}
-      </div>
-
-      <div className="options">
-        {experience.options.map((option) => {
-          const index = selected.findIndex((item) => item.label === option.label);
-          return (
-            <ChoiceCard
-              key={option.label}
-              option={option}
-              selected={index >= 0}
-              order={index >= 0 ? index + 1 : null}
-              onClick={() => toggle(option)}
-            />
-          );
-        })}
-      </div>
-
-      <button
-        className="primary stickyAction"
-        disabled={selected.length !== max}
-        onClick={finish}
-      >
-        Confirmar meu time
-      </button>
-    </>
-  );
-}
-
-  function toggle(option) {
-    const exists = selected.some((item) => item.label === option.label);
-
-    if (exists) {
-      setSelected((prev) => prev.filter((item) => item.label !== option.label));
-      return;
-    }
-
-    if (selected.length < max) {
-      setSelected((prev) => [...prev, option]);
-    }
-  }
-
-  function finish() {
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: selected,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Escolhidos: {selected.length}/{max}
-      </div>
-
-      <div className="options">
-        {experience.options.map((option) => {
-          const index = selected.findIndex((item) => item.label === option.label);
-          return (
-            <ChoiceCard
-              key={option.label}
-              option={option}
-              selected={index >= 0}
-              order={index >= 0 ? index + 1 : null}
-              onClick={() => toggle(option)}
-            />
-          );
-        })}
-      </div>
-
-      <button className="primary stickyAction" disabled={selected.length !== max} onClick={finish}>
-        Confirmar mochila
-      </button>
-    </>
-  );
-}
-function DiscardTwo({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [discarded, setDiscarded] = useState([]);
-  const discardCount = experience.discardCount || 2;
-
-  function toggle(option) {
-    const exists = discarded.some((item) => item.label === option.label);
-
-    if (exists) {
-      setDiscarded((prev) => prev.filter((item) => item.label !== option.label));
-      return;
-    }
-
-    if (discarded.length < discardCount) {
-      setDiscarded((prev) => [...prev, option]);
-    }
-  }
-
-  function finish() {
-    const kept = experience.options.filter(
-      (option) => !discarded.some((item) => item.label === option.label)
-    );
-
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: kept,
-      discarded,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Descartadas: {discarded.length}/{discardCount}
-      </div>
-
-      <div className="options">
-        {experience.options.map((option) => {
-          const index = discarded.findIndex((item) => item.label === option.label);
-
-          return (
-            <ChoiceCard
-              key={option.label}
-              option={option}
-              selected={index >= 0}
-              order={index >= 0 ? 'X' : null}
-              onClick={() => toggle(option)}
-            />
-          );
-        })}
-      </div>
-
-      <button
-        className="primary stickyAction"
-        disabled={discarded.length !== discardCount}
-        onClick={finish}
-      >
-        Ficar com as outras cartas
-      </button>
-    </>
-  );
-}
-
-function BuildTeam({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [selected, setSelected] = useState([]);
-  const max = experience.max || 4;
-
-  function toggle(option) {
-    const exists = selected.some((item) => item.label === option.label);
-
-    if (exists) {
-      setSelected((prev) => prev.filter((item) => item.label !== option.label));
-      return;
-    }
-
-    if (selected.length < max) {
-      setSelected((prev) => [...prev, option]);
-    }
-  }
-
-  function finish() {
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: selected,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Time montado: {selected.length}/{max}
-      </div>
-
-      <div className="options">
-        {experience.options.map((option) => {
-          const index = selected.findIndex((item) => item.label === option.label);
-
-          return (
-            <ChoiceCard
-              key={option.label}
-              option={option}
-              selected={index >= 0}
-              order={index >= 0 ? index + 1 : null}
-              onClick={() => toggle(option)}
-            />
-          );
-        })}
-      </div>
-
-      <button
-        className="primary stickyAction"
-        disabled={selected.length !== max}
-        onClick={finish}
-      >
-        Confirmar meu time
-      </button>
-    </>
-  );
-}
-function OrderCards({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [ordered, setOrdered] = useState([]);
-
-  function pick(card) {
-    const exists = ordered.some((item) => item.label === card.label);
-    if (exists) {
-      setOrdered((prev) => prev.filter((item) => item.label !== card.label));
-      return;
-    }
-    setOrdered((prev) => [...prev, card]);
-  }
-
-  function finish() {
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items: ordered,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  return (
-    <>
-      <div className="selectionCounter">
-        Ordem escolhida: {ordered.length}/{experience.cards.length}
-      </div>
-
-      <div className="options">
-        {experience.cards.map((card) => {
-          const index = ordered.findIndex((item) => item.label === card.label);
-          return (
-            <ChoiceCard
-              key={card.label}
-              option={card}
-              selected={index >= 0}
-              order={index >= 0 ? index + 1 : null}
-              onClick={() => pick(card)}
-            />
-          );
-        })}
-      </div>
-
-      <button
-        className="primary stickyAction"
-        disabled={ordered.length < 3}
-        onClick={finish}
-      >
-        Fechar minha ordem
-      </button>
-    </>
-  );
-}
-
-function EnergyMeter({ experience, onComplete }) {
-  const [startedAt] = useState(Date.now());
-  const [values, setValues] = useState({});
-
-  const choices = [
-    { value: -1, label: 'Me trava', emoji: '🧱', className: 'energyBlock' },
-    { value: 0, label: 'Tanto faz', emoji: '➖', className: 'energyNeutral' },
-    { value: 1, label: 'Me chama', emoji: '👀', className: 'energyCall' },
-    { value: 2, label: 'Me acende', emoji: '⚡', className: 'energyFire' },
-  ];
-
-  function setValue(prompt, value) {
-    setValues((prev) => ({
-      ...prev,
-      [prompt.label]: { ...prompt, energyValue: value },
-    }));
-  }
-
-  function finish() {
-    const items = Object.values(values).filter((item) => item.energyValue > 0);
-
-    onComplete({
-      type: experience.type,
-      experienceId: experience.id,
-      items,
-      responseMs: Date.now() - startedAt,
-    });
-  }
-
-  const allAnswered = Object.keys(values).length === experience.prompts.length;
-
-  return (
-    <>
-      <div className="energyList">
-        {experience.prompts.map((prompt) => (
-          <article className="energyCard" key={prompt.label}>
-            <div className="energyPrompt">
-              <span>MISSÃO</span>
-              <strong>{prompt.label}</strong>
-            </div>
-
-            <div className="energyChoices">
-              {choices.map((choice) => {
-                const active = values[prompt.label]?.energyValue === choice.value;
-
-                return (
-                  <button
-                    key={choice.value}
-                    className={`energyChoice ${choice.className} ${active ? 'activeEnergy' : ''}`}
-                    onClick={() => setValue(prompt, choice.value)}
-                  >
-                    <span className="energyEmoji">{choice.emoji}</span>
-                    <b>{choice.label}</b>
-                  </button>
-                );
-              })}
-            </div>
-          </article>
-        ))}
-      </div>
-
-      <button
-        className="primary stickyAction energyAction"
-        disabled={!allAnswered}
-        onClick={finish}
-      >
-        Ver o que isso revela
-      </button>
-    </>
-  );
-}
-
-
-function ChapterScreen({ chapter, onContinue }) {
-  return (
-    <main className="page">
-      <section className={`chapterScreen chapter-${chapter.color}`}>
-        <div className="chapterNumber">{chapter.title}</div>
-        <h1>{chapter.name}</h1>
-        <p>{chapter.text}</p>
-        <button className="primary" onClick={onContinue}>
-          Entrar nessa fase
-        </button>
-      </section>
-    </main>
-  );
-}
-
-function ExperienceScreen({ experience, step, total, onComplete }) {
-  const ExperienceIcon = experience.icon;
-  const progress = ((step + 1) / total) * 100;
-
-  return (
-    <main className="page">
-      <section className="quiz">
-        <BoardJourney step={step} total={total} compact />
-        <div className="topbar">
-          <div className="badge">
-            {experience.eyebrow} · Etapa {step + 1} de {total}
-          </div>
-          <div className="progress">
-            <span style={{ width: `${progress}%` }} />
-          </div>
-        </div>
-
-        <div className="questionHead">
-          <div className="bigIcon">
-            <ExperienceIcon size={36} />
-          </div>
-          <div>
-            <h1>{experience.title}</h1>
-            <p>{experience.subtitle}</p>
-          </div>
-        </div>
-
-        <div className="interactionArea">
-          {(experience.type === 'visual-choice' || experience.type === 'quick-choice') && (
-            <VisualChoice experience={experience} onComplete={onComplete} />
-          )}
-
-          {experience.type === 'pick-three' && (
-            <PickThree experience={experience} onComplete={onComplete} />
-          )}
-
-          {experience.type === 'discard-two' && (
-            <DiscardTwo experience={experience} onComplete={onComplete} />
-          )}
-
-          {experience.type === 'build-team' && (
-            <BuildTeam experience={experience} onComplete={onComplete} />
-          )}
-
-          {experience.type === 'order-cards' && (
-            <OrderCards experience={experience} onComplete={onComplete} />
-          )}
-
-          {experience.type === 'energy-meter' && (
-            <EnergyMeter experience={experience} onComplete={onComplete} />
-          )}
-        </div>
-
-      </section>
-    </main>
-  );
-}
-
-function BrutalBars({ scores }) {
-  const max = Math.max(...Object.values(scores), 1);
-
-  return (
-    <div className="barChart">
-      {powerKeys.map((key) => {
-        const value = scores[key] || 0;
-        const width = `${Math.max(6, (value / max) * 100)}%`;
+    <div className="compactTrail">
+      {route.map((step, index) => {
+        const active = index === route.length - 1;
 
         return (
-          <div className="barRow" key={key}>
-            <span>{key}</span>
-            <div className="barTrack">
-              <div className="barFill" style={{ width }} />
-            </div>
-            <b>{Math.round(value)}</b>
+          <div className={`compactStep ${active ? 'active' : 'done'}`} key={`${step}-${index}`}>
+            <span>{index + 1}</span>
+            <small>{step}</small>
           </div>
         );
       })}
@@ -600,247 +50,319 @@ function BrutalBars({ scores }) {
   );
 }
 
-function ResultDashboard({ entries, onReset }) {
-  const analysis = useMemo(() => analyzeAnswers(entries), [entries]);
-  const {
-    topPowers,
-    mainPower,
-    mainMode,
-    mainEnergy,
-    missions,
-    tools,
-    avgResponseMs,
-    rankedWorlds,
-    powerScores,
-  } = analysis;
 
-  const MainIcon = mainPower.icon;
-  const avgSeconds = avgResponseMs ? (avgResponseMs / 1000).toFixed(1) : null;
-  const identityName = `${mainMode.label} ${mainPower.label}`;
-
-  function printResult() {
-    window.print();
+function getAgentLine(agentId, nodeType, chapter) {
+  if (nodeType === 'inventory') {
+    return 'Escolha só o que você realmente levaria para essa missão.';
   }
 
+  if (nodeType === 'tradeoff') {
+    return 'Toda escolha boa deixa alguma coisa para trás. Repara no que você prioriza.';
+  }
+
+  if (nodeType === 'mission') {
+    return 'Agora escolha uma missão que faça sentido para o caminho que você abriu.';
+  }
+
+  const lines = {
+    luma: 'Olhe com calma. Toda fase tem uma pista escondida.',
+    nexo: 'Veja onde existem pontes possíveis entre as pessoas.',
+    kira: 'Talvez a melhor saída seja imaginar de outro jeito.',
+    teo: 'Escolha o caminho que dá vontade de testar na prática.',
+    zuri: 'Preste atenção em quem pode ficar para trás nessa fase.',
+    orin: 'Procure a rota que transforma bagunça em caminho.',
+    vega: 'Antes de avançar, veja onde estão os riscos e limites.',
+    mio: 'Uma escolha também é um jeito de contar uma história.',
+  };
+
+  return lines[agentId] || 'Escolha o caminho que mais chama sua atenção.';
+}
+
+function SceneShell({ agent, node, path, children }) {
   return (
-    <main className="page">
-      <section className="result dashboard">
-        <div className="badge">Dashboard v0.4</div>
-        <BoardJourney step={13} total={14} />
-
-        <div className="dashboardHeroCard">
-          <div className="heroCardContent">
-            <span className="heroCardLabel">Meu Mapa de Superpoderes</span>
-            <h1 className="heroCardTitle">
-              {topPowers.map((power) => power.label).join(' + ')}
-            </h1>
-            <p className="heroCardSubtitle">
-              Seu mapa mostra uma mistura de {mainPower.label.toLowerCase()},
-              energia de {mainEnergy.label.toLowerCase()} e modo de decisão
-              {` ${mainMode.label.toLowerCase()}`}.
-            </p>
+    <main className="gamePage">
+      <section className="scene sceneV2">
+        <div className="sceneTop sceneTopV2">
+          <div>
+            <div className="gameBadge">{node.chapter}</div>
+            <h1>{node.title}</h1>
+            <p>{node.text}</p>
           </div>
         </div>
 
-        <div className="identityStrip">
-         <article className="identityCard avatarIdentity">
-            <small>Avatar simbólico</small>
-            <img src={avatarSrc} alt="" />
-            <strong>{identityName}</strong>
-         </article>
+        <JourneyTrail path={path} current={node.chapter} />
 
-          <article className="identityCard">
-            <small>Energia dominante</small>
-            <strong>{mainEnergy.label}</strong>
-          </article>
+        <div className={`boardStage boardStageV2 sceneWorld sceneWorld-${node.world}`}>
+          <div className="worldComposition">
+            <img className="worldArt worldArtV2" src={assets.worlds[node.world]} alt="" />
 
-          <article className="identityCard">
-            <small>Modo de decisão</small>
-            <strong>{mainMode.label}</strong>
-          </article>
-        </div>
-
-        <div className="dashboardGrid">
-          <article className="panel widePanel">
-            <div className="panelTitle">
-              <Layers size={22} />
-              <h2>Radar brutalista de superpoderes</h2>
-            </div>
-            <BrutalBars scores={powerScores} />
-          </article>
-
-          <article className="panel">
-            <div className="panelTitle">
-              <Compass size={22} />
-              <h2>Como você entra nos desafios</h2>
-            </div>
-            <h3>{mainMode.label}</h3>
-            <p>{mainMode.text}</p>
-          </article>
-
-          <article className="panel">
-            <div className="panelTitle">
-              <Sparkles size={22} />
-              <h2>O que te acende</h2>
-            </div>
-            <h3>{mainEnergy.label}</h3>
-            <p>{mainEnergy.text}</p>
-          </article>
-
-          <article className="panel warningPanel">
-            <div className="panelTitle">
-              <AlertTriangle size={22} />
-              <h2>Trava possível</h2>
-            </div>
-            <p>{mainPower.shadow}</p>
-          </article>
-
-          <article className="panel">
-            <div className="panelTitle">
-              <Timer size={22} />
-              <h2>Ritmo médio</h2>
-            </div>
-            <h3>{avgSeconds ? `${avgSeconds}s` : 'sem dado'}</h3>
-            <p>
-              Esse tempo é só uma pista de interação. Não mede inteligência,
-              emoção ou capacidade.
-            </p>
-          </article>
-        </div>
-
-        <div className="powerGrid">
-          {topPowers.map((power, index) => {
-            const PowerIcon = power.icon;
-            return (
-              <article className="powerCard" key={power.key}>
-                <span className="rank">#{index + 1}</span>
-                <PowerIcon size={30} />
-                <h3>{power.label}</h3>
-                <p>{power.text}</p>
-              </article>
-            );
-          })}
-        </div>
-
-        {rankedWorlds.length ? (
-          <div className="panel">
-            <h2>Mundos que mais chamaram você</h2>
-            <div className="chips">
-              {rankedWorlds.slice(0, 4).map((world) => (
-                <span key={world.key}>{world.label}</span>
-              ))}
+            <div className="agentGuide agentGuideV2">
+              <img src={assets.agents[agent.id]} alt="" />
+              <div className="agentSpeech">
+                <strong>{agent.name}</strong>
+                <p>{getAgentLine(agent.id, node.type, node.chapter)}</p>
+              </div>
             </div>
           </div>
-        ) : null}
 
-        <div className="panel">
-          <h2>Missões que combinam com você</h2>
-          <div className="chips">
-            {missions.map((mission) => (
-              <span key={mission}>{mission}</span>
-            ))}
+          <div className="choiceLayer choiceLayerV2">
+            {children}
           </div>
         </div>
-
-        <div className="panel">
-          <h2>Mochila de ferramentas</h2>
-          <div className="chips muted">
-            {tools.map((tool) => (
-              <span key={tool}>{tool}</span>
-            ))}
-          </div>
-        </div>
-
-        <article className="storyCard">
-          <span className="storyBadge">Card para print</span>
-          <h2>Eu sou {identityName}</h2>
-          <p>
-            Meu mapa mostra que eu posso explorar futuros possíveis usando
-            meus superpoderes de:
-          </p>
-          <div className="storyPowers">
-            {topPowers.map((power) => (
-              <span key={power.key}>{power.label}</span>
-            ))}
-          </div>
-          <h3>Minha próxima missão</h3>
-          <p>{missions[0]}</p>
-          <div className="printHint">
-            Dica: use o botão de imprimir/salvar para guardar este resultado.
-          </div>
-        </article>
-
-        <div className="notice">
-          Esse mapa não escolhe sua profissão. Ele mostra pistas do que te acende
-          agora e quais tipos de missão podem te ajudar a explorar futuros possíveis.
-        </div>
-
-        <button className="primary" onClick={printResult}>
-          Salvar / imprimir resultado
-        </button>
-
-        <button className="secondary" onClick={onReset}>
-          <RotateCcw size={18} />
-          Jogar de novo
-        </button>
       </section>
     </main>
   );
 }
 
-function App() {
-  const [started, setStarted] = useState(false);
-  const [step, setStep] = useState(0);
-  const [entries, setEntries] = useState([]);
-  const [showChapter, setShowChapter] = useState(true);
-
-  const finished = step >= experiences.length;
-  const currentChapter = chapterForStep(step);
-
-  function complete(entry) {
-    const nextStep = step + 1;
-    setEntries((prev) => [...prev, entry]);
-    setStep(nextStep);
-    setShowChapter(isChapterStart(nextStep));
-  }
-
-  function reset() {
-    setStarted(false);
-    setStep(0);
-    setEntries([]);
-    setShowChapter(true);
-  }
-
-  function startJourney() {
-    setStarted(true);
-    setShowChapter(true);
-  }
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [step, started, showChapter]);
-
-  if (!started) return <StartScreen onStart={startJourney} />;
-
-  if (finished) return <ResultDashboard entries={entries} onReset={reset} />;
-
-  if (showChapter) {
-    return (
-      <ChapterScreen
-        chapter={currentChapter}
-        onContinue={() => setShowChapter(false)}
-      />
-    );
-  }
-
+function ChoiceNode({ node, onChoose }) {
   return (
-    <ExperienceScreen
-      experience={experiences[step]}
-      step={step}
-      total={experiences.length}
-      onComplete={complete}
-    />
+    <div className="floatingChoices">
+      {node.choices.map((choice) => (
+        <button className="sceneChoice" key={choice.label} onClick={() => onChoose(choice)}>
+          <span>{choice.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+function InventoryNode({ selected, onToggle, onContinue }) {
+  return (
+    <>
+      <div className="inventoryGrid">
+        {inventoryItems.map((item) => {
+          const active = selected.some((selectedItem) => selectedItem.id === item.id);
+
+          return (
+            <button
+              className={`itemCard ${active ? 'selected' : ''}`}
+              key={item.id}
+              onClick={() => onToggle(item)}
+            >
+              <img src={assets.items[item.id]} alt="" />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <button className="sceneAction" disabled={selected.length !== 4} onClick={onContinue}>
+        Confirmar mochila {selected.length}/4
+      </button>
+    </>
+  );
+}
+
+function TradeoffNode({ selected, onToggle, onContinue }) {
+  return (
+    <>
+      <div className="tradeoffGrid">
+        {tradeoffs.map((tradeoff) => {
+          const active = selected.some((item) => item.id === tradeoff.id);
+
+          return (
+            <button
+              className={`tradeoffCard ${active ? 'selected' : ''}`}
+              key={tradeoff.id}
+              onClick={() => onToggle(tradeoff)}
+            >
+              <span>{tradeoff.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <button className="sceneAction" disabled={selected.length !== 2} onClick={onContinue}>
+        Abrir o portão {selected.length}/2
+      </button>
+    </>
+  );
+}
+
+function MissionNode({ onChoose }) {
+  return (
+    <div className="floatingChoices missionChoices">
+      {missions.map((mission) => (
+        <button className="sceneChoice" key={mission.id} onClick={() => onChoose(mission)}>
+          <span>{mission.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function PowerCard({ agent, scores, mission, path }) {
+  const ranked = rankScores(scores);
+  const top = ranked.slice(0, 3);
+  const characterName = getCharacterName(top);
+  const max = Math.max(...ranked.map((item) => item.value), 1);
+
+  return (
+    <main className="gamePage">
+      <section className="finalCardScreen">
+        <div className="finalHeader">
+          <div className="gameBadge">Revelação final</div>
+          <h1>Seu Card de Superpoder</h1>
+          <p>
+            O tabuleiro montou uma leitura do caminho que você percorreu. Isso não
+            define quem você é para sempre. Mostra os poderes que apareceram nesta jornada.
+          </p>
+        </div>
+
+        <article className="orbitaPowerCard">
+          <div className="cardDecor cardDecorOne" />
+          <div className="cardDecor cardDecorTwo" />
+
+          <header className="orbitaCardHeader">
+            <div>
+              <span>Card de Superpoder</span>
+              <h2>{characterName}</h2>
+              <p>Agente inicial: {agent.name}</p>
+            </div>
+
+            <img className="orbitaSeal" src={assets.ui.raritySeal} alt="" />
+          </header>
+
+          <section className="orbitaHeroZone">
+            <div className="heroAura" />
+            <img className="orbitaHero" src={assets.agents[agent.id]} alt="" />
+          </section>
+
+          <section className="orbitaBadges">
+            {top.map((power) => (
+              <div className="orbitaBadgeSlot" key={power.key}>
+                <img src={assets.badges[power.key]} alt="" />
+                <span>{power.label}</span>
+              </div>
+            ))}
+          </section>
+
+          <section className="orbitaStats">
+            <h3>Poderes ativados</h3>
+
+            {ranked.map((power) => (
+              <div className="orbitaStatRow" key={power.key}>
+                <span>{power.label}</span>
+                <div className="orbitaStatTrack">
+                  <div style={{ width: `${Math.max(8, (power.value / max) * 100)}%` }} />
+                </div>
+                <b>{power.value}</b>
+              </div>
+            ))}
+          </section>
+
+          <section className="orbitaMission">
+            <strong>Missão especial</strong>
+            <p>{mission.label}</p>
+          </section>
+
+          <section className="orbitaPath">
+            <strong>Caminho percorrido</strong>
+            <p>{path.join(' → ')}</p>
+          </section>
+        </article>
+      </section>
+    </main>
+  );
+}
+function GameApp() {
+  const [agent, setAgent] = useState(null);
+  const [nodeId, setNodeId] = useState('world_entry');
+  const [scores, setScores] = useState(emptyScores());
+  const [path, setPath] = useState(['Entrada']);
+  const [inventory, setInventory] = useState([]);
+  const [tradeoffSelection, setTradeoffSelection] = useState([]);
+  const [mission, setMission] = useState(null);
+
+  const node = nodes[nodeId];
+
+  function chooseAgent(selectedAgent) {
+    setAgent(selectedAgent);
+    setScores(addScores(emptyScores(), selectedAgent.powers));
+    setPath(['Agente ' + selectedAgent.name]);
+  }
+
+  function choose(choice) {
+    setScores((prev) => addScores(prev, choice.powers));
+    setPath((prev) => [...prev, node.chapter]);
+    setNodeId(choice.next);
+  }
+
+  function toggleInventory(item) {
+    setInventory((prev) => {
+      const exists = prev.some((selected) => selected.id === item.id);
+      if (exists) return prev.filter((selected) => selected.id !== item.id);
+      if (prev.length >= 4) return prev;
+      return [...prev, item];
+    });
+  }
+
+  function finishInventory() {
+    let nextScores = scores;
+    inventory.forEach((item) => {
+      nextScores = addScores(nextScores, item.powers);
+    });
+    setScores(nextScores);
+    setPath((prev) => [...prev, 'Inventário']);
+    setNodeId('tradeoff');
+  }
+
+  function toggleTradeoff(item) {
+    setTradeoffSelection((prev) => {
+      const exists = prev.some((selected) => selected.id === item.id);
+      if (exists) return prev.filter((selected) => selected.id !== item.id);
+      if (prev.length >= 2) return prev;
+      return [...prev, item];
+    });
+  }
+
+  function finishTradeoff() {
+    let nextScores = scores;
+    tradeoffSelection.forEach((item) => {
+      nextScores = addScores(nextScores, item.powers);
+    });
+    setScores(nextScores);
+    setPath((prev) => [...prev, 'Trade-off']);
+    setNodeId('mission');
+  }
+
+  function chooseMission(selectedMission) {
+    setScores((prev) => addScores(prev, selectedMission.powers));
+    setMission(selectedMission);
+    setPath((prev) => [...prev, 'Missão Final']);
+  }
+
+  if (!agent) return <AgentSelect onSelect={chooseAgent} />;
+
+  if (mission) {
+    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} />;
+  }
+
+
+
+  return (
+    <SceneShell agent={agent} node={node} path={path}>
+      {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
+
+      {node.type === 'inventory' && (
+        <InventoryNode
+          selected={inventory}
+          onToggle={toggleInventory}
+          onContinue={finishInventory}
+        />
+      )}
+
+      {node.type === 'tradeoff' && (
+        <TradeoffNode
+          selected={tradeoffSelection}
+          onToggle={toggleTradeoff}
+          onContinue={finishTradeoff}
+        />
+      )}
+
+      {node.type === 'mission' && <MissionNode onChoose={chooseMission} />}
+    </SceneShell>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<GameApp />);
