@@ -489,17 +489,17 @@ export const expandedNodes = {
     choices: [
       {
         label: 'Testo hipóteses antes de decidir',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { investigar: 3, organizar: 1 },
       },
       {
         label: 'Crio critérios para comparar soluções',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { organizar: 3 },
       },
       {
         label: 'Procuro o risco escondido da ideia',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { proteger: 2, investigar: 1 },
       },
     ],
@@ -515,17 +515,17 @@ export const expandedNodes = {
     choices: [
       {
         label: 'Crio um combinado para o grupo',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { conectar: 2, organizar: 1 },
       },
       {
         label: 'Escuto quem quase nunca fala',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { cuidar: 3 },
       },
       {
         label: 'Explico a missão de um jeito que todo mundo entende',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { comunicar: 3 },
       },
     ],
@@ -541,18 +541,149 @@ export const expandedNodes = {
     choices: [
       {
         label: 'Monto uma versão teste',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { construir: 3 },
       },
       {
         label: 'Desenho como a solução funcionaria',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { criar: 2, organizar: 1 },
       },
       {
         label: 'Protejo o grupo de um erro previsível',
-        next: 'mission',
+        next: 'boss_pressure',
         powers: { proteger: 2, construir: 1 },
+      },
+    ],
+  },
+
+
+  boss_pressure: {
+    id: 'boss_pressure',
+    world: 'boss',
+    type: 'choice',
+    chapter: 'Boss de Pressão',
+    title: 'O tabuleiro colocou pressão em cima da sua escolha.',
+    text: 'Agora não basta escolher uma boa ideia. Você precisa sustentar ela quando a situação aperta.',
+    choices: [
+      {
+        label: 'Respiro, simplifico e explico o essencial',
+        next: 'impact_decision',
+        powers: { comunicar: 3, organizar: 1 },
+      },
+      {
+        label: 'Protejo o grupo de uma decisão apressada',
+        next: 'impact_decision',
+        powers: { proteger: 3, cuidar: 1 },
+      },
+      {
+        label: 'Transformo o erro em teste para melhorar',
+        next: 'impact_decision',
+        powers: { construir: 2, investigar: 2 },
+      },
+    ],
+  },
+
+  impact_decision: {
+    id: 'impact_decision',
+    world: 'schoolyard',
+    type: 'choice',
+    chapter: 'Impacto Real',
+    title: 'A escolha saiu do tabuleiro e chegou nas pessoas.',
+    text: 'A missão agora toca a escola, o grupo ou alguém que pode ser afetado pela sua decisão.',
+    choices: [
+      {
+        label: 'Pergunto quem é mais afetado antes de agir',
+        next: 'team_alignment',
+        powers: { cuidar: 3, investigar: 1 },
+      },
+      {
+        label: 'Crio um combinado para ninguém ficar perdido',
+        next: 'team_alignment',
+        powers: { organizar: 2, conectar: 2 },
+      },
+      {
+        label: 'Faço uma mensagem clara para evitar ruído',
+        next: 'team_alignment',
+        powers: { comunicar: 3, proteger: 1 },
+      },
+    ],
+  },
+
+  team_alignment: {
+    id: 'team_alignment',
+    world: 'bridge',
+    type: 'choice',
+    chapter: 'Alinhamento do Time',
+    title: 'A ponte só aparece quando o grupo entende o plano.',
+    text: 'Você precisa escolher como fazer a missão andar sem virar bagunça.',
+    choices: [
+      {
+        label: 'Divido papéis para cada pessoa saber sua parte',
+        next: 'prototype_or_plan',
+        powers: { organizar: 3, conectar: 1 },
+      },
+      {
+        label: 'Escuto a pessoa que parece menos envolvida',
+        next: 'prototype_or_plan',
+        powers: { cuidar: 3, conectar: 1 },
+      },
+      {
+        label: 'Crio uma forma rápida de todo mundo visualizar a ideia',
+        next: 'prototype_or_plan',
+        powers: { criar: 2, comunicar: 2 },
+      },
+    ],
+  },
+
+  prototype_or_plan: {
+    id: 'prototype_or_plan',
+    world: 'workshop',
+    type: 'choice',
+    chapter: 'Primeiro Passo',
+    title: 'Antes da missão final, o tabuleiro pede uma prova.',
+    text: 'Você precisa mostrar que sua ideia pode virar ação, mesmo pequena.',
+    choices: [
+      {
+        label: 'Monto uma versão teste em poucos minutos',
+        next: 'reveal_gate',
+        powers: { construir: 3, criar: 1 },
+      },
+      {
+        label: 'Crio um mapa simples de próximos passos',
+        next: 'reveal_gate',
+        powers: { organizar: 3, investigar: 1 },
+      },
+      {
+        label: 'Apresento a ideia e recolho reação real',
+        next: 'reveal_gate',
+        powers: { comunicar: 2, cuidar: 1, conectar: 1 },
+      },
+    ],
+  },
+
+  reveal_gate: {
+    id: 'reveal_gate',
+    world: 'reveal',
+    type: 'choice',
+    chapter: 'Torre da Revelação',
+    title: 'A torre mostra o que seu caminho ativou.',
+    text: 'Antes de receber sua missão final, escolha o que mais apareceu na sua jornada.',
+    choices: [
+      {
+        label: 'Eu percebi padrões e pistas escondidas',
+        next: 'mission',
+        powers: { investigar: 3 },
+      },
+      {
+        label: 'Eu ajudei pessoas a se entenderem',
+        next: 'mission',
+        powers: { conectar: 2, cuidar: 2 },
+      },
+      {
+        label: 'Eu transformei ideia em ação possível',
+        next: 'mission',
+        powers: { construir: 2, criar: 2 },
       },
     ],
   },

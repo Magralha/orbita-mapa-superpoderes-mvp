@@ -65,6 +65,26 @@ function getAgentLine(agentId, nodeType, chapter) {
     return 'Agora escolha uma missão que faça sentido para o caminho que você abriu.';
   }
 
+  if (chapter.includes('Boss')) {
+    return 'Quando a pressão aparece, o seu jeito de agir fica mais visível.';
+  }
+
+  if (chapter.includes('Impacto')) {
+    return 'Uma boa escolha também considera quem pode ser afetado por ela.';
+  }
+
+  if (chapter.includes('Alinhamento')) {
+    return 'A missão fica mais forte quando o grupo entende o caminho.';
+  }
+
+  if (chapter.includes('Primeiro Passo')) {
+    return 'Não precisa resolver tudo. Mostre o primeiro movimento.';
+  }
+
+  if (chapter.includes('Revelação')) {
+    return 'Olhe para o caminho. O padrão começa a aparecer.';
+  }
+
   const lines = {
     luma: 'Olhe com calma. Toda fase tem uma pista escondida.',
     nexo: 'Veja onde existem pontes possíveis entre as pessoas.',
