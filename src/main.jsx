@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { assets } from './game/data/assets';
-import { agents, inventoryItems, missions, nodes, tradeoffs } from './game/data/gameData';
+import { agents } from './game/data/gameData';
+import { agentStartNode, expandedNodes, inventoryItemsExpanded, missionsExpanded, tradeoffsExpanded } from './game/data/expandedTree';
 import { addScores, emptyScores, getCharacterName, rankScores } from './game/logic/scoring';
 import './styles.css';
 
@@ -130,7 +131,7 @@ function InventoryNode({ selected, onToggle, onContinue }) {
   return (
     <>
       <div className="inventoryGrid">
-        {inventoryItems.map((item) => {
+        {inventoryItemsExpanded.map((item) => {
           const active = selected.some((selectedItem) => selectedItem.id === item.id);
 
           return (
@@ -153,11 +154,30 @@ function InventoryNode({ selected, onToggle, onContinue }) {
   );
 }
 
+
+function UseItemNode({ inventory, onChoose }) {
+  const visibleInventory = inventory.length ? inventory : inventoryItemsExpanded.slice(0, 4);
+
+  return (
+    <div className="useItemGrid">
+      {visibleInventory.map((item) => (
+        <button className="useItemCard" key={item.id} onClick={() => onChoose(item)}>
+          <img src={assets.items[item.id]} alt="" />
+          <div className="useItemText">
+            <strong>{item.label}</strong>
+            <span>{item.useText}</span>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function TradeoffNode({ selected, onToggle, onContinue }) {
   return (
     <>
       <div className="tradeoffGrid">
-        {tradeoffs.map((tradeoff) => {
+        {tradeoffsExpanded.map((tradeoff) => {
           const active = selected.some((item) => item.id === tradeoff.id);
 
           return (
@@ -182,7 +202,7 @@ function TradeoffNode({ selected, onToggle, onContinue }) {
 function MissionNode({ onChoose }) {
   return (
     <div className="floatingChoices missionChoices">
-      {missions.map((mission) => (
+      {missionsExpanded.map((mission) => (
         <button className="sceneChoice" key={mission.id} onClick={() => onChoose(mission)}>
           <span>{mission.label}</span>
         </button>
@@ -274,12 +294,13 @@ function GameApp() {
   const [tradeoffSelection, setTradeoffSelection] = useState([]);
   const [mission, setMission] = useState(null);
 
-  const node = nodes[nodeId];
+  const node = expandedNodes[nodeId];
 
   function chooseAgent(selectedAgent) {
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
     setPath(['Agente ' + selectedAgent.name]);
+    setNodeId(agentStartNode[selectedAgent.id] || 'forest_entry');
   }
 
   function choose(choice) {
@@ -304,6 +325,12 @@ function GameApp() {
     });
     setScores(nextScores);
     setPath((prev) => [...prev, 'Inventário']);
+    setNodeId('item_solution');
+  }
+
+  function chooseItemUse(item) {
+    setScores((prev) => addScores(prev, item.powers));
+    setPath((prev) => [...prev, 'Item: ' + item.label]);
     setNodeId('tradeoff');
   }
 
@@ -323,7 +350,7 @@ function GameApp() {
     });
     setScores(nextScores);
     setPath((prev) => [...prev, 'Trade-off']);
-    setNodeId('mission');
+    setNodeId('second_world_choice');
   }
 
   function chooseMission(selectedMission) {
@@ -349,6 +376,13 @@ function GameApp() {
           selected={inventory}
           onToggle={toggleInventory}
           onContinue={finishInventory}
+        />
+      )}
+
+      {node.type === 'use-item' && (
+        <UseItemNode
+          inventory={inventory}
+          onChoose={chooseItemUse}
         />
       )}
 

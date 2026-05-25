@@ -3308,3 +3308,341 @@ p {
     height: 116px;
   }
 }
+
+/* v1.3.1 — compact use item stage */
+
+.useItemGrid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.useItemCard {
+  min-height: 96px;
+  border-width: 4px;
+  border-radius: 20px;
+  padding: 10px 12px;
+  grid-template-columns: 74px 1fr;
+  gap: 10px;
+  align-items: center;
+  background: rgba(255,255,255,.96);
+}
+
+.useItemCard img {
+  width: 68px !important;
+  height: 68px !important;
+  max-width: 68px !important;
+  max-height: 68px !important;
+  object-fit: contain;
+  filter: drop-shadow(3px 3px 0 #111);
+}
+
+.useItemCard strong {
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.useItemCard span {
+  font-size: 12px;
+  line-height: 1.12;
+}
+
+.sceneWorld-reveal .worldComposition {
+  min-height: 300px;
+}
+
+.sceneWorld-reveal .worldArtV2 {
+  width: min(390px, 62%);
+}
+
+.sceneWorld-reveal .agentGuideV2 img {
+  width: 190px;
+  height: 190px;
+}
+
+.sceneWorld-reveal .agentGuideV2 {
+  grid-template-columns: 185px 230px;
+  bottom: 2%;
+}
+
+@media (max-width: 760px) {
+  .useItemGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .useItemCard {
+    min-height: 78px;
+    grid-template-columns: 58px 1fr;
+    padding: 8px 10px;
+  }
+
+  .useItemCard img {
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+  }
+
+  .useItemCard strong {
+    font-size: 15px;
+  }
+
+  .useItemCard span {
+    font-size: 11px;
+  }
+
+  .sceneWorld-reveal .worldComposition {
+    min-height: 300px;
+  }
+
+  .sceneWorld-reveal .worldArtV2 {
+    width: min(300px, 84%);
+  }
+
+  .sceneWorld-reveal .agentGuideV2 img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .sceneWorld-reveal .agentGuideV2 {
+    grid-template-columns: 120px 1fr;
+  }
+}
+
+/* v1.3.2 — premium item decision cards */
+
+.sceneWorld-reveal {
+  background:
+    radial-gradient(circle at 52% 34%, rgba(255,210,26,.26), transparent 30%),
+    radial-gradient(circle at 22% 65%, rgba(255,179,199,.22), transparent 26%),
+    linear-gradient(135deg, #071a34, #103b5d 52%, #090f1c);
+}
+
+.sceneWorld-reveal .worldComposition {
+  min-height: 330px;
+}
+
+.sceneWorld-reveal .worldArtV2 {
+  width: min(430px, 64%);
+  opacity: .96;
+  transform: translateX(76px);
+  filter: drop-shadow(12px 12px 0 rgba(0,0,0,.86));
+}
+
+.sceneWorld-reveal .agentGuideV2 {
+  left: 3%;
+  bottom: 1%;
+  grid-template-columns: 210px 245px;
+}
+
+.sceneWorld-reveal .agentGuideV2 img {
+  width: 215px;
+  height: 215px;
+}
+
+.sceneWorld-reveal .agentGuideV2 .agentSpeech {
+  transform: translateX(-38px);
+}
+
+.useItemGrid {
+  position: relative;
+  z-index: 8;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 960px;
+  margin: 10px auto 0;
+}
+
+.useItemCard {
+  position: relative;
+  min-height: 210px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 96px auto;
+  justify-items: center;
+  align-items: start;
+  gap: 8px;
+  border: 5px solid #111;
+  border-radius: 28px;
+  background:
+    linear-gradient(90deg, rgba(17,17,17,.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(17,17,17,.05) 1px, transparent 1px),
+    #fff;
+  background-size: 16px 16px;
+  box-shadow: 7px 7px 0 #111;
+  padding: 14px 12px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.useItemCard::before {
+  content: "";
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  border: 4px solid #111;
+  border-radius: 24px;
+  background: #fff0b3;
+  box-shadow: 4px 4px 0 #111;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
+  z-index: 0;
+}
+
+.useItemCard::after {
+  content: "";
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  right: -16px;
+  top: -16px;
+  border: 4px solid #111;
+  border-radius: 18px;
+  background: #ffb3c7;
+  transform: rotate(12deg);
+  z-index: 0;
+}
+
+.useItemCard:nth-child(2)::before {
+  background: #d8ffe9;
+}
+
+.useItemCard:nth-child(3)::before {
+  background: #dff7ff;
+}
+
+.useItemCard:nth-child(4)::before {
+  background: #e8ddff;
+}
+
+.useItemCard img {
+  position: relative;
+  z-index: 2;
+  width: 86px !important;
+  height: 86px !important;
+  max-width: 86px !important;
+  max-height: 86px !important;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 0 #111);
+}
+
+.useItemText {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.useItemCard strong {
+  display: block;
+  width: fit-content;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #ffd21a;
+  box-shadow: 3px 3px 0 #111;
+  padding: 5px 8px;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+}
+
+.useItemCard span {
+  display: block;
+  font-size: 13px;
+  line-height: 1.13;
+  font-weight: 850;
+  max-width: 150px;
+}
+
+.useItemCard:hover {
+  transform: translate(5px, 5px) rotate(-1deg);
+  box-shadow: 3px 3px 0 #111;
+  background: #fff8d8;
+}
+
+.useItemCard:hover img {
+  transform: scale(1.08);
+}
+
+@media (max-width: 900px) {
+  .useItemGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 100%;
+  }
+
+  .useItemCard {
+    min-height: 190px;
+  }
+
+  .sceneWorld-reveal .worldArtV2 {
+    transform: none;
+    width: min(360px, 84%);
+  }
+
+  .sceneWorld-reveal .agentGuideV2 {
+    grid-template-columns: 140px 1fr;
+  }
+
+  .sceneWorld-reveal .agentGuideV2 img {
+    width: 145px;
+    height: 145px;
+  }
+
+  .sceneWorld-reveal .agentGuideV2 .agentSpeech {
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .useItemGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .useItemCard {
+    min-height: 104px;
+    grid-template-columns: 86px 1fr;
+    grid-template-rows: auto;
+    text-align: left;
+    justify-items: start;
+    align-items: center;
+    padding: 10px 12px;
+  }
+
+  .useItemCard::before {
+    width: 66px;
+    height: 66px;
+    left: 48px;
+    top: 18px;
+  }
+
+  .useItemCard img {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    max-height: 72px !important;
+  }
+
+  .useItemText {
+    justify-items: start;
+  }
+
+  .useItemCard strong {
+    font-size: 12px;
+  }
+
+  .useItemCard span {
+    font-size: 12px;
+    max-width: none;
+  }
+}
