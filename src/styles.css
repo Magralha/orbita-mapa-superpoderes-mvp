@@ -2918,3 +2918,393 @@ p {
     transform: none;
   }
 }
+
+/* v1.2.6 — mobile optimization */
+
+@media (max-width: 760px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .gamePage {
+    padding: 14px;
+    align-items: start;
+  }
+
+  .gameIntro,
+  .scene,
+  .finalCardScreen {
+    width: 100%;
+  }
+
+  .gameIntro h1,
+  .scene h1 {
+    font-size: clamp(42px, 14vw, 62px);
+    line-height: .86;
+    letter-spacing: -0.085em;
+  }
+
+  .gameIntro p,
+  .scene p {
+    font-size: 16px;
+    line-height: 1.25;
+    max-width: 100%;
+  }
+
+  .gameBadge {
+    font-size: 11px;
+    padding: 7px 10px;
+    margin-bottom: 12px;
+  }
+
+  .scene,
+  .sceneV2 {
+    padding: 16px;
+    border-width: 4px;
+    border-radius: 26px;
+    box-shadow: 7px 7px 0 #111;
+  }
+
+  .sceneTopV2 {
+    margin-bottom: 12px;
+  }
+
+  .compactTrail {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 8px;
+    margin-bottom: 12px;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .compactStep {
+    flex: 0 0 auto;
+    padding: 5px 9px 5px 5px;
+  }
+
+  .compactStep small {
+    font-size: 10px;
+  }
+
+  .boardStage,
+  .boardStageV2,
+  .sceneWorld {
+    min-height: auto;
+    padding: 14px;
+    border-width: 4px;
+    border-radius: 22px;
+  }
+
+  .sceneWorld::before {
+    inset: 10px;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .sceneWorld::after {
+    width: 96px;
+    height: 96px;
+    right: -30px;
+    top: -30px;
+    border-radius: 26px;
+  }
+
+  .worldComposition {
+    min-height: 420px;
+    align-content: center;
+  }
+
+  .worldArtV2 {
+    width: min(360px, 96%);
+    max-height: 310px;
+    transform: none;
+    filter: drop-shadow(7px 7px 0 rgba(0,0,0,.9));
+  }
+
+  .agentGuideV2 {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    grid-template-columns: 150px 1fr;
+    gap: 8px;
+    width: 100%;
+    margin-top: -18px;
+    z-index: 7;
+  }
+
+  .agentGuideV2 img {
+    width: 155px;
+    height: 155px;
+    transform: rotate(-4deg);
+    filter: drop-shadow(6px 6px 0 #111);
+  }
+
+  .agentGuideV2 .agentSpeech {
+    max-width: none;
+    padding: 12px;
+    transform: none;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .agentGuideV2 .agentSpeech strong {
+    font-size: 19px;
+  }
+
+  .agentGuideV2 .agentSpeech p {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .choiceLayerV2 {
+    margin-top: 14px;
+  }
+
+  .choiceLayerV2 .floatingChoices,
+  .floatingChoices,
+  .missionChoices {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .sceneChoice,
+  .choiceLayerV2 .sceneChoice {
+    min-height: auto;
+    padding: 16px;
+    border-width: 4px;
+    border-radius: 20px;
+    font-size: 18px;
+    line-height: 1.05;
+    transform: none !important;
+  }
+
+  .inventoryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .itemCard {
+    padding: 10px;
+    border-width: 3px;
+    border-radius: 18px;
+    font-size: 12px;
+  }
+
+  .itemCard img {
+    width: 68px;
+    height: 68px;
+  }
+
+  .tradeoffGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .tradeoffCard {
+    padding: 18px;
+    font-size: 22px;
+    border-width: 4px;
+    border-radius: 20px;
+  }
+
+  .sceneAction {
+    width: 100%;
+    font-size: 18px;
+    padding: 14px 18px;
+    border-width: 4px;
+  }
+
+  .agentGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .agentCard {
+    min-height: auto;
+    grid-template-columns: 150px 1fr;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    column-gap: 14px;
+    padding: 12px;
+    border-width: 4px;
+    border-radius: 22px;
+    box-shadow: 6px 6px 0 #111;
+  }
+
+  .agentCard::before {
+    inset: 10px auto 10px 10px;
+    width: 142px;
+    height: auto;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .agentCard::after {
+    width: 48px;
+    height: 48px;
+    right: -12px;
+    top: -12px;
+    border-width: 3px;
+    border-radius: 16px;
+  }
+
+  .agentCard img {
+    grid-row: 1 / 4;
+    width: 145px;
+    height: 145px;
+  }
+
+  .agentCard strong {
+    font-size: 28px;
+    margin-top: 0;
+  }
+
+  .agentCard span {
+    font-size: 10px;
+    padding: 4px 7px;
+  }
+
+  .agentCard small {
+    font-size: 12px;
+  }
+
+  .finalHeader h1 {
+    font-size: clamp(44px, 14vw, 64px);
+  }
+
+  .finalHeader p {
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .orbitaPowerCard {
+    width: 100%;
+    min-height: auto;
+    border-width: 4px;
+    border-radius: 28px;
+    box-shadow: 7px 7px 0 #111;
+    padding: 18px;
+  }
+
+  .orbitaPowerCard::before {
+    inset: 10px;
+    border-width: 3px;
+    border-radius: 22px;
+  }
+
+  .orbitaCardHeader {
+    grid-template-columns: 1fr 58px;
+  }
+
+  .orbitaCardHeader h2 {
+    font-size: clamp(34px, 11vw, 48px);
+  }
+
+  .orbitaSeal {
+    width: 58px;
+    height: 58px;
+  }
+
+  .orbitaHeroZone {
+    height: 210px;
+  }
+
+  .heroAura {
+    width: 190px;
+    height: 140px;
+  }
+
+  .orbitaHero {
+    width: 210px;
+    height: 210px;
+  }
+
+  .orbitaBadges {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .orbitaBadgeSlot {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    align-items: center;
+    text-align: left;
+    padding: 7px;
+  }
+
+  .orbitaBadgeSlot img {
+    width: 42px;
+    height: 42px;
+    margin: 0;
+  }
+
+  .orbitaStats {
+    padding: 12px;
+    border-width: 3px;
+  }
+
+  .orbitaStatRow {
+    grid-template-columns: 76px 1fr 20px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .orbitaMission,
+  .orbitaPath {
+    border-width: 3px;
+    border-radius: 18px;
+    padding: 11px;
+  }
+
+  .orbitaMission p,
+  .orbitaPath p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .gamePage {
+    padding: 10px;
+  }
+
+  .gameIntro h1,
+  .scene h1 {
+    font-size: 46px;
+  }
+
+  .agentGuideV2 {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .agentGuideV2 img {
+    width: 125px;
+    height: 125px;
+  }
+
+  .worldComposition {
+    min-height: 390px;
+  }
+
+  .worldArtV2 {
+    max-height: 280px;
+  }
+
+  .inventoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .agentCard {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .agentCard::before {
+    width: 112px;
+  }
+
+  .agentCard img {
+    width: 116px;
+    height: 116px;
+  }
+}
