@@ -246,11 +246,51 @@ function MissionNode({ scores, onChoose }) {
   );
 }
 
+
+function getDominantWorld(path) {
+  const joined = path.join(' ').toLowerCase();
+
+  const worlds = [
+    { key: 'ai', label: 'Portal da IA', terms: ['ia', 'portal', 'verdade', 'laboratório'] },
+    { key: 'forest', label: 'Floresta do Instinto', terms: ['floresta', 'pista'] },
+    { key: 'bridge', label: 'Ponte da Conexão', terms: ['ponte', 'grupo', 'alinhamento'] },
+    { key: 'studio', label: 'Estúdio das Ideias', terms: ['estúdio', 'criativo', 'ideia'] },
+    { key: 'workshop', label: 'Oficina dos Inventores', terms: ['oficina', 'protótipo', 'primeiro passo'] },
+    { key: 'schoolyard', label: 'Pátio da Escola', terms: ['pátio', 'impacto', 'vídeo'] },
+    { key: 'city', label: 'Cidade do Futuro', terms: ['cidade', 'mapa'] },
+    { key: 'boss', label: 'Boss da Apresentação', terms: ['boss', 'palco', 'pressão'] },
+  ];
+
+  const scored = worlds.map((world) => ({
+    ...world,
+    score: world.terms.reduce((total, term) => total + (joined.includes(term) ? 1 : 0), 0),
+  }));
+
+  return scored.sort((a, b) => b.score - a.score)[0]?.label || 'Tabuleiro Órbita';
+}
+
+function getJourneyProfile(topPowers) {
+  const keys = topPowers.map((power) => power.key);
+
+  if (keys.includes('investigar') && keys.includes('proteger')) return 'Investigador de Riscos';
+  if (keys.includes('criar') && keys.includes('construir')) return 'Criador de Protótipos';
+  if (keys.includes('cuidar') && keys.includes('conectar')) return 'Articulador de Pessoas';
+  if (keys.includes('organizar') && keys.includes('comunicar')) return 'Estrategista de Mensagem';
+  if (keys.includes('proteger') && keys.includes('cuidar')) return 'Guardião de Impacto';
+  if (keys.includes('investigar') && keys.includes('organizar')) return 'Mapeador de Problemas';
+  if (keys.includes('comunicar') && keys.includes('criar')) return 'Narrador de Ideias';
+  if (keys.includes('construir') && keys.includes('organizar')) return 'Executor de Soluções';
+
+  return 'Explorador de Caminhos';
+}
+
 function PowerCard({ agent, scores, mission, path, decisiveItem }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
   const characterName = getCharacterName(top);
   const max = Math.max(...ranked.map((item) => item.value), 1);
+  const dominantWorld = getDominantWorld(path);
+  const journeyProfile = getJourneyProfile(top);
 
   return (
     <main className="gamePage">
@@ -273,6 +313,7 @@ function PowerCard({ agent, scores, mission, path, decisiveItem }) {
               <span>Card de Superpoder</span>
               <h2>{characterName}</h2>
               <p>Agente inicial: {agent.name}</p>
+              <em>{journeyProfile}</em>
             </div>
 
             <img className="orbitaSeal" src={assets.ui.raritySeal} alt="" />
@@ -302,6 +343,17 @@ function PowerCard({ agent, scores, mission, path, decisiveItem }) {
               </div>
             </section>
           )}
+
+          <section className="resultMetaGrid">
+            <div>
+              <strong>Mundo dominante</strong>
+              <span>{dominantWorld}</span>
+            </div>
+            <div>
+              <strong>Perfil de jornada</strong>
+              <span>{journeyProfile}</span>
+            </div>
+          </section>
 
           <section className="orbitaStats">
             <h3>Poderes ativados</h3>
