@@ -3802,3 +3802,462 @@ p {
     min-height: auto;
   }
 }
+
+/* v1.7c — long journey progression counter */
+
+.journeyCounter {
+  width: fit-content;
+  margin: -8px 0 14px auto;
+  border: 4px solid #111;
+  border-radius: 999px;
+  background: #ffb3c7;
+  box-shadow: 4px 4px 0 #111;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+@media (max-width: 760px) {
+  .journeyCounter {
+    margin: -4px 0 12px;
+    font-size: 11px;
+    border-width: 3px;
+  }
+}
+
+/* v1.7d — sequential backpack powers */
+
+.backpackUseStage {
+  position: relative;
+  z-index: 9;
+  display: grid;
+  gap: 14px;
+}
+
+.backpackProgress {
+  width: fit-content;
+  margin: 0 auto;
+  border: 4px solid #111;
+  border-radius: 999px;
+  background: #ffd21a;
+  box-shadow: 4px 4px 0 #111;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.activeItemPanel {
+  width: min(560px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  align-items: center;
+  border: 5px solid #111;
+  border-radius: 28px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 7px 7px 0 #111;
+  padding: 14px;
+}
+
+.activeItemPanel img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  filter: drop-shadow(5px 5px 0 #111);
+}
+
+.activeItemPanel strong {
+  display: block;
+  font-size: 26px;
+  line-height: .95;
+  letter-spacing: -0.05em;
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+
+.activeItemPanel p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.useItemGridSequential {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  max-width: 960px;
+}
+
+.useItemActionCard {
+  min-height: 116px;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.useItemActionCard::before,
+.useItemActionCard::after {
+  display: none;
+}
+
+.useItemActionCard span {
+  max-width: none;
+  font-size: 18px;
+  line-height: 1.05;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 760px) {
+  .activeItemPanel {
+    grid-template-columns: 78px 1fr;
+    border-width: 4px;
+    padding: 10px;
+  }
+
+  .activeItemPanel img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .activeItemPanel strong {
+    font-size: 20px;
+  }
+
+  .activeItemPanel p {
+    font-size: 12px;
+  }
+
+  .useItemGridSequential {
+    grid-template-columns: 1fr !important;
+  }
+
+  .useItemActionCard {
+    min-height: auto;
+    padding: 14px;
+  }
+
+  .useItemActionCard span {
+    font-size: 16px;
+  }
+}
+
+/* v1.8 — playable power cards */
+
+.powerChallengeStage {
+  position: relative;
+  z-index: 9;
+  display: grid;
+  gap: 18px;
+}
+
+.powerChallengeIntro {
+  width: min(620px, 100%);
+  margin: 0 auto;
+  border: 5px solid #111;
+  border-radius: 28px;
+  background: #ffd21a;
+  box-shadow: 7px 7px 0 #111;
+  padding: 16px;
+  text-align: center;
+}
+
+.powerChallengeIntro strong {
+  display: block;
+  font-size: 34px;
+  line-height: .9;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+
+.powerChallengeIntro span {
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.playablePowerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.playablePowerCard {
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  border: 5px solid #111;
+  border-radius: 30px;
+  background:
+    linear-gradient(90deg, rgba(17,17,17,.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(17,17,17,.06) 1px, transparent 1px),
+    #fff;
+  background-size: 18px 18px;
+  box-shadow: 8px 8px 0 #111;
+  padding: 14px;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: 92px 1fr;
+  gap: 12px;
+  text-align: center;
+}
+
+.playablePowerCard::before {
+  content: "";
+  position: absolute;
+  inset: 12px 12px auto 12px;
+  height: 94px;
+  border: 4px solid #111;
+  border-radius: 22px;
+  background: var(--power-bg, #dff7ff);
+  box-shadow: 4px 4px 0 #111;
+  z-index: 0;
+}
+
+.playablePowerCard img {
+  position: relative;
+  z-index: 2;
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  justify-self: center;
+  filter: drop-shadow(4px 4px 0 #111);
+}
+
+.playablePowerCard div {
+  position: relative;
+  z-index: 2;
+}
+
+.playablePowerCard small {
+  display: inline-flex;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #111;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.playablePowerCard strong {
+  display: block;
+  font-size: 23px;
+  line-height: .92;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+
+.playablePowerCard p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.12;
+  font-weight: 850;
+}
+
+.playablePowerCard:hover {
+  transform: translate(5px, 5px) rotate(-1deg);
+  box-shadow: 3px 3px 0 #111;
+}
+
+.power-investigar { --power-bg: #dff7ff; }
+.power-criar { --power-bg: #ffe1ef; }
+.power-cuidar { --power-bg: #d8ffe9; }
+.power-construir { --power-bg: #fff0b3; }
+.power-comunicar { --power-bg: #e8ddff; }
+.power-organizar { --power-bg: #ffd21a; }
+.power-proteger { --power-bg: #ffb3c7; }
+.power-conectar { --power-bg: #d8ffe9; }
+
+.playedCardsBox {
+  position: relative;
+  z-index: 1;
+  border: 4px solid #111;
+  border-radius: 22px;
+  background: #e8ddff;
+  box-shadow: 4px 4px 0 #111;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.playedCardsBox strong {
+  display: block;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+
+.playedCardsBox div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.playedCardsBox span {
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 2px 2px 0 #111;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+@media (max-width: 900px) {
+  .playablePowerGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .playablePowerCard {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 520px) {
+  .playablePowerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .playablePowerCard {
+    min-height: 150px;
+    grid-template-columns: 96px 1fr;
+    grid-template-rows: auto;
+    text-align: left;
+    align-items: center;
+  }
+
+  .playablePowerCard::before {
+    width: 82px;
+    height: 82px;
+    inset: 16px auto auto 14px;
+  }
+
+  .playablePowerCard img {
+    width: 78px;
+    height: 78px;
+  }
+}
+
+/* v1.8b — strategic power cards and token pots */
+
+.tokenShelf {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  border: 4px solid #111;
+  border-radius: 24px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 5px 5px 0 #111;
+  padding: 10px;
+}
+
+.tokenPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #111;
+  padding: 5px 9px 5px 6px;
+  font-weight: 950;
+}
+
+.tokenPill img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.tokenPill span {
+  font-size: 14px;
+}
+
+.lockedPowerCard {
+  opacity: .48;
+  filter: grayscale(.7);
+  cursor: not-allowed;
+}
+
+.lockedPowerCard:hover {
+  transform: none;
+  box-shadow: 8px 8px 0 #111;
+}
+
+.characteristicsBox,
+.nextTrailsBox {
+  position: relative;
+  z-index: 1;
+  border: 4px solid #111;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 4px 4px 0 #111;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.characteristicsBox strong,
+.nextTrailsBox strong {
+  display: block;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+
+.characteristicsBox div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.characteristicsBox span {
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #d8ffe9;
+  box-shadow: 2px 2px 0 #111;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.nextTrailsBox article {
+  border: 3px solid #111;
+  border-radius: 18px;
+  background: #fff8d8;
+  padding: 9px;
+  margin-top: 8px;
+}
+
+.nextTrailsBox b {
+  display: block;
+  font-size: 14px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.nextTrailsBox p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: 850;
+}
+
+@media (max-width: 760px) {
+  .tokenShelf {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .tokenPill {
+    flex: 0 0 auto;
+  }
+}

@@ -167,7 +167,7 @@ function getAgentLine(agentId, nodeType, chapter) {
   return lines[agentId] || 'Escolha o caminho que mais chama sua atenção.';
 }
 
-function SceneShell({ agent, node, path, visitedCount, children }) {
+function SceneShell({ agent, node, path, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -180,10 +180,6 @@ function SceneShell({ agent, node, path, visitedCount, children }) {
         </div>
 
         <JourneyTrail path={path} current={node.chapter} />
-
-        <div className="journeyCounter">
-          Etapa {Math.max(1, visitedCount)} de 40+
-        </div>
 
         <div className={`boardStage boardStageV2 sceneWorld sceneWorld-${node.world}`}>
           <div className="worldComposition">
@@ -247,102 +243,20 @@ function InventoryNode({ selected, onToggle, onContinue }) {
 }
 
 
-function UseItemNode({ inventory, usedItems, onChoose }) {
+function UseItemNode({ inventory, onChoose }) {
   const visibleInventory = inventory.length ? inventory : inventoryItemsExpanded.slice(0, 4);
-  const currentItem = visibleInventory.find((item) => !usedItems.some((used) => used.id === item.id)) || visibleInventory[0];
-
-  const itemPrompts = {
-    lanterna: [
-      { label: 'Iluminar o que ninguém quis ver', powers: { investigar: 2, proteger: 1 } },
-      { label: 'Checar se a pista é real', powers: { investigar: 3 } },
-      { label: 'Mostrar a evidência para o grupo', powers: { comunicar: 1, investigar: 2 } },
-    ],
-    escudo: [
-      { label: 'Proteger quem pode ser exposto', powers: { proteger: 3 } },
-      { label: 'Criar um limite seguro para continuar', powers: { proteger: 2, organizar: 1 } },
-      { label: 'Cuidar antes de acelerar', powers: { cuidar: 2, proteger: 1 } },
-    ],
-    microfone: [
-      { label: 'Explicar o problema em voz alta', powers: { comunicar: 3 } },
-      { label: 'Fazer uma pergunta que destrava o grupo', powers: { comunicar: 2, conectar: 1 } },
-      { label: 'Dar voz para quem ficou quieto', powers: { cuidar: 1, comunicar: 2 } },
-    ],
-    mapa: [
-      { label: 'Organizar o caminho em etapas', powers: { organizar: 3 } },
-      { label: 'Separar causa, efeito e prioridade', powers: { organizar: 2, investigar: 1 } },
-      { label: 'Criar uma rota segura até a solução', powers: { organizar: 2, proteger: 1 } },
-    ],
-    ferramenta: [
-      { label: 'Construir um primeiro teste simples', powers: { construir: 3 } },
-      { label: 'Consertar a parte que quebrou', powers: { construir: 2, investigar: 1 } },
-      { label: 'Transformar ideia em ação pequena', powers: { construir: 2, criar: 1 } },
-    ],
-    pincel: [
-      { label: 'Desenhar uma alternativa inesperada', powers: { criar: 3 } },
-      { label: 'Transformar o problema em imagem', powers: { criar: 2, comunicar: 1 } },
-      { label: 'Criar uma versão mais humana da solução', powers: { criar: 2, cuidar: 1 } },
-    ],
-    chave: [
-      { label: 'Abrir um atalho com cuidado', powers: { construir: 1, investigar: 2 } },
-      { label: 'Testar uma passagem que ninguém tentou', powers: { construir: 2, criar: 1 } },
-      { label: 'Descobrir o que estava travando a fase', powers: { investigar: 2, organizar: 1 } },
-    ],
-    corda: [
-      { label: 'Puxar alguém para dentro da missão', powers: { conectar: 3 } },
-      { label: 'Amarrar duas ideias que pareciam distantes', powers: { conectar: 2, criar: 1 } },
-      { label: 'Ajudar o grupo a atravessar junto', powers: { conectar: 2, cuidar: 1 } },
-    ],
-    bussola: [
-      { label: 'Escolher direção antes de correr', powers: { organizar: 2, conectar: 1 } },
-      { label: 'Alinhar o grupo em torno de um norte', powers: { conectar: 2, comunicar: 1 } },
-      { label: 'Voltar para o objetivo principal', powers: { organizar: 3 } },
-    ],
-    relogio: [
-      { label: 'Ganhar tempo antes de reagir', powers: { cuidar: 2, organizar: 1 } },
-      { label: 'Separar urgência de importância', powers: { organizar: 2, proteger: 1 } },
-      { label: 'Reduzir a pressa para decidir melhor', powers: { cuidar: 1, investigar: 2 } },
-    ],
-    lupa: [
-      { label: 'Aproximar o olhar do detalhe crítico', powers: { investigar: 3 } },
-      { label: 'Checar o que parece certo demais', powers: { investigar: 2, proteger: 1 } },
-      { label: 'Encontrar a pergunta escondida', powers: { investigar: 2, comunicar: 1 } },
-    ],
-    coringa: [
-      { label: 'Criar uma virada inesperada', powers: { criar: 2, comunicar: 1 } },
-      { label: 'Conectar duas soluções improváveis', powers: { conectar: 2, criar: 1 } },
-      { label: 'Improvisar sem perder o objetivo', powers: { construir: 1, criar: 1, organizar: 1 } },
-    ],
-  };
-
-  const prompts = itemPrompts[currentItem?.id] || [
-    { label: currentItem?.useText || 'Usar este item para avançar', powers: currentItem?.powers || {} },
-  ];
 
   return (
-    <div className="backpackUseStage">
-      <div className="backpackProgress">
-        Item {Math.min(usedItems.length + 1, visibleInventory.length)} de {visibleInventory.length}
-      </div>
-
-      <div className="activeItemPanel">
-        <img src={assets.items[currentItem.id]} alt="" />
-        <div>
-          <strong>{currentItem.label}</strong>
-          <p>{currentItem.useText}</p>
-        </div>
-      </div>
-
-      <div className="useItemGrid useItemGridSequential">
-        {prompts.map((prompt) => (
-          <button
-            className="useItemCard useItemActionCard"
-            key={prompt.label}
-            onClick={() => onChoose(currentItem, prompt)}
-          >
-            <span>{prompt.label}</span>
-          </button>
-        ))}
-      </div>
+    <div className="useItemGrid">
+      {visibleInventory.map((item) => (
+        <button className="useItemCard" key={item.id} onClick={() => onChoose(item)}>
+          <img src={assets.items[item.id]} alt="" />
+          <div className="useItemText">
+            <strong>{item.label}</strong>
+            <span>{item.useText}</span>
+          </div>
+        </button>
+      ))}
     </div>
   );
 }
@@ -372,125 +286,6 @@ function TradeoffNode({ selected, onToggle, onContinue }) {
     </>
   );
 }
-
-
-const PLAYABLE_POWER_CARDS = {
-  investigar: {
-    key: 'investigar',
-    title: 'Lupa Mental',
-    label: 'Investigar',
-    action: 'Encontrar a evidência que muda a decisão.',
-    powers: { investigar: 3, organizar: 1 },
-  },
-  criar: {
-    key: 'criar',
-    title: 'Virada Criativa',
-    label: 'Criar',
-    action: 'Inventar uma alternativa que ainda não estava na mesa.',
-    powers: { criar: 3, comunicar: 1 },
-  },
-  cuidar: {
-    key: 'cuidar',
-    title: 'Escuta Ativa',
-    label: 'Cuidar',
-    action: 'Perceber quem pode estar ficando para trás.',
-    powers: { cuidar: 3, conectar: 1 },
-  },
-  construir: {
-    key: 'construir',
-    title: 'Protótipo Relâmpago',
-    label: 'Construir',
-    action: 'Transformar ideia em teste prático.',
-    powers: { construir: 3, investigar: 1 },
-  },
-  comunicar: {
-    key: 'comunicar',
-    title: 'Mensagem Nítida',
-    label: 'Comunicar',
-    action: 'Explicar o problema de um jeito que destrava o grupo.',
-    powers: { comunicar: 3, conectar: 1 },
-  },
-  organizar: {
-    key: 'organizar',
-    title: 'Plano em 3 Passos',
-    label: 'Organizar',
-    action: 'Separar caos em prioridade, sequência e ação.',
-    powers: { organizar: 3, proteger: 1 },
-  },
-  proteger: {
-    key: 'proteger',
-    title: 'Zona Segura',
-    label: 'Proteger',
-    action: 'Criar um limite antes que alguém se machuque.',
-    powers: { proteger: 3, cuidar: 1 },
-  },
-  conectar: {
-    key: 'conectar',
-    title: 'Ponte Humana',
-    label: 'Conectar',
-    action: 'Unir pessoas, ideias ou lados que estavam separados.',
-    powers: { conectar: 3, comunicar: 1 },
-  },
-};
-
-function PowerChallengeNode({ scores, powerTokens, usedPowerCards, onUse }) {
-  const ranked = rankScores(scores);
-  const usedKeys = usedPowerCards.map((card) => card.key);
-
-  const cards = ranked
-    .map((power) => PLAYABLE_POWER_CARDS[power.key])
-    .filter(Boolean)
-    .filter((card) => !usedKeys.includes(card.key))
-    .slice(0, 6);
-
-  const fallbackCards = Object.values(PLAYABLE_POWER_CARDS)
-    .filter((card) => !usedKeys.includes(card.key))
-    .slice(0, 4);
-
-  const visibleCards = cards.length >= 3 ? cards : fallbackCards;
-
-  return (
-    <div className="powerChallengeStage">
-      <div className="powerChallengeIntro">
-        <strong>Jogue uma carta</strong>
-        <span>Use 1 pote de poder. Carta usada não volta para a próxima rodada.</span>
-      </div>
-
-      <div className="tokenShelf">
-        {Object.keys(PLAYABLE_POWER_CARDS).map((key) => (
-          <div className="tokenPill" key={key}>
-            <img src={assets.badges[key]} alt="" />
-            <span>{powerTokens[key] || 0}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="playablePowerGrid">
-        {visibleCards.map((card) => {
-          const tokenCount = powerTokens[card.key] || 0;
-          const locked = tokenCount <= 0;
-
-          return (
-            <button
-              className={`playablePowerCard power-${card.key} ${locked ? 'lockedPowerCard' : ''}`}
-              key={card.key}
-              disabled={locked}
-              onClick={() => onUse(card)}
-            >
-              <img src={assets.badges[card.key]} alt="" />
-              <div>
-                <small>{card.label} · {tokenCount} pote{tokenCount === 1 ? '' : 's'}</small>
-                <strong>{card.title}</strong>
-                <p>{locked ? 'Você ainda não juntou pote suficiente deste poder.' : card.action}</p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 
 function MissionNode({ scores, onChoose }) {
   const ranked = rankScores(scores);
@@ -542,60 +337,6 @@ function getDominantWorld(path) {
   return scored.sort((a, b) => b.score - a.score)[0]?.label || 'Tabuleiro Órbita';
 }
 
-
-function getNextTrails(topPowers) {
-  const keys = topPowers.map((power) => power.key);
-  const trails = [];
-
-  if (keys.includes('investigar') || keys.includes('organizar')) {
-    trails.push({
-      title: 'Trilha de Dados e Decisão',
-      text: 'Treinar pesquisa, análise de fontes, lógica, IA, ciência de dados e tomada de decisão baseada em evidências.',
-    });
-  }
-
-  if (keys.includes('criar') || keys.includes('comunicar')) {
-    trails.push({
-      title: 'Trilha Criativa e Narrativa',
-      text: 'Explorar design, comunicação, storytelling, criação com IA, audiovisual, produto digital e apresentação de ideias.',
-    });
-  }
-
-  if (keys.includes('cuidar') || keys.includes('conectar')) {
-    trails.push({
-      title: 'Trilha Humana e Social',
-      text: 'Desenvolver escuta, mediação, psicologia, educação, saúde, liderança de grupo e impacto social.',
-    });
-  }
-
-  if (keys.includes('construir') || keys.includes('proteger')) {
-    trails.push({
-      title: 'Trilha de Construção e Segurança',
-      text: 'Praticar prototipagem, engenharia, tecnologia, cibersegurança, sustentabilidade, testes e gestão de risco.',
-    });
-  }
-
-  return trails.slice(0, 3);
-}
-
-function getPowerCharacteristics(topPowers) {
-  const keys = topPowers.map((power) => power.key);
-
-  const traits = [];
-
-  if (keys.includes('investigar')) traits.push('curiosidade estruturada');
-  if (keys.includes('criar')) traits.push('imaginação aplicada');
-  if (keys.includes('cuidar')) traits.push('atenção ao impacto humano');
-  if (keys.includes('construir')) traits.push('vontade de testar na prática');
-  if (keys.includes('comunicar')) traits.push('clareza para mobilizar pessoas');
-  if (keys.includes('organizar')) traits.push('capacidade de transformar caos em plano');
-  if (keys.includes('proteger')) traits.push('leitura de risco e responsabilidade');
-  if (keys.includes('conectar')) traits.push('força para aproximar pessoas e ideias');
-
-  return traits.slice(0, 4);
-}
-
-
 function getJourneyProfile(topPowers) {
   const keys = topPowers.map((power) => power.key);
 
@@ -611,15 +352,13 @@ function getJourneyProfile(topPowers) {
   return 'Explorador de Caminhos';
 }
 
-function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards, powerTokens }) {
+function PowerCard({ agent, scores, mission, path, decisiveItem }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
   const characterName = getCharacterName(top);
   const max = Math.max(...ranked.map((item) => item.value), 1);
   const dominantWorld = getDominantWorld(path);
   const journeyProfile = getJourneyProfile(top);
-  const nextTrails = getNextTrails(top);
-  const characteristics = getPowerCharacteristics(top);
 
   return (
     <main className="gamePage">
@@ -698,72 +437,20 @@ function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards,
             ))}
           </section>
 
-          {usedPowerCards?.length > 0 && (
-            <section className="playedCardsBox">
-              <strong>Cartas jogadas</strong>
-              <div>
-                {usedPowerCards.map((card, index) => (
-                  <span key={`${card.key}-${index}`}>{card.title}</span>
-                ))}
-              </div>
-            </section>
-          )}
-
           <section className="orbitaMission">
             <strong>Missão especial</strong>
             <p>{mission.label}</p>
           </section>
 
-          <section className="characteristicsBox">
-            <strong>Características que apareceram</strong>
-            <div>
-              {characteristics.map((trait) => (
-                <span key={trait}>{trait}</span>
-              ))}
-            </div>
-          </section>
-
-          <section className="nextTrailsBox">
-            <strong>Como continuar suas trilhas</strong>
-            {nextTrails.map((trail) => (
-              <article key={trail.title}>
-                <b>{trail.title}</b>
-                <p>{trail.text}</p>
-              </article>
-            ))}
+          <section className="orbitaPath">
+            <strong>Caminho percorrido</strong>
+            <p>{path.join(' → ')}</p>
           </section>
         </article>
       </section>
     </main>
   );
 }
-
-function getPowerTokensFromPowers(powers = {}) {
-  return Object.entries(powers).reduce((acc, [key, value]) => {
-    if (!value) return acc;
-    acc[key] = Math.max(1, Math.ceil(value / 2));
-    return acc;
-  }, {});
-}
-
-function mergePowerTokens(current, gained) {
-  const next = { ...current };
-
-  Object.entries(gained || {}).forEach(([key, value]) => {
-    next[key] = (next[key] || 0) + value;
-  });
-
-  return next;
-}
-
-function spendPowerToken(current, key) {
-  return {
-    ...current,
-    [key]: Math.max(0, (current[key] || 0) - 1),
-  };
-}
-
-
 function GameApp() {
   const [agent, setAgent] = useState(null);
   const [nodeId, setNodeId] = useState('world_entry');
@@ -773,127 +460,20 @@ function GameApp() {
   const [tradeoffSelection, setTradeoffSelection] = useState([]);
   const [mission, setMission] = useState(null);
   const [decisiveItem, setDecisiveItem] = useState(null);
-  const [visitedNodeIds, setVisitedNodeIds] = useState([]);
-  const [usedItems, setUsedItems] = useState([]);
-  const [usedPowerCards, setUsedPowerCards] = useState([]);
-  const [powerTokens, setPowerTokens] = useState({});
 
   const node = expandedNodes[nodeId];
-
-  const preInventoryRoute = [
-    'forest_fog',
-    'forest_signal_split',
-    'forest_mirror',
-    'forest_pattern',
-    'forest_courage',
-    'ai_prompt_lab',
-    'ai_source_check',
-    'ai_human_review',
-    'ai_bias_warning',
-    'ai_context_test',
-    'ai_ethics_gate',
-    'bridge_trust_test',
-    'bridge_noise',
-    'bridge_role_split',
-    'bridge_conflict_repair',
-    'arena_pressure_vote',
-    'studio_reference_hunt',
-    'studio_original_twist',
-    'studio_overload',
-    'studio_filter',
-    'studio_feedback_room',
-    'workshop_material_choice',
-    'workshop_stress_test',
-    'workshop_failure',
-    'workshop_iteration',
-    'workshop_launch_choice',
-    'schoolyard_empathy_scan',
-    'schoolyard_micro_action',
-    'schoolyard_pressure',
-    'schoolyard_boundary',
-    'schoolyard_repair_circle',
-    'city_hidden_system',
-    'city_resource_limit',
-    'city_signal',
-    'city_priority',
-    'city_future_scenario',
-    'boss_time_attack',
-    'boss_focus_lock',
-    'boss_doubt',
-    'boss_reframe',
-  ];
-
-  const postItemRoute = [
-    'second_world_choice',
-    'future_lab',
-    'bridge_final',
-    'workshop_final',
-    'boss_pressure',
-    'impact_decision',
-    'team_alignment',
-    'prototype_or_plan',
-  ];
-
-  const finalRoute = [
-    'boss_time_attack',
-    'boss_focus_lock',
-    'boss_pressure',
-    'impact_decision',
-    'team_alignment',
-    'prototype_or_plan',
-    'reveal_memory_wall',
-    'reveal_gate',
-  ];
-
-  function nextUnvisited(route, fallback) {
-    return route.find((id) => id !== nodeId && !visitedNodeIds.includes(id)) || fallback;
-  }
-
-  function resolveProgressionTarget(target) {
-    if (target === 'inventory' && visitedNodeIds.length < 22) {
-      return nextUnvisited(preInventoryRoute, target);
-    }
-
-    if (target === 'tradeoff' && !visitedNodeIds.includes('power_challenge_1')) {
-      return 'power_challenge_1';
-    }
-
-    if (target === 'tradeoff' && visitedNodeIds.length < 30) {
-      return nextUnvisited(postItemRoute, target);
-    }
-
-    if (target === 'mission' && visitedNodeIds.length < 40) {
-      return nextUnvisited(finalRoute, target);
-    }
-
-    if (target === 'mission' && !visitedNodeIds.includes('power_challenge_2')) {
-      return 'power_challenge_2';
-    }
-
-    if (target === 'mission' && !visitedNodeIds.includes('power_challenge_3')) {
-      return 'power_challenge_3';
-    }
-
-    return target;
-  }
 
   function chooseAgent(selectedAgent) {
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
-    const startNode = agentStartNode[selectedAgent.id] || 'forest_entry';
     setPath(['Agente ' + selectedAgent.name]);
-    setVisitedNodeIds([startNode]);
-    setNodeId(startNode);
+    setNodeId(agentStartNode[selectedAgent.id] || 'forest_entry');
   }
 
   function choose(choice) {
-    const resolvedNext = resolveProgressionTarget(choice.next);
-
     setScores((prev) => addScores(prev, choice.powers));
-    setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(choice.powers)));
     setPath((prev) => [...prev, node.chapter]);
-    setVisitedNodeIds((prev) => [...prev, resolvedNext]);
-    setNodeId(resolvedNext);
+    setNodeId(choice.next);
   }
 
   function toggleInventory(item) {
@@ -907,26 +487,19 @@ function GameApp() {
 
   function finishInventory() {
     let nextScores = scores;
-    let gainedTokens = {};
     inventory.forEach((item) => {
       nextScores = addScores(nextScores, item.powers);
-      gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
-    setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Inventário']);
-    setVisitedNodeIds((prev) => [...prev, 'item_solution']);
     setNodeId('item_solution');
   }
 
   function chooseItemUse(item) {
     setScores((prev) => addScores(prev, item.powers));
-    const resolvedNext = resolveProgressionTarget('tradeoff');
-
     setDecisiveItem(item);
     setPath((prev) => [...prev, 'Item: ' + item.label]);
-    setVisitedNodeIds((prev) => [...prev, resolvedNext]);
-    setNodeId(resolvedNext);
+    setNodeId('tradeoff');
   }
 
   function toggleTradeoff(item) {
@@ -940,34 +513,16 @@ function GameApp() {
 
   function finishTradeoff() {
     let nextScores = scores;
-    let gainedTokens = {};
     tradeoffSelection.forEach((item) => {
       nextScores = addScores(nextScores, item.powers);
-      gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
-    setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Trade-off']);
-    setVisitedNodeIds((prev) => [...prev, 'second_world_choice']);
     setNodeId('second_world_choice');
-  }
-
-  function usePowerCard(card) {
-    const next = node.next || 'mission';
-
-    if ((powerTokens[card.key] || 0) <= 0) return;
-
-    setScores((prev) => addScores(prev, card.powers));
-    setPowerTokens((prev) => spendPowerToken(prev, card.key));
-    setUsedPowerCards((prev) => [...prev, card]);
-    setPath((prev) => [...prev, 'Carta: ' + card.title]);
-    setVisitedNodeIds((prev) => [...prev, next]);
-    setNodeId(next);
   }
 
   function chooseMission(selectedMission) {
     setScores((prev) => addScores(prev, selectedMission.powers));
-    setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(selectedMission.powers)));
     setMission(selectedMission);
     setPath((prev) => [...prev, 'Missão Final']);
   }
@@ -975,13 +530,13 @@ function GameApp() {
   if (!agent) return <AgentSelect onSelect={chooseAgent} />;
 
   if (mission) {
-    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} powerTokens={powerTokens} />;
+    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} />;
   }
 
 
 
   return (
-    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length}>
+    <SceneShell agent={agent} node={node} path={path}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
@@ -995,7 +550,6 @@ function GameApp() {
       {node.type === 'use-item' && (
         <UseItemNode
           inventory={inventory}
-          usedItems={usedItems}
           onChoose={chooseItemUse}
         />
       )}
@@ -1005,15 +559,6 @@ function GameApp() {
           selected={tradeoffSelection}
           onToggle={toggleTradeoff}
           onContinue={finishTradeoff}
-        />
-      )}
-
-      {node.type === 'power-challenge' && (
-        <PowerChallengeNode
-          scores={scores}
-          powerTokens={powerTokens}
-          usedPowerCards={usedPowerCards}
-          onUse={usePowerCard}
         />
       )}
 
