@@ -167,78 +167,7 @@ function getAgentLine(agentId, nodeType, chapter) {
   return lines[agentId] || 'Escolha o caminho que mais chama sua atenção.';
 }
 
-
-function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards = [] }) {
-  const powerLabels = {
-    investigar: 'Investigar',
-    criar: 'Criar',
-    cuidar: 'Cuidar',
-    construir: 'Construir',
-    comunicar: 'Comunicar',
-    organizar: 'Organizar',
-    proteger: 'Proteger',
-    conectar: 'Conectar',
-  };
-
-  const tokenEntries = Object.entries(powerTokens)
-    .filter(([, value]) => value > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  const maxToken = Math.max(...tokenEntries.map(([, value]) => value), 1);
-
-  return (
-    <aside className={`agentLiveCard agentLiveCard-${agent.id}`}>
-      <div className="agentLiveTop">
-        <div className="agentLiveAvatarBox">
-          <img className="agentLiveAvatar" src={assets.agents[agent.id]} alt="" />
-        </div>
-
-        <div className="agentLiveName">
-          <strong>{agent.name}</strong>
-          <span>Agente Órbita</span>
-        </div>
-      </div>
-
-      <div className="agentLiveSection agentLivePowerSection">
-        <b>Potes de poder</b>
-        <div className="agentLivePowerBars">
-          {tokenEntries.length ? tokenEntries.map(([key, value]) => (
-            <div className="agentPowerBar" key={key}>
-              <img src={assets.badges[key]} alt="" />
-              <span>{powerLabels[key] || key}</span>
-              <i style={{ width: `${Math.max(18, (value / maxToken) * 100)}%` }} />
-              <em>{value}</em>
-            </div>
-          )) : (
-            <small>Você ainda vai ganhar potes nas escolhas.</small>
-          )}
-        </div>
-      </div>
-
-      <div className="agentLiveSection">
-        <b>Mochila</b>
-        <div className="agentLiveItems">
-          {inventory.length ? inventory.slice(0, 4).map((item) => (
-            <img key={item.id} src={assets.items[item.id]} alt={item.label} title={item.label} />
-          )) : <small>vazia por enquanto</small>}
-        </div>
-      </div>
-
-      <div className="agentLiveSection">
-        <b>Cartas jogadas</b>
-        <div className="agentLiveCards">
-          {usedPowerCards.length ? usedPowerCards.slice(0, 4).map((card, index) => (
-            <span key={`${card.key}-${index}`}>{card.label}</span>
-          )) : <small>nenhuma jogada</small>}
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-
-function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, usedPowerCards, children }) {
+function SceneShell({ agent, node, path, visitedCount, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -260,14 +189,8 @@ function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, u
           <div className="worldComposition">
             <img className="worldArt worldArtV2" src={assets.worlds[node.world]} alt="" />
 
-            <div className="agentGuide agentGuideV2 agentGuideWithCard">
-              <AgentLiveCard
-                agent={agent}
-                inventory={inventory}
-                powerTokens={powerTokens}
-                usedPowerCards={usedPowerCards}
-              />
-
+            <div className="agentGuide agentGuideV2">
+              <img src={assets.agents[agent.id]} alt="" />
               <div className="agentSpeech">
                 <strong>{agent.name}</strong>
                 <p>{getAgentLine(agent.id, node.type, node.chapter)}</p>
@@ -276,12 +199,6 @@ function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, u
           </div>
 
           <div className="choiceLayer choiceLayerV2">
-            <div className="sceneQuestionCard">
-              <div className="gameBadge">{node.chapter}</div>
-              <h1>{node.title}</h1>
-              <p>{node.text}</p>
-            </div>
-
             {children}
           </div>
         </div>
@@ -516,59 +433,29 @@ const PLAYABLE_POWER_CARDS = {
   },
 };
 
-function PowerChallengeNode({ scores, powerTokens, usedPowerCards, onUse }) {
+function PowerChallengeNode({ scores, onUse }) {
   const ranked = rankScores(scores);
-  const usedKeys = usedPowerCards.map((card) => card.key);
-
-  const cards = ranked
-    .map((power) => PLAYABLE_POWER_CARDS[power.key])
-    .filter(Boolean)
-    .filter((card) => !usedKeys.includes(card.key))
-    .slice(0, 6);
-
-  const fallbackCards = Object.values(PLAYABLE_POWER_CARDS)
-    .filter((card) => !usedKeys.includes(card.key))
-    .slice(0, 4);
-
-  const visibleCards = cards.length >= 3 ? cards : fallbackCards;
+  const topKeys = ranked.slice(0, 4).map((power) => power.key);
+  const cards = topKeys.map((key) => PLAYABLE_POWER_CARDS[key]).filter(Boolean);
 
   return (
     <div className="powerChallengeStage">
       <div className="powerChallengeIntro">
         <strong>Jogue uma carta</strong>
-        <span>Use 1 pote de poder. Carta usada não volta para a próxima rodada.</span>
-      </div>
-
-      <div className="tokenShelf">
-        {Object.keys(PLAYABLE_POWER_CARDS).map((key) => (
-          <div className="tokenPill" key={key}>
-            <img src={assets.badges[key]} alt="" />
-            <span>{powerTokens[key] || 0}</span>
-          </div>
-        ))}
+        <span>Use um poder ativado na jornada para resolver este obstáculo.</span>
       </div>
 
       <div className="playablePowerGrid">
-        {visibleCards.map((card) => {
-          const tokenCount = powerTokens[card.key] || 0;
-          const locked = tokenCount <= 0;
-
-          return (
-            <button
-              className={`playablePowerCard power-${card.key} ${locked ? 'lockedPowerCard' : ''}`}
-              key={card.key}
-              disabled={locked}
-              onClick={() => onUse(card)}
-            >
-              <img src={assets.badges[card.key]} alt="" />
-              <div>
-                <small>{card.label} · {tokenCount} pote{tokenCount === 1 ? '' : 's'}</small>
-                <strong>{card.title}</strong>
-                <p>{locked ? 'Você ainda não juntou pote suficiente deste poder.' : card.action}</p>
-              </div>
-            </button>
-          );
-        })}
+        {cards.map((card) => (
+          <button className={`playablePowerCard power-${card.key}`} key={card.key} onClick={() => onUse(card)}>
+            <img src={assets.badges[card.key]} alt="" />
+            <div>
+              <small>{card.label}</small>
+              <strong>{card.title}</strong>
+              <p>{card.action}</p>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -625,60 +512,6 @@ function getDominantWorld(path) {
   return scored.sort((a, b) => b.score - a.score)[0]?.label || 'Tabuleiro Órbita';
 }
 
-
-function getNextTrails(topPowers) {
-  const keys = topPowers.map((power) => power.key);
-  const trails = [];
-
-  if (keys.includes('investigar') || keys.includes('organizar')) {
-    trails.push({
-      title: 'Você percebe pistas antes dos outros',
-      text: 'Seu próximo treino é aprender a fazer perguntas melhores, checar fontes, organizar ideias e usar IA sem cair em resposta pronta.',
-    });
-  }
-
-  if (keys.includes('criar') || keys.includes('comunicar')) {
-    trails.push({
-      title: 'Você transforma ideia em coisa que dá para mostrar',
-      text: 'Seu próximo treino é criar vídeos, mapas, protótipos, apresentações e histórias que fazem outras pessoas entenderem sua ideia.',
-    });
-  }
-
-  if (keys.includes('cuidar') || keys.includes('conectar')) {
-    trails.push({
-      title: 'Você repara no clima da turma',
-      text: 'Seu próximo treino é liderar sem mandar, escutar quem fala pouco e ajudar grupos a trabalharem melhor juntos.',
-    });
-  }
-
-  if (keys.includes('construir') || keys.includes('proteger')) {
-    trails.push({
-      title: 'Você gosta de testar sem deixar tudo virar bagunça',
-      text: 'Seu próximo treino é montar soluções pequenas, testar na prática, prever riscos e melhorar antes de mostrar para todo mundo.',
-    });
-  }
-
-  return trails.slice(0, 3);
-}
-
-function getPowerCharacteristics(topPowers) {
-  const keys = topPowers.map((power) => power.key);
-
-  const traits = [];
-
-  if (keys.includes('investigar')) traits.push('curiosidade estruturada');
-  if (keys.includes('criar')) traits.push('imaginação aplicada');
-  if (keys.includes('cuidar')) traits.push('atenção ao impacto humano');
-  if (keys.includes('construir')) traits.push('vontade de testar na prática');
-  if (keys.includes('comunicar')) traits.push('clareza para mobilizar pessoas');
-  if (keys.includes('organizar')) traits.push('capacidade de transformar caos em plano');
-  if (keys.includes('proteger')) traits.push('leitura de risco e responsabilidade');
-  if (keys.includes('conectar')) traits.push('força para aproximar pessoas e ideias');
-
-  return traits.slice(0, 4);
-}
-
-
 function getJourneyProfile(topPowers) {
   const keys = topPowers.map((power) => power.key);
 
@@ -694,15 +527,13 @@ function getJourneyProfile(topPowers) {
   return 'Explorador de Caminhos';
 }
 
-function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards, powerTokens }) {
+function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
   const characterName = getCharacterName(top);
   const max = Math.max(...ranked.map((item) => item.value), 1);
   const dominantWorld = getDominantWorld(path);
   const journeyProfile = getJourneyProfile(top);
-  const nextTrails = getNextTrails(top);
-  const characteristics = getPowerCharacteristics(top);
 
   return (
     <main className="gamePage">
@@ -797,56 +628,15 @@ function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards,
             <p>{mission.label}</p>
           </section>
 
-          <section className="characteristicsBox">
-            <strong>Características que apareceram</strong>
-            <div>
-              {characteristics.map((trait) => (
-                <span key={trait}>{trait}</span>
-              ))}
-            </div>
-          </section>
-
-          <section className="nextTrailsBox">
-            <strong>Como continuar suas trilhas</strong>
-            {nextTrails.map((trail) => (
-              <article key={trail.title}>
-                <b>{trail.title}</b>
-                <p>{trail.text}</p>
-              </article>
-            ))}
+          <section className="orbitaPath">
+            <strong>Caminho percorrido</strong>
+            <p>{path.join(' → ')}</p>
           </section>
         </article>
       </section>
     </main>
   );
 }
-
-function getPowerTokensFromPowers(powers = {}) {
-  return Object.entries(powers).reduce((acc, [key, value]) => {
-    if (!value) return acc;
-    acc[key] = Math.max(1, Math.ceil(value / 2));
-    return acc;
-  }, {});
-}
-
-function mergePowerTokens(current, gained) {
-  const next = { ...current };
-
-  Object.entries(gained || {}).forEach(([key, value]) => {
-    next[key] = (next[key] || 0) + value;
-  });
-
-  return next;
-}
-
-function spendPowerToken(current, key) {
-  return {
-    ...current,
-    [key]: Math.max(0, (current[key] || 0) - 1),
-  };
-}
-
-
 function GameApp() {
   const [agent, setAgent] = useState(null);
   const [nodeId, setNodeId] = useState('world_entry');
@@ -859,7 +649,6 @@ function GameApp() {
   const [visitedNodeIds, setVisitedNodeIds] = useState([]);
   const [usedItems, setUsedItems] = useState([]);
   const [usedPowerCards, setUsedPowerCards] = useState([]);
-  const [powerTokens, setPowerTokens] = useState({});
 
   const node = expandedNodes[nodeId];
 
@@ -973,7 +762,6 @@ function GameApp() {
     const resolvedNext = resolveProgressionTarget(choice.next);
 
     setScores((prev) => addScores(prev, choice.powers));
-    setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(choice.powers)));
     setPath((prev) => [...prev, node.chapter]);
     setVisitedNodeIds((prev) => [...prev, resolvedNext]);
     setNodeId(resolvedNext);
@@ -990,13 +778,10 @@ function GameApp() {
 
   function finishInventory() {
     let nextScores = scores;
-    let gainedTokens = {};
     inventory.forEach((item) => {
       nextScores = addScores(nextScores, item.powers);
-      gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
-    setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Inventário']);
     setVisitedNodeIds((prev) => [...prev, 'item_solution']);
     setNodeId('item_solution');
@@ -1023,13 +808,10 @@ function GameApp() {
 
   function finishTradeoff() {
     let nextScores = scores;
-    let gainedTokens = {};
     tradeoffSelection.forEach((item) => {
       nextScores = addScores(nextScores, item.powers);
-      gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
-    setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Trade-off']);
     setVisitedNodeIds((prev) => [...prev, 'second_world_choice']);
     setNodeId('second_world_choice');
@@ -1038,10 +820,7 @@ function GameApp() {
   function usePowerCard(card) {
     const next = node.next || 'mission';
 
-    if ((powerTokens[card.key] || 0) <= 0) return;
-
     setScores((prev) => addScores(prev, card.powers));
-    setPowerTokens((prev) => spendPowerToken(prev, card.key));
     setUsedPowerCards((prev) => [...prev, card]);
     setPath((prev) => [...prev, 'Carta: ' + card.title]);
     setVisitedNodeIds((prev) => [...prev, next]);
@@ -1050,7 +829,6 @@ function GameApp() {
 
   function chooseMission(selectedMission) {
     setScores((prev) => addScores(prev, selectedMission.powers));
-    setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(selectedMission.powers)));
     setMission(selectedMission);
     setPath((prev) => [...prev, 'Missão Final']);
   }
@@ -1058,13 +836,13 @@ function GameApp() {
   if (!agent) return <AgentSelect onSelect={chooseAgent} />;
 
   if (mission) {
-    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} powerTokens={powerTokens} />;
+    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} />;
   }
 
 
 
   return (
-    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards}>
+    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
@@ -1094,8 +872,6 @@ function GameApp() {
       {node.type === 'power-challenge' && (
         <PowerChallengeNode
           scores={scores}
-          powerTokens={powerTokens}
-          usedPowerCards={usedPowerCards}
           onUse={usePowerCard}
         />
       )}
