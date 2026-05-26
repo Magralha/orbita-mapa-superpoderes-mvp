@@ -85,6 +85,38 @@ function getAgentLine(agentId, nodeType, chapter) {
     return 'Olhe para o caminho. O padrão começa a aparecer.';
   }
 
+  if (chapter.includes('Espelho') || chapter.includes('Padrão')) {
+    return 'Quando uma pista se repete, ela deixa de ser detalhe e vira sinal.';
+  }
+
+  if (chapter.includes('Viés') || chapter.includes('Contexto')) {
+    return 'A tecnologia responde. Você decide se a resposta faz sentido no mundo real.';
+  }
+
+  if (chapter.includes('Ruído') || chapter.includes('Papéis')) {
+    return 'Grupo sem escuta vira barulho. Grupo com papel vira caminho.';
+  }
+
+  if (chapter.includes('Excesso') || chapter.includes('Filtro')) {
+    return 'Criar também é escolher o que deixar de fora.';
+  }
+
+  if (chapter.includes('Falha') || chapter.includes('Iteração')) {
+    return 'Erro bom é aquele que mostra o próximo ajuste.';
+  }
+
+  if (chapter.includes('Pressão') || chapter.includes('Limite')) {
+    return 'Quando todo mundo acelera, perceber limites vira superpoder.';
+  }
+
+  if (chapter.includes('Sinal') || chapter.includes('Prioridade')) {
+    return 'Dados só ajudam quando você sabe qual pergunta está tentando responder.';
+  }
+
+  if (chapter.includes('Dúvida') || chapter.includes('Reenquadramento')) {
+    return 'Não é sobre parecer pronto. É sobre conseguir ajustar o caminho.';
+  }
+
   const lines = {
     luma: 'Olhe com calma. Toda fase tem uma pista escondida.',
     nexo: 'Veja onde existem pontes possíveis entre as pessoas.',
