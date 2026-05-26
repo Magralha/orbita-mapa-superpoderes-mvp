@@ -169,27 +169,15 @@ function getAgentLine(agentId, nodeType, chapter) {
 
 
 function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards = [] }) {
-  const powerLabels = {
-    investigar: 'Investigar',
-    criar: 'Criar',
-    cuidar: 'Cuidar',
-    construir: 'Construir',
-    comunicar: 'Comunicar',
-    organizar: 'Organizar',
-    proteger: 'Proteger',
-    conectar: 'Conectar',
-  };
-
   const tokenEntries = Object.entries(powerTokens)
     .filter(([, value]) => value > 0)
-    .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
-  const maxToken = Math.max(...tokenEntries.map(([, value]) => value), 1);
-
   return (
-    <aside className={`agentLiveCard agentLiveCard-${agent.id}`}>
-      <div className="agentLiveTop">
+    <aside className="agentLiveCard">
+      <img className="agentLiveFrame" src={assets.cards?.mission || './board/card-frame-mission.png'} alt="" />
+
+      <div className="agentLiveContent">
         <div className="agentLiveAvatarBox">
           <img className="agentLiveAvatar" src={assets.agents[agent.id]} alt="" />
         </div>
@@ -198,39 +186,35 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
           <strong>{agent.name}</strong>
           <span>Agente Órbita</span>
         </div>
-      </div>
 
-      <div className="agentLiveSection agentLivePowerSection">
-        <b>Potes de poder</b>
-        <div className="agentLivePowerBars">
-          {tokenEntries.length ? tokenEntries.map(([key, value]) => (
-            <div className="agentPowerBar" key={key}>
-              <img src={assets.badges[key]} alt="" />
-              <span>{powerLabels[key] || key}</span>
-              <i style={{ width: `${Math.max(18, (value / maxToken) * 100)}%` }} />
-              <em>{value}</em>
-            </div>
-          )) : (
-            <small>Você ainda vai ganhar potes nas escolhas.</small>
-          )}
+        <div className="agentLiveSection">
+          <b>Potes</b>
+          <div className="agentLiveTokens">
+            {tokenEntries.length ? tokenEntries.map(([key, value]) => (
+              <span key={key}>
+                <img src={assets.badges[key]} alt="" />
+                {value}
+              </span>
+            )) : <small>ganhe poderes nas escolhas</small>}
+          </div>
         </div>
-      </div>
 
-      <div className="agentLiveSection">
-        <b>Mochila</b>
-        <div className="agentLiveItems">
-          {inventory.length ? inventory.slice(0, 4).map((item) => (
-            <img key={item.id} src={assets.items[item.id]} alt={item.label} title={item.label} />
-          )) : <small>vazia por enquanto</small>}
+        <div className="agentLiveSection">
+          <b>Mochila</b>
+          <div className="agentLiveItems">
+            {inventory.length ? inventory.slice(0, 4).map((item) => (
+              <img key={item.id} src={assets.items[item.id]} alt={item.label} />
+            )) : <small>vazia por enquanto</small>}
+          </div>
         </div>
-      </div>
 
-      <div className="agentLiveSection">
-        <b>Cartas jogadas</b>
-        <div className="agentLiveCards">
-          {usedPowerCards.length ? usedPowerCards.slice(0, 4).map((card, index) => (
-            <span key={`${card.key}-${index}`}>{card.label}</span>
-          )) : <small>nenhuma jogada</small>}
+        <div className="agentLiveSection">
+          <b>Cartas</b>
+          <div className="agentLiveCards">
+            {usedPowerCards.length ? usedPowerCards.slice(0, 3).map((card, index) => (
+              <span key={`${card.key}-${index}`}>{card.label}</span>
+            )) : <small>nenhuma jogada</small>}
+          </div>
         </div>
       </div>
     </aside>

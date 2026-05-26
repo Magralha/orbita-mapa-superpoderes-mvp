@@ -167,78 +167,7 @@ function getAgentLine(agentId, nodeType, chapter) {
   return lines[agentId] || 'Escolha o caminho que mais chama sua atenção.';
 }
 
-
-function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards = [] }) {
-  const powerLabels = {
-    investigar: 'Investigar',
-    criar: 'Criar',
-    cuidar: 'Cuidar',
-    construir: 'Construir',
-    comunicar: 'Comunicar',
-    organizar: 'Organizar',
-    proteger: 'Proteger',
-    conectar: 'Conectar',
-  };
-
-  const tokenEntries = Object.entries(powerTokens)
-    .filter(([, value]) => value > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  const maxToken = Math.max(...tokenEntries.map(([, value]) => value), 1);
-
-  return (
-    <aside className={`agentLiveCard agentLiveCard-${agent.id}`}>
-      <div className="agentLiveTop">
-        <div className="agentLiveAvatarBox">
-          <img className="agentLiveAvatar" src={assets.agents[agent.id]} alt="" />
-        </div>
-
-        <div className="agentLiveName">
-          <strong>{agent.name}</strong>
-          <span>Agente Órbita</span>
-        </div>
-      </div>
-
-      <div className="agentLiveSection agentLivePowerSection">
-        <b>Potes de poder</b>
-        <div className="agentLivePowerBars">
-          {tokenEntries.length ? tokenEntries.map(([key, value]) => (
-            <div className="agentPowerBar" key={key}>
-              <img src={assets.badges[key]} alt="" />
-              <span>{powerLabels[key] || key}</span>
-              <i style={{ width: `${Math.max(18, (value / maxToken) * 100)}%` }} />
-              <em>{value}</em>
-            </div>
-          )) : (
-            <small>Você ainda vai ganhar potes nas escolhas.</small>
-          )}
-        </div>
-      </div>
-
-      <div className="agentLiveSection">
-        <b>Mochila</b>
-        <div className="agentLiveItems">
-          {inventory.length ? inventory.slice(0, 4).map((item) => (
-            <img key={item.id} src={assets.items[item.id]} alt={item.label} title={item.label} />
-          )) : <small>vazia por enquanto</small>}
-        </div>
-      </div>
-
-      <div className="agentLiveSection">
-        <b>Cartas jogadas</b>
-        <div className="agentLiveCards">
-          {usedPowerCards.length ? usedPowerCards.slice(0, 4).map((card, index) => (
-            <span key={`${card.key}-${index}`}>{card.label}</span>
-          )) : <small>nenhuma jogada</small>}
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-
-function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, usedPowerCards, children }) {
+function SceneShell({ agent, node, path, visitedCount, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -260,14 +189,8 @@ function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, u
           <div className="worldComposition">
             <img className="worldArt worldArtV2" src={assets.worlds[node.world]} alt="" />
 
-            <div className="agentGuide agentGuideV2 agentGuideWithCard">
-              <AgentLiveCard
-                agent={agent}
-                inventory={inventory}
-                powerTokens={powerTokens}
-                usedPowerCards={usedPowerCards}
-              />
-
+            <div className="agentGuide agentGuideV2">
+              <img src={assets.agents[agent.id]} alt="" />
               <div className="agentSpeech">
                 <strong>{agent.name}</strong>
                 <p>{getAgentLine(agent.id, node.type, node.chapter)}</p>
@@ -1064,7 +987,7 @@ function GameApp() {
 
 
   return (
-    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards}>
+    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
