@@ -289,7 +289,7 @@ export const expandedNodes = {
         powers: { investigar: 2, cuidar: 1 },
       },
       {
-        label: 'Transformo a situação em conversa clara',
+        label: 'Conduzo o grupo para um acordo respeitoso',
         next: 'stage_intro',
         powers: { comunicar: 2, conectar: 1 },
       },
