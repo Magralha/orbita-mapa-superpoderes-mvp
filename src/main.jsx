@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { assets } from './game/data/assets';
 import { agents } from './game/data/gameData';
@@ -6,7 +6,7 @@ import { agentStartNode, expandedNodes, inventoryItemsExpanded, missionsExpanded
 import { addScores, emptyScores, getCharacterName, rankScores } from './game/logic/scoring';
 import './styles.css';
 
-function AgentSelect({ onSelect }) {
+function AgentSelect({ onSelect, onContinue, hasSave }) {
   return (
     <main className="gamePage">
       <section className="gameIntro">
@@ -16,6 +16,12 @@ function AgentSelect({ onSelect }) {
           Você não está escolhendo quem você é para sempre. Está escolhendo quem vai
           te acompanhar no tabuleiro. Cada agente enxerga o mundo de um jeito.
         </p>
+
+        {hasSave && (
+          <button className="sceneAction continueSaveButton" onClick={onContinue}>
+            Continuar de onde parei
+          </button>
+        )}
 
         <div className="agentGrid">
           {agents.map((agent) => (
@@ -238,7 +244,7 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
 }
 
 
-function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, usedPowerCards, children }) {
+function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, onSave, onBack, canGoBack, justSaved, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -250,10 +256,11 @@ function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, u
           </div>
         </div>
 
-        <JourneyTrail path={path} current={node.chapter} />
-
-        <div className="journeyCounter">
-          Etapa {Math.max(1, visitedCount)} de 40+
+        <div className="sceneActionBar">
+          <button className="sceneAction sceneActionGhost" disabled={!canGoBack} onClick={onBack}>Voltar</button>
+          <button className="sceneAction" onClick={onSave}>Salvar</button>
+          {justSaved && <span className="saveStatus">Salvo</span>}
+          <div className="sceneStageCounter">Etapa {Math.max(1, visitedCount)} de 40+</div>
         </div>
 
         <div className={`boardStage boardStageV2 sceneWorld sceneWorld-${node.world}`}>
@@ -291,9 +298,11 @@ function SceneShell({ agent, node, path, visitedCount, inventory, powerTokens, u
 }
 
 function ChoiceNode({ node, onChoose }) {
+  const uniqueChoices = Array.from(new Map((node.choices || []).map((choice) => [choice.label, choice])).values());
+
   return (
     <div className="floatingChoices">
-      {node.choices.map((choice) => (
+      {uniqueChoices.map((choice) => (
         <button className="sceneChoice" key={choice.label} onClick={() => onChoose(choice)}>
           <span>{choice.label}</span>
         </button>
@@ -847,6 +856,37 @@ function spendPowerToken(current, key) {
 }
 
 
+
+const SAVE_KEY = 'orbita-superpoderes-save';
+
+function getSavedSnapshot() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+
+function buildSnapshot(state) {
+  return {
+    agent: state.agent,
+    nodeId: state.nodeId,
+    scores: state.scores,
+    path: state.path,
+    inventory: state.inventory,
+    tradeoffSelection: state.tradeoffSelection,
+    mission: state.mission,
+    decisiveItem: state.decisiveItem,
+    visitedNodeIds: state.visitedNodeIds,
+    usedItems: state.usedItems,
+    usedPowerCards: state.usedPowerCards,
+    powerTokens: state.powerTokens,
+  };
+}
+
 function GameApp() {
   const [agent, setAgent] = useState(null);
   const [nodeId, setNodeId] = useState('world_entry');
@@ -862,6 +902,9 @@ function GameApp() {
   const [powerTokens, setPowerTokens] = useState({});
 
   const node = expandedNodes[nodeId];
+  const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
+  const [justSaved, setJustSaved] = useState(false);
+  const [historyStack, setHistoryStack] = useState([]);
 
   const preInventoryRoute = [
     'forest_fog',
@@ -917,6 +960,13 @@ function GameApp() {
     'prototype_or_plan',
   ];
 
+  useEffect(() => {
+    if (!justSaved) return;
+
+    const timer = setTimeout(() => setJustSaved(false), 1500);
+    return () => clearTimeout(timer);
+  }, [justSaved]);
+
   const finalRoute = [
     'boss_time_attack',
     'boss_focus_lock',
@@ -927,6 +977,42 @@ function GameApp() {
     'reveal_memory_wall',
     'reveal_gate',
   ];
+
+  function applySnapshot(snapshot) {
+    setAgent(snapshot.agent || null);
+    setNodeId(snapshot.nodeId || 'world_entry');
+    setScores(snapshot.scores || emptyScores());
+    setPath(Array.isArray(snapshot.path) ? snapshot.path : ['Entrada']);
+    setInventory(Array.isArray(snapshot.inventory) ? snapshot.inventory : []);
+    setTradeoffSelection(Array.isArray(snapshot.tradeoffSelection) ? snapshot.tradeoffSelection : []);
+    setMission(snapshot.mission || null);
+    setDecisiveItem(snapshot.decisiveItem || null);
+    setVisitedNodeIds(Array.isArray(snapshot.visitedNodeIds) ? snapshot.visitedNodeIds : []);
+    setUsedItems(Array.isArray(snapshot.usedItems) ? snapshot.usedItems : []);
+    setUsedPowerCards(Array.isArray(snapshot.usedPowerCards) ? snapshot.usedPowerCards : []);
+    setPowerTokens(snapshot.powerTokens || {});
+  }
+
+  function pushHistory() {
+    if (!agent) return;
+
+    const snapshot = buildSnapshot({
+      agent,
+      nodeId,
+      scores,
+      path,
+      inventory,
+      tradeoffSelection,
+      mission,
+      decisiveItem,
+      visitedNodeIds,
+      usedItems,
+      usedPowerCards,
+      powerTokens,
+    });
+
+    setHistoryStack((prev) => [...prev, snapshot]);
+  }
 
   function nextUnvisited(route, fallback) {
     return route.find((id) => id !== nodeId && !visitedNodeIds.includes(id)) || fallback;
@@ -960,6 +1046,38 @@ function GameApp() {
     return target;
   }
 
+
+  function saveGame() {
+    if (!agent) return;
+
+    const snapshot = buildSnapshot({
+      agent,
+      nodeId,
+      scores,
+      path,
+      inventory,
+      tradeoffSelection,
+      mission,
+      decisiveItem,
+      visitedNodeIds,
+      usedItems,
+      usedPowerCards,
+      powerTokens,
+    });
+
+    localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+    setHasSave(true);
+    setJustSaved(true);
+  }
+
+  function continueFromSave() {
+    const snapshot = getSavedSnapshot();
+    if (!snapshot) return;
+
+    applySnapshot(snapshot);
+    setHistoryStack([]);
+  }
+
   function chooseAgent(selectedAgent) {
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
@@ -967,9 +1085,22 @@ function GameApp() {
     setPath(['Agente ' + selectedAgent.name]);
     setVisitedNodeIds([startNode]);
     setNodeId(startNode);
+    setHistoryStack([]);
+  }
+
+
+  function goBack() {
+    setHistoryStack((prev) => {
+      if (!prev.length) return prev;
+
+      const previousSnapshot = prev[prev.length - 1];
+      applySnapshot(previousSnapshot);
+      return prev.slice(0, -1);
+    });
   }
 
   function choose(choice) {
+    pushHistory();
     const resolvedNext = resolveProgressionTarget(choice.next);
 
     setScores((prev) => addScores(prev, choice.powers));
@@ -980,6 +1111,7 @@ function GameApp() {
   }
 
   function toggleInventory(item) {
+    pushHistory();
     setInventory((prev) => {
       const exists = prev.some((selected) => selected.id === item.id);
       if (exists) return prev.filter((selected) => selected.id !== item.id);
@@ -989,6 +1121,7 @@ function GameApp() {
   }
 
   function finishInventory() {
+    pushHistory();
     let nextScores = scores;
     let gainedTokens = {};
     inventory.forEach((item) => {
@@ -1002,17 +1135,35 @@ function GameApp() {
     setNodeId('item_solution');
   }
 
-  function chooseItemUse(item) {
-    setScores((prev) => addScores(prev, item.powers));
-    const resolvedNext = resolveProgressionTarget('tradeoff');
+  function chooseItemUse(item, prompt) {
+    pushHistory();
+    const appliedPowers = prompt?.powers || item.powers || {};
+
+    setScores((prev) => addScores(prev, appliedPowers));
+    setUsedItems((prev) => {
+      if (prev.some((used) => used.id === item.id)) return prev;
+      return [...prev, item];
+    });
 
     setDecisiveItem(item);
     setPath((prev) => [...prev, 'Item: ' + item.label]);
-    setVisitedNodeIds((prev) => [...prev, resolvedNext]);
-    setNodeId(resolvedNext);
+
+    const totalItems = inventory.length ? inventory.length : inventoryItemsExpanded.slice(0, 4).length;
+    const alreadyUsed = usedItems.some((used) => used.id === item.id);
+    const usedCountAfterChoice = usedItems.length + (alreadyUsed ? 0 : 1);
+
+    if (usedCountAfterChoice >= totalItems) {
+      const resolvedNext = resolveProgressionTarget('tradeoff');
+      setVisitedNodeIds((prev) => [...prev, resolvedNext]);
+      setNodeId(resolvedNext);
+      return;
+    }
+
+    setNodeId('item_solution');
   }
 
   function toggleTradeoff(item) {
+    pushHistory();
     setTradeoffSelection((prev) => {
       const exists = prev.some((selected) => selected.id === item.id);
       if (exists) return prev.filter((selected) => selected.id !== item.id);
@@ -1022,6 +1173,7 @@ function GameApp() {
   }
 
   function finishTradeoff() {
+    pushHistory();
     let nextScores = scores;
     let gainedTokens = {};
     tradeoffSelection.forEach((item) => {
@@ -1036,6 +1188,7 @@ function GameApp() {
   }
 
   function usePowerCard(card) {
+    pushHistory();
     const next = node.next || 'mission';
 
     if ((powerTokens[card.key] || 0) <= 0) return;
@@ -1049,13 +1202,14 @@ function GameApp() {
   }
 
   function chooseMission(selectedMission) {
+    pushHistory();
     setScores((prev) => addScores(prev, selectedMission.powers));
     setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(selectedMission.powers)));
     setMission(selectedMission);
     setPath((prev) => [...prev, 'Missão Final']);
   }
 
-  if (!agent) return <AgentSelect onSelect={chooseAgent} />;
+  if (!agent) return <AgentSelect onSelect={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} />;
 
   if (mission) {
     return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} powerTokens={powerTokens} />;
@@ -1064,7 +1218,7 @@ function GameApp() {
 
 
   return (
-    <SceneShell agent={agent} node={node} path={path} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards}>
+    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} onSave={saveGame} onBack={goBack} canGoBack={historyStack.length > 0} justSaved={justSaved}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (

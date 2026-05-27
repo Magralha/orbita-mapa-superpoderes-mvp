@@ -6986,3 +6986,121 @@ p {
     transform: translateX(170px) translateY(-18px) !important;
   }
 }
+
+/* v1.8 — compact action HUD */
+.compactTrail,
+.journeyCounter {
+  display: none !important;
+}
+
+.sceneActionBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin: -2px 0 14px;
+  position: relative;
+  z-index: 7;
+}
+
+.sceneActionGhost {
+  background: #fff;
+}
+
+.sceneActionGhost:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.sceneStageCounter {
+  border: 4px solid #111;
+  border-radius: 999px;
+  background: #ffd21a;
+  box-shadow: 4px 4px 0 #111;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+.continueSaveButton {
+  margin-bottom: 16px;
+}
+
+.cardDecorOne {
+  z-index: 0;
+}
+
+@media (max-width: 760px) {
+  .sceneActionBar {
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .sceneActionBar .sceneAction,
+  .sceneStageCounter {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+.saveStatus {
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #8dffb2;
+  box-shadow: 3px 3px 0 #111;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.sceneActionBar {
+  z-index: 20;
+}
+
+@media (max-width: 760px) {
+  .saveStatus {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+/* v2.0 mobile anamorphic layout tune */
+@media (max-width: 760px) {
+  .sceneV2 {
+    padding: 12px;
+  }
+
+  .sceneActionBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .sceneActionBar .sceneAction {
+    min-height: 46px;
+  }
+
+  .sceneStageCounter,
+  .saveStatus {
+    grid-column: 1 / -1;
+  }
+
+  .worldArtV2 {
+    width: min(96vw, 560px) !important;
+    transform: none !important;
+  }
+
+  .sceneQuestionCard {
+    width: 100%;
+    border-width: 4px;
+    border-radius: 20px;
+  }
+}
