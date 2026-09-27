@@ -8173,3 +8173,517 @@ p {
     height: 58px;
   }
 }
+
+
+/* game-v2 — final result v2 */
+
+.finalResultPage {
+  min-height: 100vh;
+  padding: 26px 16px 54px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(107,92,255,.10), transparent 24%),
+    radial-gradient(circle at 88% 6%, rgba(40,215,199,.12), transparent 20%),
+    #f4efe6;
+}
+
+.finalResultShell {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.finalHeaderV2 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: end;
+  text-align: left;
+  margin-bottom: 26px;
+}
+
+.finalHeaderV2 h1 {
+  max-width: 780px;
+  font-size: clamp(48px, 7vw, 92px);
+  margin: 8px 0 10px;
+}
+
+.finalHeaderV2 p {
+  margin: 0;
+  max-width: 760px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.finalProgressChip {
+  border: 5px solid #111;
+  border-radius: 28px;
+  background: #111;
+  color: #fff;
+  box-shadow: 7px 7px 0 #6b5cff;
+  padding: 18px 22px;
+  min-width: 160px;
+  display: grid;
+  gap: 5px;
+}
+
+.finalProgressChip span {
+  color: #ffe24a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalProgressChip strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.finalResultGrid {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.orbitaPowerCardV2 {
+  position: sticky;
+  top: 18px;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.orbitaPowerCardV2::before,
+.orbitaPowerCardV2 .cardDecor {
+  display: none;
+}
+
+.finalCardFrameV2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+}
+
+.finalCardContentV2 {
+  position: relative;
+  z-index: 1;
+  padding: 34px 34px 38px;
+  display: grid;
+  gap: 14px;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader {
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader span {
+  margin-bottom: 7px;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader h2 {
+  font-size: clamp(36px, 5vw, 52px);
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader p {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.finalLevelSeal {
+  width: 62px;
+  height: 62px;
+  border: 4px solid #111;
+  border-radius: 50%;
+  background: #ff645f;
+  color: #fff;
+  box-shadow: 4px 4px 0 #111;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+.orbitaPowerCardV2 .orbitaHeroZone {
+  position: relative;
+  height: 260px;
+  margin: 0;
+  overflow: hidden;
+  border: 4px solid #111;
+  border-radius: 26px;
+  background: #6b5cff;
+}
+
+.orbitaPowerCardV2 .heroAura {
+  width: 190px;
+  height: 150px;
+  border-width: 4px;
+  background: #ffe24a;
+  box-shadow: 5px 5px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaHero {
+  width: 245px;
+  height: 245px;
+  object-position: bottom center;
+  filter: none;
+  align-self: end;
+}
+
+.finalAgentTag {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaBadges {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot {
+  position: relative;
+  min-height: 110px;
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  grid-template-areas:
+    "rank icon score"
+    "label label label";
+  align-items: center;
+  gap: 5px;
+  padding: 9px;
+  border-width: 3px;
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > span {
+  grid-area: rank;
+  font-size: 9px;
+  font-weight: 950;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot img {
+  grid-area: icon;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > strong {
+  grid-area: label;
+  font-size: 11px;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > b {
+  grid-area: score;
+  font-size: 20px;
+}
+
+.finalMissionV2,
+.finalItemV2 {
+  margin: 0;
+}
+
+.finalItemV2 {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 3px solid #111;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.finalItemV2 img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.finalItemV2 p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.finalInsights {
+  display: grid;
+  gap: 16px;
+}
+
+.finalInsightPanel,
+.finalPassaporte {
+  border: 5px solid #111;
+  border-radius: 30px;
+  box-shadow: 7px 7px 0 #111;
+  padding: 24px;
+  background: #fff;
+}
+
+.finalTopSignals {
+  background: #fff8e8;
+}
+
+.finalPanelEyebrow {
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalInsightPanel h2,
+.finalPassaporte h2 {
+  margin: 6px 0 16px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1;
+}
+
+.finalInsightPanel > p {
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.finalTopSignalList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.finalTopSignalList > div {
+  border: 3px solid #111;
+  border-radius: 20px;
+  background: #fff;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 9px;
+  align-items: center;
+}
+
+.finalTopSignalList img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.finalTopSignalList span,
+.finalTopSignalList strong,
+.finalTopSignalList small {
+  display: block;
+}
+
+.finalTopSignalList strong {
+  font-size: 15px;
+}
+
+.finalTopSignalList small {
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.finalMetaCards {
+  display: grid;
+  grid-template-columns: 1.4fr .7fr .7fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.finalMetaCards > div {
+  border: 3px solid #111;
+  border-radius: 18px;
+  padding: 12px;
+  background: #e9e4ff;
+  display: grid;
+  gap: 4px;
+}
+
+.finalMetaCards span {
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.finalMetaCards strong {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.finalStatsPanel {
+  background: #dcfbf5;
+}
+
+.finalStatsV2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.finalStatsV2 .orbitaStatRow {
+  grid-template-columns: 112px 1fr 32px;
+  font-size: 13px;
+  margin-bottom: 9px;
+}
+
+.finalStatsV2 .orbitaStatTrack {
+  background: #fff;
+}
+
+.finalStatsV2 .orbitaStatTrack div {
+  background: #6b5cff;
+}
+
+.finalNextSteps {
+  background: #ffe24a;
+}
+
+.finalTrailsV2 {
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  background: transparent;
+  margin: 0;
+}
+
+.finalTrailsV2 article {
+  background: #fff;
+  padding: 12px;
+}
+
+.finalPassaporte {
+  background: #6b5cff;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 22px;
+  align-items: center;
+}
+
+.finalPassaporte > div > span {
+  color: #ffe24a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalPassaporte p {
+  max-width: 720px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.finalProfileButton {
+  margin: 0;
+  background: #ffe24a;
+  color: #111;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .finalResultGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orbitaPowerCardV2 {
+    position: relative;
+    top: auto;
+    width: min(520px, 100%);
+    margin: 0 auto;
+  }
+
+  .finalHeaderV2 {
+    grid-template-columns: 1fr;
+  }
+
+  .finalProgressChip {
+    width: fit-content;
+  }
+}
+
+@media (max-width: 700px) {
+  .finalResultPage {
+    padding: 16px 8px 38px;
+  }
+
+  .finalHeaderV2 h1 {
+    font-size: clamp(42px, 13vw, 62px);
+  }
+
+  .finalHeaderV2 p {
+    font-size: 14px;
+  }
+
+  .finalCardContentV2 {
+    padding: 26px 24px 30px;
+  }
+
+  .orbitaPowerCardV2 .orbitaHeroZone {
+    height: 220px;
+  }
+
+  .orbitaPowerCardV2 .orbitaHero {
+    width: 210px;
+    height: 210px;
+  }
+
+  .orbitaPowerCardV2 .orbitaBadges {
+    grid-template-columns: 1fr;
+  }
+
+  .orbitaPowerCardV2 .orbitaBadgeSlot {
+    min-height: 78px;
+    grid-template-columns: 26px 46px 1fr auto;
+    grid-template-areas: "rank icon label score";
+  }
+
+  .orbitaPowerCardV2 .orbitaBadgeSlot > strong {
+    font-size: 12px;
+  }
+
+  .finalTopSignalList,
+  .finalMetaCards,
+  .finalPassaporte {
+    grid-template-columns: 1fr;
+  }
+
+  .finalInsightPanel,
+  .finalPassaporte {
+    padding: 18px;
+    border-width: 4px;
+    border-radius: 24px;
+    box-shadow: 5px 5px 0 #111;
+  }
+
+  .finalStatsV2 .orbitaStatRow {
+    grid-template-columns: 96px 1fr 28px;
+    font-size: 11px;
+  }
+
+  .finalProfileButton {
+    width: 100%;
+  }
+}
