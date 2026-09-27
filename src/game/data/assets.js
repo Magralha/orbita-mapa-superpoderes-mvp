@@ -6,7 +6,7 @@ export const assets = {
   agents: {
     luma: p('board/agent-luma.png'),
     nexo: p('board/agent-nexo.png'),
-    kira: p('board/agent-kira.png'),
+    kira: p('board/v2/agent-kira.svg'),
     teo: p('board/agent-teo.png'),
     zuri: p('board/agent-zuri.png'),
     orin: p('board/agent-orin.png'),
@@ -23,7 +23,7 @@ export const assets = {
     boss: p('board/world-stage-boss.png'),
     final: p('board/world-final-mission.png'),
     bridge: p('board/world-bridge.png'),
-    studio: p('board/world-creative-studio.png'),
+    studio: p('board/v2/world-creative-studio.svg'),
     schoolyard: p('board/world-schoolyard.png'),
     tradeoff: p('board/world-tradeoff-gate.png'),
     reveal: p('board/world-reveal-tower.png'),
@@ -41,13 +41,13 @@ export const assets = {
     corda: p('board/item-corda.png'),
     bussola: p('board/item-bussola.png'),
     relogio: p('board/item-relogio.png'),
-    lupa: p('board/item-lupa.png'),
+    lupa: p('board/v2/item-lupa.svg'),
     coringa: p('board/item-carta-coringa.png'),
   },
 
   badges: {
     investigar: p('board/badge-investigar.png'),
-    criar: p('board/badge-criar.png'),
+    criar: p('board/v2/badge-criar.svg'),
     cuidar: p('board/badge-cuidar.png'),
     construir: p('board/badge-construir.png'),
     comunicar: p('board/badge-comunicar.png'),
