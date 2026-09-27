@@ -20,6 +20,7 @@ import MunicipalityDashboard from './municipality/MunicipalityDashboard';
 import { buildDemoStudent } from './mock/demoStudent';
 import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
 import './styles.css';
+import './portals.css';
 
 function AgentSelect({ onSelect, onContinue, hasSave, onModeChange }) {
   return (
