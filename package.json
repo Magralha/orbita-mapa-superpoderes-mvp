@@ -6,7 +6,8 @@
   "homepage": "https://magralha.github.io/orbita-mapa-superpoderes-mvp/",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "validate:routes": "node scripts/validate-routes.mjs",
+    "build": "npm run validate:routes && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "deploy": "npm run build && gh-pages -d dist"
   },
