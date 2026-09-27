@@ -1,0 +1,143 @@
+name: Integrate Work visual assets
+
+on:
+  push:
+    branches:
+      - game-v2
+    paths:
+      - .github/workflows/integrate-work-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout game-v2
+        uses: actions/checkout@v4
+        with:
+          ref: game-v2
+          path: target
+
+      - name: Checkout Work asset branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/orbita-generated-assets
+          path: source
+
+      - name: Validate and copy generated assets
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil, struct, sys
+
+          source = Path("source/public/board")
+          target = Path("target/public/board/v3")
+
+          groups = {
+              "agent-": ("agents", 512, 512, 20_000),
+              "badge-": ("badges", 256, 256, 5_000),
+              "item-": ("items", 256, 256, 5_000),
+              "world-": ("worlds", 800, 600, 20_000),
+          }
+
+          def png_info(path):
+              data = path.read_bytes()
+              if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n":
+                  return None
+              width, height = struct.unpack(">II", data[16:24])
+              return len(data), width, height
+
+          valid = []
+          invalid = []
+
+          for path in sorted(source.glob("*.png")):
+              match = None
+              for prefix, rules in groups.items():
+                  if path.name.startswith(prefix):
+                      match = (prefix, rules)
+                      break
+              if not match:
+                  continue
+
+              prefix, (folder, min_w, min_h, min_bytes) = match
+              info = png_info(path)
+              if not info:
+                  invalid.append((path.name, "not a valid PNG"))
+                  continue
+
+              size, width, height = info
+              if width < min_w or height < min_h or size < min_bytes:
+                  invalid.append((path.name, f"{width}x{height}, {size} bytes"))
+                  continue
+
+              name = path.name[len(prefix):]
+              dest = target / folder / name
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(path, dest)
+              valid.append((path.name, folder, name, width, height, size))
+
+          allowed_fallbacks = {"item-ferramenta.png"}
+          blocking = [item for item in invalid if item[0] not in allowed_fallbacks]
+
+          print(f"Validated {len(valid)} assets.")
+          for item in valid:
+              print("VALID", item)
+          for item in invalid:
+              print("INVALID", item)
+
+          if blocking:
+              print("\nGenerated asset pack is incomplete or contains placeholder files.")
+              print("No asset registry changes will be committed.")
+              sys.exit(2)
+
+          if len(valid) < 40:
+              print(f"Expected at least 40 valid assets, found {len(valid)}.")
+              sys.exit(3)
+
+          registry = Path("target/src/game/data/assets.js")
+          text = registry.read_text()
+
+          replacements = {
+              "agent-": "agents",
+              "badge-": "badges",
+              "item-": "items",
+          }
+
+          for original, folder, name, *_ in valid:
+              stem = name[:-4]
+              if original.startswith("agent-"):
+                  old = f"board/v2/agent-{stem}.svg"
+              elif original.startswith("badge-"):
+                  old = f"board/v2/badge-{stem}.svg"
+              elif original.startswith("item-"):
+                  old = f"board/v2/item-{stem}.svg"
+              elif original.startswith("world-"):
+                  old = f"board/v2/world-{stem}.svg"
+              else:
+                  continue
+              new = f"board/v3/{folder}/{name}"
+              text = text.replace(old, new)
+
+          registry.write_text(text)
+
+          if any(item[0] == "item-ferramenta.png" for item in invalid):
+              print("Keeping V2 SVG fallback for item-ferramenta because generated PNG is invalid.")
+          PY
+
+      - name: Commit integrated visual pack
+        working-directory: target
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/board/v3 src/game/data/assets.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "[asset-sync] integrate Work visual pack"
+          git push origin game-v2
