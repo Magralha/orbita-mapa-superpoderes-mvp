@@ -4,6 +4,15 @@ import { assets } from './game/data/assets';
 import { agents } from './game/data/gameData';
 import { agentStartNode, expandedNodes, inventoryItemsExpanded, missionsExpanded, tradeoffsExpanded } from './game/data/expandedTree';
 import { addScores, emptyScores, getCharacterName, rankScores } from './game/logic/scoring';
+import {
+  startPlayerJourney,
+  recordChoice,
+  recordInventory,
+  recordItemUse,
+  recordTradeoff,
+  recordPowerCard,
+  recordMission,
+} from './game/engine/rpgEngine';
 import './styles.css';
 
 function AgentSelect({ onSelect, onContinue, hasSave }) {
@@ -244,7 +253,7 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
 }
 
 
-function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, onSave, justSaved, children }) {
+function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, justSaved, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -260,6 +269,11 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
           <button className="sceneAction sceneActionGhost" disabled>Voltar</button>
           <button className="sceneAction" onClick={onSave}>Salvar</button>
           {justSaved && <span className="saveStatus">Salvo</span>}
+          {playerProfile && (
+            <div className="playerXpCounter">
+              Nível {playerProfile.progression?.level || 1} · {playerProfile.progression?.xp || 0} XP
+            </div>
+          )}
           <div className="sceneStageCounter">Etapa {Math.max(1, visitedCount)} de 40+</div>
         </div>
 
@@ -882,6 +896,7 @@ function GameApp() {
   const [usedItems, setUsedItems] = useState([]);
   const [usedPowerCards, setUsedPowerCards] = useState([]);
   const [powerTokens, setPowerTokens] = useState({});
+  const [playerProfile, setPlayerProfile] = useState(null);
 
   const node = expandedNodes[nodeId];
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
@@ -1008,6 +1023,7 @@ function GameApp() {
       usedItems,
       usedPowerCards,
       powerTokens,
+      playerProfile,
     };
 
     localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
@@ -1031,11 +1047,13 @@ function GameApp() {
     setUsedItems(Array.isArray(snapshot.usedItems) ? snapshot.usedItems : []);
     setUsedPowerCards(Array.isArray(snapshot.usedPowerCards) ? snapshot.usedPowerCards : []);
     setPowerTokens(snapshot.powerTokens || {});
+    setPlayerProfile(snapshot.playerProfile || null);
   }
 
   function chooseAgent(selectedAgent) {
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
+    setPlayerProfile(startPlayerJourney(selectedAgent));
     const startNode = agentStartNode[selectedAgent.id] || 'forest_entry';
     setPath(['Agente ' + selectedAgent.name]);
     setVisitedNodeIds([startNode]);
@@ -1046,6 +1064,7 @@ function GameApp() {
     const resolvedNext = resolveProgressionTarget(choice.next);
 
     setScores((prev) => addScores(prev, choice.powers));
+    setPlayerProfile((prev) => recordChoice(prev, { node, choice }));
     setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(choice.powers)));
     setPath((prev) => [...prev, node.chapter]);
     setVisitedNodeIds((prev) => [...prev, resolvedNext]);
@@ -1069,6 +1088,7 @@ function GameApp() {
       gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
+    setPlayerProfile((prev) => recordInventory(prev, inventory));
     setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Inventário']);
     setVisitedNodeIds((prev) => [...prev, 'item_solution']);
@@ -1079,6 +1099,7 @@ function GameApp() {
     const appliedPowers = prompt?.powers || item.powers || {};
 
     setScores((prev) => addScores(prev, appliedPowers));
+    setPlayerProfile((prev) => recordItemUse(prev, item, prompt));
     setUsedItems((prev) => {
       if (prev.some((used) => used.id === item.id)) return prev;
       return [...prev, item];
@@ -1118,6 +1139,7 @@ function GameApp() {
       gainedTokens = mergePowerTokens(gainedTokens, getPowerTokensFromPowers(item.powers));
     });
     setScores(nextScores);
+    setPlayerProfile((prev) => recordTradeoff(prev, tradeoffSelection));
     setPowerTokens((prev) => mergePowerTokens(prev, gainedTokens));
     setPath((prev) => [...prev, 'Trade-off']);
     setVisitedNodeIds((prev) => [...prev, 'second_world_choice']);
@@ -1130,6 +1152,7 @@ function GameApp() {
     if ((powerTokens[card.key] || 0) <= 0) return;
 
     setScores((prev) => addScores(prev, card.powers));
+    setPlayerProfile((prev) => recordPowerCard(prev, card));
     setPowerTokens((prev) => spendPowerToken(prev, card.key));
     setUsedPowerCards((prev) => [...prev, card]);
     setPath((prev) => [...prev, 'Carta: ' + card.title]);
@@ -1141,6 +1164,7 @@ function GameApp() {
     setScores((prev) => addScores(prev, selectedMission.powers));
     setPowerTokens((prev) => mergePowerTokens(prev, getPowerTokensFromPowers(selectedMission.powers)));
     setMission(selectedMission);
+    setPlayerProfile((prev) => recordMission(prev, selectedMission));
     setPath((prev) => [...prev, 'Missão Final']);
   }
 
@@ -1153,7 +1177,7 @@ function GameApp() {
 
 
   return (
-    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} onSave={saveGame} justSaved={justSaved}>
+    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} justSaved={justSaved}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
