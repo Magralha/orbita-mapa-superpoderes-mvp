@@ -42,7 +42,7 @@ function AgentSelect({ onSelect, onContinue, hasSave, onModeChange }) {
 
         <div className="agentGrid">
           {agents.map((agent) => (
-            <button className="agentCard" key={agent.id} onClick={() => onSelect(agent)}>
+            <button className={`agentCard agentCard-${agent.id}`} key={agent.id} onClick={() => onSelect(agent)}>
               <img src={assets.agents[agent.id]} alt="" />
               <strong>{agent.name}</strong>
               <span>{agent.role}</span>
@@ -206,60 +206,67 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
   const tokenEntries = Object.entries(powerTokens)
     .filter(([, value]) => value > 0)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+    .slice(0, 3);
 
   const maxToken = Math.max(...tokenEntries.map(([, value]) => value), 1);
 
   return (
     <aside className={`agentLiveCard agentLiveCard-${agent.id}`}>
-      <div className="agentLiveTop">
-        <div className="agentLiveAvatarBox">
-          <img className="agentLiveAvatar" src={assets.agents[agent.id]} alt="" />
+      <img className="agentLiveFrame" src={assets.v2.playerCardFrame} alt="" />
+
+      <div className="agentLiveContent">
+        <div className="agentLiveHero">
+          <div className="agentLiveAvatarBox">
+            <img className="agentLiveAvatar" src={assets.agents[agent.id]} alt="" />
+          </div>
+
+          <div className="agentLiveName">
+            <span>Agente Órbita</span>
+            <strong>{agent.name}</strong>
+          </div>
         </div>
 
-        <div className="agentLiveName">
-          <strong>{agent.name}</strong>
-          <span>Agente Órbita</span>
+        <div className="agentLiveSection agentLivePowerSection">
+          <b>Poderes disponíveis</b>
+          <div className="agentLivePowerBars">
+            {tokenEntries.length ? tokenEntries.map(([key, value]) => (
+              <div className="agentPowerBar" key={key}>
+                <img src={assets.badges[key]} alt="" />
+                <span>{powerLabels[key] || key}</span>
+                <i><em style={{ width: `${Math.max(18, (value / maxToken) * 100)}%` }} /></i>
+                <strong>{value}</strong>
+              </div>
+            )) : (
+              <small>Suas escolhas começam a carregar estes poderes.</small>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="agentLiveSection agentLivePowerSection">
-        <b>Potes de poder</b>
-        <div className="agentLivePowerBars">
-          {tokenEntries.length ? tokenEntries.map(([key, value]) => (
-            <div className="agentPowerBar" key={key}>
-              <img src={assets.badges[key]} alt="" />
-              <span>{powerLabels[key] || key}</span>
-              <i style={{ width: `${Math.max(18, (value / maxToken) * 100)}%` }} />
-              <em>{value}</em>
+        <div className="agentLiveMeta">
+          <div className="agentLiveSection">
+            <b>Mochila</b>
+            <div className="agentLiveItems">
+              {inventory.length ? inventory.slice(0, 4).map((item) => (
+                <img key={item.id} src={assets.items[item.id]} alt={item.label} title={item.label} />
+              )) : <small>vazia</small>}
             </div>
-          )) : (
-            <small>Você ainda vai ganhar potes nas escolhas.</small>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <div className="agentLiveSection">
-        <b>Mochila</b>
-        <div className="agentLiveItems">
-          {inventory.length ? inventory.slice(0, 4).map((item) => (
-            <img key={item.id} src={assets.items[item.id]} alt={item.label} title={item.label} />
-          )) : <small>vazia por enquanto</small>}
-        </div>
-      </div>
-
-      <div className="agentLiveSection">
-        <b>Cartas jogadas</b>
-        <div className="agentLiveCards">
-          {usedPowerCards.length ? usedPowerCards.slice(0, 4).map((card, index) => (
-            <span key={`${card.key}-${index}`}>{card.label}</span>
-          )) : <small>nenhuma jogada</small>}
+          <div className="agentLiveSection">
+            <b>Cartas</b>
+            <div className="agentLiveCards">
+              {usedPowerCards.length ? (
+                <strong>{usedPowerCards.length}</strong>
+              ) : (
+                <small>0</small>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </aside>
   );
 }
-
 
 
 function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose, onModeChange }) {
