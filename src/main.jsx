@@ -1217,7 +1217,8 @@ function GameApp() {
     const snapshot = getSavedSnapshot();
     if (!snapshot) return;
 
-    setAgent(snapshot.agent || null);
+    const restoredAgent = snapshot.agent || null;
+    setAgent(restoredAgent);
     setNodeId(snapshot.nodeId || 'world_entry');
     setScores(snapshot.scores || emptyScores());
     setPath(Array.isArray(snapshot.path) ? snapshot.path : ['Entrada']);
@@ -1229,7 +1230,9 @@ function GameApp() {
     setUsedItems(Array.isArray(snapshot.usedItems) ? snapshot.usedItems : []);
     setUsedPowerCards(Array.isArray(snapshot.usedPowerCards) ? snapshot.usedPowerCards : []);
     setPowerTokens(snapshot.powerTokens || {});
-    setPlayerProfile(snapshot.playerProfile || null);
+    setPlayerProfile(
+      snapshot.playerProfile || (restoredAgent ? startPlayerJourney(restoredAgent) : null),
+    );
   }
 
   function chooseAgent(selectedAgent) {
