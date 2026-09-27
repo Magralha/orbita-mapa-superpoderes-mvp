@@ -913,7 +913,16 @@ function getJourneyProfile(topPowers) {
   return 'Explorador de Caminhos';
 }
 
-function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards, powerTokens }) {
+function PowerCard({
+  agent,
+  scores,
+  mission,
+  path,
+  decisiveItem,
+  usedPowerCards,
+  playerProfile,
+  onOpenProfile,
+}) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
   const characterName = getCharacterName(top);
@@ -922,119 +931,159 @@ function PowerCard({ agent, scores, mission, path, decisiveItem, usedPowerCards,
   const journeyProfile = getJourneyProfile(top);
   const nextTrails = getNextTrails(top);
   const characteristics = getPowerCharacteristics(top);
+  const level = playerProfile?.progression?.level || 1;
+  const xp = playerProfile?.progression?.xp || 0;
+  const experiences = playerProfile?.experiences || [];
 
   return (
-    <main className="gamePage">
-      <section className="finalCardScreen">
-        <div className="finalHeader">
-          <div className="gameBadge">Revelação final</div>
-          <h1>Seu Card de Superpoder</h1>
-          <p>
-            O tabuleiro montou uma leitura do caminho que você percorreu. Isso não
-            define quem você é para sempre. Mostra os poderes que apareceram nesta jornada.
-          </p>
-        </div>
+    <main className="gamePage finalResultPage">
+      <section className="finalResultShell">
+        <header className="finalHeader finalHeaderV2">
+          <div>
+            <div className="gameBadge">Missão concluída</div>
+            <h1>Seu mapa de superpoderes.</h1>
+            <p>
+              Esta é uma leitura da jornada que você acabou de viver. Não define quem você
+              é para sempre — mostra padrões que apareceram nas suas escolhas.
+            </p>
+          </div>
 
-        <article className="orbitaPowerCard">
-          <div className="cardDecor cardDecorOne" />
-          <div className="cardDecor cardDecorTwo" />
+          <div className="finalProgressChip">
+            <span>Nível {level}</span>
+            <strong>{xp} XP</strong>
+          </div>
+        </header>
 
-          <header className="orbitaCardHeader">
-            <div>
-              <span>Card de Superpoder</span>
-              <h2>{characterName}</h2>
-              <p>Agente inicial: {agent.name}</p>
-              <em>{journeyProfile}</em>
-            </div>
+        <div className="finalResultGrid">
+          <article className="orbitaPowerCard orbitaPowerCardV2">
+            <img className="finalCardFrameV2" src={assets.v2.playerCardFrame} alt="" />
 
-            <img className="orbitaSeal" src={assets.ui.raritySeal} alt="" />
-          </header>
-
-          <section className="orbitaHeroZone">
-            <div className="heroAura" />
-            <img className="orbitaHero" src={assets.agents[agent.id]} alt="" />
-          </section>
-
-          <section className="orbitaBadges">
-            {top.map((power) => (
-              <div className="orbitaBadgeSlot" key={power.key}>
-                <img src={assets.badges[power.key]} alt="" />
-                <span>{power.label}</span>
-              </div>
-            ))}
-          </section>
-
-          {decisiveItem && (
-            <section className="decisiveItemBox">
-              <img src={assets.items[decisiveItem.id]} alt="" />
-              <div>
-                <strong>Item decisivo</strong>
-                <p>{decisiveItem.label}</p>
-                <small>{decisiveItem.useText}</small>
-              </div>
-            </section>
-          )}
-
-          <section className="resultMetaGrid">
-            <div>
-              <strong>Mundo dominante</strong>
-              <span>{dominantWorld}</span>
-            </div>
-            <div>
-              <strong>Perfil de jornada</strong>
-              <span>{journeyProfile}</span>
-            </div>
-          </section>
-
-          <section className="orbitaStats">
-            <h3>Poderes ativados</h3>
-
-            {ranked.map((power) => (
-              <div className="orbitaStatRow" key={power.key}>
-                <span>{power.label}</span>
-                <div className="orbitaStatTrack">
-                  <div style={{ width: `${Math.max(8, (power.value / max) * 100)}%` }} />
+            <div className="finalCardContentV2">
+              <header className="orbitaCardHeader">
+                <div>
+                  <span>Card de jornada</span>
+                  <h2>{characterName}</h2>
+                  <p>{journeyProfile}</p>
                 </div>
-                <b>{power.value}</b>
-              </div>
-            ))}
-          </section>
+                <b className="finalLevelSeal">LV {level}</b>
+              </header>
 
-          {usedPowerCards?.length > 0 && (
-            <section className="playedCardsBox">
-              <strong>Cartas jogadas</strong>
-              <div>
-                {usedPowerCards.map((card, index) => (
-                  <span key={`${card.key}-${index}`}>{card.title}</span>
+              <section className="orbitaHeroZone">
+                <div className="heroAura" />
+                <img className="orbitaHero" src={assets.agents[agent.id]} alt="" />
+                <div className="finalAgentTag">{agent.name}</div>
+              </section>
+
+              <section className="orbitaBadges">
+                {top.map((power, index) => (
+                  <div className="orbitaBadgeSlot" key={power.key}>
+                    <span>0{index + 1}</span>
+                    <img src={assets.badges[power.key]} alt="" />
+                    <strong>{power.label}</strong>
+                    <b>{power.value}</b>
+                  </div>
+                ))}
+              </section>
+
+              <section className="orbitaMission finalMissionV2">
+                <strong>Missão escolhida</strong>
+                <p>{mission.label}</p>
+              </section>
+
+              {decisiveItem && (
+                <section className="decisiveItemBox finalItemV2">
+                  <img src={assets.items[decisiveItem.id]} alt="" />
+                  <div>
+                    <strong>Item decisivo</strong>
+                    <p>{decisiveItem.label}</p>
+                  </div>
+                </section>
+              )}
+            </div>
+          </article>
+
+          <div className="finalInsights">
+            <section className="finalInsightPanel finalTopSignals">
+              <div className="finalPanelEyebrow">O que apareceu com mais força</div>
+              <h2>Três sinais principais da sua jornada</h2>
+              <div className="finalTopSignalList">
+                {top.map((power) => (
+                  <div key={power.key}>
+                    <img src={assets.badges[power.key]} alt="" />
+                    <span>
+                      <strong>{power.label}</strong>
+                      <small>{power.value} pontos nesta jornada</small>
+                    </span>
+                  </div>
                 ))}
               </div>
             </section>
-          )}
 
-          <section className="orbitaMission">
-            <strong>Missão especial</strong>
-            <p>{mission.label}</p>
-          </section>
+            <section className="finalInsightPanel">
+              <div className="finalPanelEyebrow">Seu jeito de avançar</div>
+              <h2>{journeyProfile}</h2>
+              <p>{characteristics.join(' · ')}</p>
 
-          <section className="characteristicsBox">
-            <strong>Características que apareceram</strong>
-            <div>
-              {characteristics.map((trait) => (
-                <span key={trait}>{trait}</span>
-              ))}
-            </div>
-          </section>
+              <div className="finalMetaCards">
+                <div>
+                  <span>Mundo dominante</span>
+                  <strong>{dominantWorld}</strong>
+                </div>
+                <div>
+                  <span>Cartas usadas</span>
+                  <strong>{usedPowerCards?.length || 0}</strong>
+                </div>
+                <div>
+                  <span>Experiências reais</span>
+                  <strong>{experiences.length}</strong>
+                </div>
+              </div>
+            </section>
 
-          <section className="nextTrailsBox">
-            <strong>Como continuar suas trilhas</strong>
-            {nextTrails.map((trail) => (
-              <article key={trail.title}>
-                <b>{trail.title}</b>
-                <p>{trail.text}</p>
-              </article>
-            ))}
-          </section>
-        </article>
+            <section className="finalInsightPanel finalStatsPanel">
+              <div className="finalPanelEyebrow">Mapa completo</div>
+              <h2>Todos os poderes ativados</h2>
+              <div className="orbitaStats finalStatsV2">
+                {ranked.map((power) => (
+                  <div className="orbitaStatRow" key={power.key}>
+                    <span>{power.label}</span>
+                    <div className="orbitaStatTrack">
+                      <div style={{ width: `${Math.max(8, (power.value / max) * 100)}%` }} />
+                    </div>
+                    <b>{power.value}</b>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="finalInsightPanel finalNextSteps">
+              <div className="finalPanelEyebrow">Próximas experiências</div>
+              <h2>O que vale explorar agora</h2>
+              <div className="nextTrailsBox finalTrailsV2">
+                {nextTrails.map((trail) => (
+                  <article key={trail.title}>
+                    <b>{trail.title}</b>
+                    <p>{trail.text}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="finalPassaporte">
+              <div>
+                <span>Passaporte Órbita</span>
+                <h2>A jornada continua fora do jogo.</h2>
+                <p>
+                  Seu perfil pode reunir projetos, esporte, cultura, tecnologia e outras
+                  experiências que você viver até o 9º ano.
+                </p>
+              </div>
+              <button type="button" className="sceneAction finalProfileButton" onClick={onOpenProfile}>
+                Abrir Meu Órbita
+              </button>
+            </section>
+          </div>
+        </div>
       </section>
     </main>
   );
@@ -1408,7 +1457,18 @@ function GameApp() {
   }
 
   if (mission) {
-    return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} powerTokens={powerTokens} />;
+    return (
+      <PowerCard
+        agent={agent}
+        scores={scores}
+        mission={mission}
+        path={path}
+        decisiveItem={decisiveItem}
+        usedPowerCards={usedPowerCards}
+        playerProfile={playerProfile}
+        onOpenProfile={() => setProfileOpen(true)}
+      />
+    );
   }
 
 
