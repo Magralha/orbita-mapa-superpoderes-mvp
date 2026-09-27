@@ -7524,3 +7524,652 @@ p {
     margin-top: 5px;
   }
 }
+
+
+/* game-v2 — visual composition pass 2 */
+
+/* Selection screen */
+.gameIntro {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.gameIntro > .gameBadge {
+  margin-top: 10px;
+}
+
+.gameIntro > h1 {
+  max-width: 920px;
+  font-size: clamp(54px, 8vw, 104px);
+}
+
+.gameIntro > p {
+  max-width: 760px;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.agentGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.agentCard {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  padding: 0;
+  display: grid;
+  grid-template-rows: 248px auto auto 1fr;
+  background: #fff8e8;
+}
+
+.agentCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 248px;
+  background: #6b5cff;
+  border-bottom: 5px solid #111;
+  z-index: 0;
+}
+
+.agentCard-luma::before { background: #2d8cff; }
+.agentCard-nexo::before { background: #28d7c7; }
+.agentCard-kira::before { background: #6b5cff; }
+.agentCard-teo::before { background: #ff8a3d; }
+.agentCard-zuri::before { background: #43d17a; }
+.agentCard-orin::before { background: #28d7c7; }
+.agentCard-vega::before { background: #ff645f; }
+.agentCard-mio::before { background: #ff4fa3; }
+
+.agentCard img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 248px;
+  padding: 8px 12px 0;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: none;
+  margin: 0;
+}
+
+.agentCard strong,
+.agentCard span,
+.agentCard small {
+  position: relative;
+  z-index: 1;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.agentCard strong {
+  margin-top: 14px;
+  font-size: 32px;
+}
+
+.agentCard span {
+  margin: 0;
+  font-size: 14px;
+}
+
+.agentCard small {
+  padding-top: 7px;
+  padding-bottom: 16px;
+  line-height: 1.35;
+}
+
+/* Scene shell */
+.sceneV2 {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 34px;
+  background: #f7f3ea;
+}
+
+.sceneTopV2 {
+  display: none;
+}
+
+.sceneActionBar {
+  margin: 0 0 14px;
+  padding: 0 2px;
+}
+
+.sceneActionBar .sceneAction {
+  margin-top: 0;
+  padding: 10px 15px;
+  border-width: 4px;
+  box-shadow: 4px 4px 0 #111;
+  font-size: 13px;
+}
+
+.boardStageV2 {
+  margin-top: 0;
+  padding: 0 0 22px;
+  border-radius: 28px;
+  background: #111;
+  overflow: hidden;
+  gap: 0;
+}
+
+.boardStageV2::before,
+.boardStageV2::after {
+  display: none;
+}
+
+.worldComposition {
+  position: relative;
+  min-height: 530px !important;
+  overflow: hidden;
+  border-bottom: 5px solid #111;
+  background: #111;
+}
+
+.worldArtV2 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Live character card */
+.agentGuideWithCard {
+  position: absolute !important;
+  left: 22px !important;
+  top: 22px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 270px !important;
+  display: block !important;
+  z-index: 20 !important;
+  pointer-events: none;
+}
+
+.agentLiveCard {
+  position: relative;
+  width: 270px !important;
+  height: 368px !important;
+  transform: rotate(-2deg) !important;
+  filter: drop-shadow(7px 7px 0 rgba(0,0,0,.75)) !important;
+  pointer-events: auto;
+}
+
+.agentLiveFrame {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.agentLiveContent {
+  position: absolute !important;
+  z-index: 2 !important;
+  inset: 24px 24px 28px !important;
+  display: grid !important;
+  grid-template-rows: 150px auto 1fr !important;
+  gap: 8px !important;
+}
+
+.agentLiveHero {
+  position: relative;
+  overflow: hidden;
+  border: 4px solid #111;
+  border-radius: 22px;
+  background: #6b5cff;
+}
+
+.agentLiveAvatarBox {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.agentLiveAvatar {
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: none !important;
+}
+
+.agentLiveName {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  z-index: 3;
+  text-align: left;
+}
+
+.agentLiveName span {
+  display: inline-block !important;
+  margin: 0 0 3px;
+  padding: 3px 6px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #ffe24a;
+  color: #111;
+  font-size: 8px !important;
+  font-weight: 950;
+}
+
+.agentLiveName strong {
+  display: block;
+  width: fit-content;
+  border: 3px solid #111;
+  border-radius: 10px;
+  background: #fff;
+  padding: 3px 7px;
+  font-size: 22px !important;
+  line-height: 1;
+}
+
+.agentLivePowerSection {
+  background: #fff !important;
+}
+
+.agentLivePowerBars {
+  display: grid;
+  gap: 4px;
+}
+
+.agentPowerBar {
+  display: grid;
+  grid-template-columns: 22px 62px 1fr 16px;
+  gap: 5px;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 950;
+}
+
+.agentPowerBar img {
+  width: 22px !important;
+  height: 22px !important;
+  object-fit: contain;
+}
+
+.agentPowerBar > i {
+  height: 8px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff8e8;
+}
+
+.agentPowerBar > i > em {
+  display: block;
+  height: 100%;
+  background: #28d7c7;
+}
+
+.agentPowerBar > strong {
+  font-size: 9px;
+}
+
+.agentLiveMeta {
+  display: grid;
+  grid-template-columns: 1fr 62px;
+  gap: 6px;
+}
+
+.agentLiveMeta .agentLiveSection {
+  min-height: 48px;
+}
+
+.agentLiveItems {
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.agentLiveItems img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.agentLiveCards {
+  display: grid;
+  place-items: center;
+  height: 27px;
+}
+
+.agentLiveCards strong {
+  font-size: 20px;
+}
+
+.agentGuideWithCard .agentSpeech {
+  display: none !important;
+}
+
+/* Narrative + choices */
+.choiceLayerV2 {
+  display: grid;
+  gap: 14px;
+  padding: 18px 18px 0 !important;
+  background: #f7f3ea;
+}
+
+.sceneQuestionCard {
+  width: min(1040px, 100%) !important;
+  margin: -64px auto 0 !important;
+  padding: 17px 20px !important;
+  border-radius: 26px !important;
+  box-shadow: 7px 7px 0 #111 !important;
+}
+
+.sceneQuestionCard h1 {
+  font-size: clamp(36px, 4.6vw, 62px) !important;
+  line-height: .92 !important;
+  margin-bottom: 7px !important;
+}
+
+.sceneQuestionCard p {
+  max-width: 880px;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+}
+
+.choiceLayerV2 .floatingChoices {
+  width: min(1040px, 100%) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px !important;
+}
+
+.choiceLayerV2 .sceneChoice {
+  min-height: 108px !important;
+  padding: 18px !important;
+  border-width: 4px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 0 #111;
+  font-size: 18px !important;
+  line-height: 1.08 !important;
+  background: #fff;
+}
+
+.choiceLayerV2 .sceneChoice:nth-child(3n + 1) { background: #fff8e8; }
+.choiceLayerV2 .sceneChoice:nth-child(3n + 2) { background: #e9e4ff; }
+.choiceLayerV2 .sceneChoice:nth-child(3n + 3) { background: #dcfbf5; }
+
+/* Backpack */
+.choiceLayerV2 .inventoryGrid {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.choiceLayerV2 .itemCard {
+  min-height: 140px;
+  padding: 9px;
+  display: grid;
+  align-content: center;
+  border-width: 4px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 #111;
+  background: #fff;
+}
+
+.choiceLayerV2 .itemCard img {
+  width: 74px;
+  height: 74px;
+  margin-bottom: 7px;
+}
+
+.choiceLayerV2 .itemCard span {
+  font-size: 12px;
+  text-align: center;
+}
+
+.choiceLayerV2 .itemCard.selected {
+  background: #ffe24a;
+}
+
+.choiceLayerV2 > .sceneAction {
+  width: min(420px, 100%);
+  margin: 4px auto 0;
+  font-size: 16px;
+  padding: 12px 18px;
+}
+
+/* More useful HUD hierarchy */
+.playerXpCounter {
+  order: -1;
+}
+
+.sceneStageCounter {
+  margin-left: auto;
+}
+
+@media (max-width: 1050px) {
+  .agentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .worldComposition {
+    min-height: 470px !important;
+  }
+
+  .agentGuideWithCard {
+    width: 220px !important;
+  }
+
+  .agentLiveCard {
+    width: 220px !important;
+    height: 300px !important;
+  }
+
+  .agentLiveContent {
+    inset: 20px !important;
+    grid-template-rows: 116px auto 1fr !important;
+  }
+
+  .agentLiveAvatar {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  .agentLiveName strong {
+    font-size: 18px !important;
+  }
+
+  .agentPowerBar {
+    grid-template-columns: 19px 52px 1fr 13px;
+  }
+
+  .agentPowerBar img {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .choiceLayerV2 .inventoryGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .gamePage {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .agentGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .agentCard {
+    min-height: 300px;
+    grid-template-rows: 180px auto auto 1fr;
+    border-width: 4px;
+    border-radius: 22px;
+    box-shadow: 5px 5px 0 #111;
+  }
+
+  .agentCard::before {
+    height: 180px;
+    border-bottom-width: 4px;
+  }
+
+  .agentCard img {
+    height: 180px;
+  }
+
+  .agentCard strong {
+    font-size: 25px;
+  }
+
+  .agentCard small {
+    font-size: 11px;
+  }
+
+  .sceneV2 {
+    padding: 8px;
+    border-width: 4px;
+    box-shadow: 6px 6px 0 #111;
+  }
+
+  .sceneActionBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .sceneActionBar .sceneAction,
+  .sceneStageCounter,
+  .playerXpCounter,
+  .saveStatus {
+    width: auto !important;
+    margin: 0 !important;
+  }
+
+  .sceneActionGhost {
+    display: none;
+  }
+
+  .worldComposition {
+    min-height: 370px !important;
+  }
+
+  .agentGuideWithCard {
+    left: 10px !important;
+    top: 10px !important;
+    width: 150px !important;
+  }
+
+  .agentLiveCard {
+    width: 150px !important;
+    height: 205px !important;
+    filter: drop-shadow(5px 5px 0 rgba(0,0,0,.7)) !important;
+  }
+
+  .agentLiveContent {
+    inset: 13px !important;
+    grid-template-rows: 88px auto !important;
+    gap: 5px !important;
+  }
+
+  .agentLiveHero {
+    border-width: 3px;
+    border-radius: 14px;
+  }
+
+  .agentLiveAvatar {
+    width: 94px !important;
+    height: 94px !important;
+  }
+
+  .agentLiveName span {
+    display: none !important;
+  }
+
+  .agentLiveName strong {
+    font-size: 14px !important;
+    border-width: 2px;
+  }
+
+  .agentLiveMeta {
+    display: none;
+  }
+
+  .agentLiveSection b {
+    font-size: 7px !important;
+  }
+
+  .agentPowerBar {
+    grid-template-columns: 16px 1fr 12px;
+    gap: 4px;
+  }
+
+  .agentPowerBar img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .agentPowerBar > span {
+    display: none;
+  }
+
+  .agentPowerBar > i {
+    height: 6px;
+  }
+
+  .sceneQuestionCard {
+    margin-top: -34px !important;
+    padding: 13px !important;
+    border-width: 4px !important;
+    border-radius: 20px !important;
+  }
+
+  .sceneQuestionCard .gameBadge {
+    font-size: 9px;
+    margin-bottom: 5px;
+  }
+
+  .sceneQuestionCard h1 {
+    font-size: clamp(30px, 10vw, 44px) !important;
+  }
+
+  .sceneQuestionCard p {
+    font-size: 13px !important;
+  }
+
+  .choiceLayerV2 {
+    padding: 10px 10px 0 !important;
+  }
+
+  .choiceLayerV2 .floatingChoices {
+    grid-template-columns: 1fr;
+    gap: 9px !important;
+  }
+
+  .choiceLayerV2 .sceneChoice {
+    min-height: 76px !important;
+    font-size: 16px !important;
+    padding: 14px !important;
+  }
+
+  .choiceLayerV2 .inventoryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .choiceLayerV2 .itemCard {
+    min-height: 112px;
+  }
+
+  .choiceLayerV2 .itemCard img {
+    width: 58px;
+    height: 58px;
+  }
+}
