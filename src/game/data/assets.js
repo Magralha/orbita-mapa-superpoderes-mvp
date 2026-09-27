@@ -31,12 +31,12 @@ export const assets = {
   },
 
   items: {
-    lanterna: p('board/item-lanterna.png'),
-    escudo: p('board/item-escudo.png'),
-    microfone: p('board/item-microfone.png'),
-    mapa: p('board/item-mapa.png'),
-    ferramenta: p('board/item-ferramenta.png'),
-    pincel: p('board/item-pincel.png'),
+    lanterna: p('board/v2/item-lanterna.svg'),
+    escudo: p('board/v2/item-escudo.svg'),
+    microfone: p('board/v2/item-microfone.svg'),
+    mapa: p('board/v2/item-mapa.svg'),
+    ferramenta: p('board/v2/item-ferramenta.svg'),
+    pincel: p('board/v2/item-pincel.svg'),
     chave: p('board/item-chave.png'),
     corda: p('board/item-corda.png'),
     bussola: p('board/item-bussola.png'),
@@ -46,14 +46,14 @@ export const assets = {
   },
 
   badges: {
-    investigar: p('board/badge-investigar.png'),
+    investigar: p('board/v2/badge-investigar.svg'),
     criar: p('board/v2/badge-criar.svg'),
-    cuidar: p('board/badge-cuidar.png'),
-    construir: p('board/badge-construir.png'),
-    comunicar: p('board/badge-comunicar.png'),
-    organizar: p('board/badge-organizar.png'),
-    proteger: p('board/badge-proteger.png'),
-    conectar: p('board/badge-conectar.png'),
+    cuidar: p('board/v2/badge-cuidar.svg'),
+    construir: p('board/v2/badge-construir.svg'),
+    comunicar: p('board/v2/badge-comunicar.svg'),
+    organizar: p('board/v2/badge-organizar.svg'),
+    proteger: p('board/v2/badge-proteger.svg'),
+    conectar: p('board/v2/badge-conectar.svg'),
   },
 
   cards: {
