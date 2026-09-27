@@ -14,12 +14,18 @@ import {
   recordMission,
 } from './game/engine/rpgEngine';
 import { getTopPowers } from './game/player/playerProfile';
+import RoleSwitcher from './app/RoleSwitcher';
+import FamilyPortal from './family/FamilyPortal';
+import MunicipalityDashboard from './municipality/MunicipalityDashboard';
+import { buildDemoStudent } from './mock/demoStudent';
+import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
 import './styles.css';
 
-function AgentSelect({ onSelect, onContinue, hasSave }) {
+function AgentSelect({ onSelect, onContinue, hasSave, onModeChange }) {
   return (
     <main className="gamePage">
       <section className="gameIntro">
+        <RoleSwitcher mode="student" onChange={onModeChange} />
         <div className="gameBadge">Órbita · Caminho dos Superpoderes</div>
         <h1>Escolha seu Agente Órbita</h1>
         <p>
@@ -255,7 +261,7 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
 
 
 
-function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose }) {
+function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose, onModeChange }) {
   if (!profile) return null;
 
   const powerLabels = {
@@ -286,6 +292,7 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
   return (
     <main className="gamePage myOrbitaPage">
       <section className="myOrbitaShell">
+        <RoleSwitcher mode="student" onChange={onModeChange} />
         <header className="myOrbitaHeader">
           <div>
             <div className="gameBadge">Meu Órbita</div>
@@ -1079,6 +1086,7 @@ function GameApp() {
   const [powerTokens, setPowerTokens] = useState({});
   const [playerProfile, setPlayerProfile] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('student');
 
   const node = expandedNodes[nodeId];
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
@@ -1353,7 +1361,30 @@ function GameApp() {
     setPath((prev) => [...prev, 'Missão Final']);
   }
 
-  if (!agent) return <AgentSelect onSelect={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} />;
+  if (viewMode === 'family') {
+    const demo = buildDemoStudent();
+    return (
+      <FamilyPortal
+        agent={agent || demo.agent}
+        profile={playerProfile || demo.profile}
+        opportunities={mockOpportunities}
+        onModeChange={setViewMode}
+      />
+    );
+  }
+
+  if (viewMode === 'municipality') {
+    return (
+      <MunicipalityDashboard
+        municipality={mockMunicipality}
+        signals={mockPublicSignals}
+        opportunities={mockOpportunities}
+        onModeChange={setViewMode}
+      />
+    );
+  }
+
+  if (!agent) return <AgentSelect onSelect={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} onModeChange={setViewMode} />;
 
   if (profileOpen) {
     return (
@@ -1363,6 +1394,7 @@ function GameApp() {
         inventory={inventory}
         usedPowerCards={usedPowerCards}
         onClose={() => setProfileOpen(false)}
+        onModeChange={setViewMode}
       />
     );
   }
