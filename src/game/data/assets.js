@@ -62,6 +62,14 @@ export const assets = {
     mission: p('board/card-frame-mission.png'),
   },
 
+  v2: {
+    playerCardFrame: p('board/v2/card-frame-player.svg'),
+    badgeCriar: p('board/v2/badge-criar.svg'),
+    itemLupa: p('board/v2/item-lupa.svg'),
+    xpChip: p('board/v2/xp-chip.svg'),
+    rewardLevel: p('board/v2/reward-level.svg'),
+  },
+
   ui: {
     choiceCard: p('board/choice-card.png'),
     choiceBubble: p('board/choice-bubble.png'),
