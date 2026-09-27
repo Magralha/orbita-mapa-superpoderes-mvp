@@ -7069,3 +7069,2837 @@ p {
     text-align: center;
   }
 }
+
+
+/* game-v2 — progression HUD */
+.playerXpCounter {
+  border: 4px solid #111;
+  border-radius: 999px;
+  background: #6b5cff;
+  color: #fff;
+  box-shadow: 4px 4px 0 #111;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .playerXpCounter {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+/* game-v2 — Meu Orbita */
+.myOrbitaPage {
+  min-height: 100vh;
+  padding: 28px 18px 54px;
+}
+
+.myOrbitaShell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.myOrbitaHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.myOrbitaHeader h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(36px, 6vw, 72px);
+  line-height: .95;
+  max-width: 820px;
+}
+
+.myOrbitaHeader p {
+  max-width: 760px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.myOrbitaHeroGrid,
+.myOrbitaColumns {
+  display: grid;
+  grid-template-columns: 1.35fr .65fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.myOrbitaAgentCard,
+.myOrbitaLevelCard,
+.myOrbitaPanel,
+.myOrbitaSection,
+.myOrbitaRealLife {
+  border: 5px solid #111;
+  border-radius: 34px;
+  box-shadow: 8px 8px 0 #111;
+}
+
+.myOrbitaAgentCard {
+  background: #ffe24a;
+  min-height: 320px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+}
+
+.myOrbitaAgentArt {
+  min-height: 320px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #6b5cff;
+  border-right: 5px solid #111;
+}
+
+.myOrbitaAgentArt img {
+  width: min(300px, 92%);
+  max-height: 310px;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.myOrbitaAgentCopy {
+  padding: 34px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.myOrbitaAgentCopy span,
+.myOrbitaLevelCard > span,
+.myOrbitaSectionTitle > span,
+.myOrbitaPanelLabel,
+.myOrbitaRealLife > div > span {
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.myOrbitaAgentCopy h2 {
+  margin: 4px 0 2px;
+  font-size: clamp(44px, 6vw, 78px);
+  line-height: .9;
+}
+
+.myOrbitaAgentCopy p {
+  font-weight: 900;
+  font-size: 18px;
+  margin: 6px 0 16px;
+}
+
+.myOrbitaAgentCopy small {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.myOrbitaLevelCard {
+  background: #111;
+  color: #fff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.myOrbitaLevelCard > span {
+  color: #ffe24a;
+}
+
+.myOrbitaLevelCard strong {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: .95;
+  margin-top: 8px;
+}
+
+.myOrbitaLevelCard b {
+  font-size: 22px;
+  margin: 12px 0;
+}
+
+.myOrbitaXpTrack {
+  height: 24px;
+  background: #fff;
+  border: 4px solid #fff;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.myOrbitaXpTrack i {
+  display: block;
+  height: 100%;
+  background: #ffe24a;
+  border-radius: 999px;
+}
+
+.myOrbitaSection {
+  background: #fff8e8;
+  padding: 26px;
+  margin-bottom: 18px;
+}
+
+.myOrbitaSectionTitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.myOrbitaSectionTitle > span {
+  font-size: 16px;
+}
+
+.myOrbitaTopPowers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.myOrbitaPowerHero {
+  border: 4px solid #111;
+  border-radius: 26px;
+  background: #fff;
+  padding: 18px;
+  box-shadow: 5px 5px 0 #111;
+  display: grid;
+  grid-template-columns: auto 58px 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.myOrbitaPowerHero > span {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.myOrbitaPowerHero img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.myOrbitaPowerHero strong {
+  font-size: 18px;
+}
+
+.myOrbitaPowerHero b {
+  font-size: 28px;
+}
+
+.myOrbitaPowerList {
+  display: grid;
+  gap: 10px;
+}
+
+.myOrbitaPowerRow {
+  display: grid;
+  grid-template-columns: 130px 1fr 38px;
+  gap: 10px;
+  align-items: center;
+  font-weight: 900;
+}
+
+.myOrbitaPowerRow > div {
+  height: 18px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.myOrbitaPowerRow > div i {
+  display: block;
+  height: 100%;
+  background: #28d7c7;
+}
+
+.myOrbitaPanel {
+  background: #fff;
+  padding: 24px;
+}
+
+.myOrbitaInventory {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.myOrbitaInventory > div,
+.myOrbitaPlayedCards > div,
+.myOrbitaAchievements > div {
+  border: 3px solid #111;
+  border-radius: 20px;
+  padding: 12px;
+  background: #fff8e8;
+}
+
+.myOrbitaInventory img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.myOrbitaInventory small {
+  display: block;
+  text-align: center;
+  font-weight: 850;
+}
+
+.myOrbitaPlayedCards,
+.myOrbitaAchievements,
+.myOrbitaTimeline {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.myOrbitaPlayedCards div {
+  background: #6b5cff;
+  color: #fff;
+}
+
+.myOrbitaPlayedCards strong,
+.myOrbitaPlayedCards small {
+  display: block;
+}
+
+.myOrbitaPlayedCards small {
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.myOrbitaAchievements > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.myOrbitaAchievements img {
+  width: 48px;
+  height: 48px;
+}
+
+.myOrbitaTimeline > div {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.myOrbitaTimeline i {
+  width: 12px;
+  height: 12px;
+  border: 3px solid #111;
+  border-radius: 50%;
+  background: #ffe24a;
+  margin-top: 4px;
+}
+
+.myOrbitaTimeline span,
+.myOrbitaTimeline strong,
+.myOrbitaTimeline small {
+  display: block;
+}
+
+.myOrbitaTimeline small {
+  margin-top: 2px;
+}
+
+.myOrbitaRealLife {
+  background: #28d7c7;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.myOrbitaRealLife h2 {
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1;
+  margin: 6px 0 10px;
+}
+
+.myOrbitaRealLife p {
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+.myOrbitaRealLifeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.myOrbitaRealLifeTags span {
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  padding: 10px 14px;
+  font-weight: 950;
+}
+
+.sceneActionProfile {
+  background: #6b5cff;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .myOrbitaHeroGrid,
+  .myOrbitaColumns,
+  .myOrbitaRealLife {
+    grid-template-columns: 1fr;
+  }
+
+  .myOrbitaTopPowers {
+    grid-template-columns: 1fr;
+  }
+
+  .myOrbitaRealLifeTags {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .myOrbitaPage {
+    padding: 18px 12px 36px;
+  }
+
+  .myOrbitaHeader {
+    display: block;
+  }
+
+  .myOrbitaBack {
+    width: 100%;
+    margin-top: 14px;
+  }
+
+  .myOrbitaAgentCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myOrbitaAgentArt {
+    min-height: 250px;
+    border-right: 0;
+    border-bottom: 5px solid #111;
+  }
+
+  .myOrbitaAgentArt img {
+    max-height: 245px;
+  }
+
+  .myOrbitaPowerRow {
+    grid-template-columns: 100px 1fr 32px;
+    font-size: 12px;
+  }
+
+  .myOrbitaInventory {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .myOrbitaSectionTitle {
+    display: block;
+  }
+
+  .myOrbitaSectionTitle small {
+    display: block;
+    margin-top: 5px;
+  }
+}
+
+
+/* game-v2 — visual composition pass 2 */
+
+/* Selection screen */
+.gameIntro {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.gameIntro > .gameBadge {
+  margin-top: 10px;
+}
+
+.gameIntro > h1 {
+  max-width: 920px;
+  font-size: clamp(54px, 8vw, 104px);
+}
+
+.gameIntro > p {
+  max-width: 760px;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.agentGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.agentCard {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  padding: 0;
+  display: grid;
+  grid-template-rows: 248px auto auto 1fr;
+  background: #fff8e8;
+}
+
+.agentCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 248px;
+  background: #6b5cff;
+  border-bottom: 5px solid #111;
+  z-index: 0;
+}
+
+.agentCard-luma::before { background: #2d8cff; }
+.agentCard-nexo::before { background: #28d7c7; }
+.agentCard-kira::before { background: #6b5cff; }
+.agentCard-teo::before { background: #ff8a3d; }
+.agentCard-zuri::before { background: #43d17a; }
+.agentCard-orin::before { background: #28d7c7; }
+.agentCard-vega::before { background: #ff645f; }
+.agentCard-mio::before { background: #ff4fa3; }
+
+.agentCard img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 248px;
+  padding: 8px 12px 0;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: none;
+  margin: 0;
+}
+
+.agentCard strong,
+.agentCard span,
+.agentCard small {
+  position: relative;
+  z-index: 1;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.agentCard strong {
+  margin-top: 14px;
+  font-size: 32px;
+}
+
+.agentCard span {
+  margin: 0;
+  font-size: 14px;
+}
+
+.agentCard small {
+  padding-top: 7px;
+  padding-bottom: 16px;
+  line-height: 1.35;
+}
+
+/* Scene shell */
+.sceneV2 {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 34px;
+  background: #f7f3ea;
+}
+
+.sceneTopV2 {
+  display: none;
+}
+
+.sceneActionBar {
+  margin: 0 0 14px;
+  padding: 0 2px;
+}
+
+.sceneActionBar .sceneAction {
+  margin-top: 0;
+  padding: 10px 15px;
+  border-width: 4px;
+  box-shadow: 4px 4px 0 #111;
+  font-size: 13px;
+}
+
+.boardStageV2 {
+  margin-top: 0;
+  padding: 0 0 22px;
+  border-radius: 28px;
+  background: #111;
+  overflow: hidden;
+  gap: 0;
+}
+
+.boardStageV2::before,
+.boardStageV2::after {
+  display: none;
+}
+
+.worldComposition {
+  position: relative;
+  min-height: 530px !important;
+  overflow: hidden;
+  border-bottom: 5px solid #111;
+  background: #111;
+}
+
+.worldArtV2 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Live character card */
+.agentGuideWithCard {
+  position: absolute !important;
+  left: 22px !important;
+  top: 22px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 270px !important;
+  display: block !important;
+  z-index: 20 !important;
+  pointer-events: none;
+}
+
+.agentLiveCard {
+  position: relative;
+  width: 270px !important;
+  height: 368px !important;
+  transform: rotate(-2deg) !important;
+  filter: drop-shadow(7px 7px 0 rgba(0,0,0,.75)) !important;
+  pointer-events: auto;
+}
+
+.agentLiveFrame {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.agentLiveContent {
+  position: absolute !important;
+  z-index: 2 !important;
+  inset: 24px 24px 28px !important;
+  display: grid !important;
+  grid-template-rows: 150px auto 1fr !important;
+  gap: 8px !important;
+}
+
+.agentLiveHero {
+  position: relative;
+  overflow: hidden;
+  border: 4px solid #111;
+  border-radius: 22px;
+  background: #6b5cff;
+}
+
+.agentLiveAvatarBox {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.agentLiveAvatar {
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: none !important;
+}
+
+.agentLiveName {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  z-index: 3;
+  text-align: left;
+}
+
+.agentLiveName span {
+  display: inline-block !important;
+  margin: 0 0 3px;
+  padding: 3px 6px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #ffe24a;
+  color: #111;
+  font-size: 8px !important;
+  font-weight: 950;
+}
+
+.agentLiveName strong {
+  display: block;
+  width: fit-content;
+  border: 3px solid #111;
+  border-radius: 10px;
+  background: #fff;
+  padding: 3px 7px;
+  font-size: 22px !important;
+  line-height: 1;
+}
+
+.agentLivePowerSection {
+  background: #fff !important;
+}
+
+.agentLivePowerBars {
+  display: grid;
+  gap: 4px;
+}
+
+.agentPowerBar {
+  display: grid;
+  grid-template-columns: 22px 62px 1fr 16px;
+  gap: 5px;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 950;
+}
+
+.agentPowerBar img {
+  width: 22px !important;
+  height: 22px !important;
+  object-fit: contain;
+}
+
+.agentPowerBar > i {
+  height: 8px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff8e8;
+}
+
+.agentPowerBar > i > em {
+  display: block;
+  height: 100%;
+  background: #28d7c7;
+}
+
+.agentPowerBar > strong {
+  font-size: 9px;
+}
+
+.agentLiveMeta {
+  display: grid;
+  grid-template-columns: 1fr 62px;
+  gap: 6px;
+}
+
+.agentLiveMeta .agentLiveSection {
+  min-height: 48px;
+}
+
+.agentLiveItems {
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.agentLiveItems img {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.agentLiveCards {
+  display: grid;
+  place-items: center;
+  height: 27px;
+}
+
+.agentLiveCards strong {
+  font-size: 20px;
+}
+
+.agentGuideWithCard .agentSpeech {
+  display: none !important;
+}
+
+/* Narrative + choices */
+.choiceLayerV2 {
+  display: grid;
+  gap: 14px;
+  padding: 18px 18px 0 !important;
+  background: #f7f3ea;
+}
+
+.sceneQuestionCard {
+  width: min(1040px, 100%) !important;
+  margin: -64px auto 0 !important;
+  padding: 17px 20px !important;
+  border-radius: 26px !important;
+  box-shadow: 7px 7px 0 #111 !important;
+}
+
+.sceneQuestionCard h1 {
+  font-size: clamp(36px, 4.6vw, 62px) !important;
+  line-height: .92 !important;
+  margin-bottom: 7px !important;
+}
+
+.sceneQuestionCard p {
+  max-width: 880px;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+}
+
+.choiceLayerV2 .floatingChoices {
+  width: min(1040px, 100%) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px !important;
+}
+
+.choiceLayerV2 .sceneChoice {
+  min-height: 108px !important;
+  padding: 18px !important;
+  border-width: 4px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 0 #111;
+  font-size: 18px !important;
+  line-height: 1.08 !important;
+  background: #fff;
+}
+
+.choiceLayerV2 .sceneChoice:nth-child(3n + 1) { background: #fff8e8; }
+.choiceLayerV2 .sceneChoice:nth-child(3n + 2) { background: #e9e4ff; }
+.choiceLayerV2 .sceneChoice:nth-child(3n + 3) { background: #dcfbf5; }
+
+/* Backpack */
+.choiceLayerV2 .inventoryGrid {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.choiceLayerV2 .itemCard {
+  min-height: 140px;
+  padding: 9px;
+  display: grid;
+  align-content: center;
+  border-width: 4px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 0 #111;
+  background: #fff;
+}
+
+.choiceLayerV2 .itemCard img {
+  width: 74px;
+  height: 74px;
+  margin-bottom: 7px;
+}
+
+.choiceLayerV2 .itemCard span {
+  font-size: 12px;
+  text-align: center;
+}
+
+.choiceLayerV2 .itemCard.selected {
+  background: #ffe24a;
+}
+
+.choiceLayerV2 > .sceneAction {
+  width: min(420px, 100%);
+  margin: 4px auto 0;
+  font-size: 16px;
+  padding: 12px 18px;
+}
+
+/* More useful HUD hierarchy */
+.playerXpCounter {
+  order: -1;
+}
+
+.sceneStageCounter {
+  margin-left: auto;
+}
+
+@media (max-width: 1050px) {
+  .agentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .worldComposition {
+    min-height: 470px !important;
+  }
+
+  .agentGuideWithCard {
+    width: 220px !important;
+  }
+
+  .agentLiveCard {
+    width: 220px !important;
+    height: 300px !important;
+  }
+
+  .agentLiveContent {
+    inset: 20px !important;
+    grid-template-rows: 116px auto 1fr !important;
+  }
+
+  .agentLiveAvatar {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  .agentLiveName strong {
+    font-size: 18px !important;
+  }
+
+  .agentPowerBar {
+    grid-template-columns: 19px 52px 1fr 13px;
+  }
+
+  .agentPowerBar img {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .choiceLayerV2 .inventoryGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .gamePage {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .agentGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .agentCard {
+    min-height: 300px;
+    grid-template-rows: 180px auto auto 1fr;
+    border-width: 4px;
+    border-radius: 22px;
+    box-shadow: 5px 5px 0 #111;
+  }
+
+  .agentCard::before {
+    height: 180px;
+    border-bottom-width: 4px;
+  }
+
+  .agentCard img {
+    height: 180px;
+  }
+
+  .agentCard strong {
+    font-size: 25px;
+  }
+
+  .agentCard small {
+    font-size: 11px;
+  }
+
+  .sceneV2 {
+    padding: 8px;
+    border-width: 4px;
+    box-shadow: 6px 6px 0 #111;
+  }
+
+  .sceneActionBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .sceneActionBar .sceneAction,
+  .sceneStageCounter,
+  .playerXpCounter,
+  .saveStatus {
+    width: auto !important;
+    margin: 0 !important;
+  }
+
+  .sceneActionGhost {
+    display: none;
+  }
+
+  .worldComposition {
+    min-height: 370px !important;
+  }
+
+  .agentGuideWithCard {
+    left: 10px !important;
+    top: 10px !important;
+    width: 150px !important;
+  }
+
+  .agentLiveCard {
+    width: 150px !important;
+    height: 205px !important;
+    filter: drop-shadow(5px 5px 0 rgba(0,0,0,.7)) !important;
+  }
+
+  .agentLiveContent {
+    inset: 13px !important;
+    grid-template-rows: 88px auto !important;
+    gap: 5px !important;
+  }
+
+  .agentLiveHero {
+    border-width: 3px;
+    border-radius: 14px;
+  }
+
+  .agentLiveAvatar {
+    width: 94px !important;
+    height: 94px !important;
+  }
+
+  .agentLiveName span {
+    display: none !important;
+  }
+
+  .agentLiveName strong {
+    font-size: 14px !important;
+    border-width: 2px;
+  }
+
+  .agentLiveMeta {
+    display: none;
+  }
+
+  .agentLiveSection b {
+    font-size: 7px !important;
+  }
+
+  .agentPowerBar {
+    grid-template-columns: 16px 1fr 12px;
+    gap: 4px;
+  }
+
+  .agentPowerBar img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .agentPowerBar > span {
+    display: none;
+  }
+
+  .agentPowerBar > i {
+    height: 6px;
+  }
+
+  .sceneQuestionCard {
+    margin-top: -34px !important;
+    padding: 13px !important;
+    border-width: 4px !important;
+    border-radius: 20px !important;
+  }
+
+  .sceneQuestionCard .gameBadge {
+    font-size: 9px;
+    margin-bottom: 5px;
+  }
+
+  .sceneQuestionCard h1 {
+    font-size: clamp(30px, 10vw, 44px) !important;
+  }
+
+  .sceneQuestionCard p {
+    font-size: 13px !important;
+  }
+
+  .choiceLayerV2 {
+    padding: 10px 10px 0 !important;
+  }
+
+  .choiceLayerV2 .floatingChoices {
+    grid-template-columns: 1fr;
+    gap: 9px !important;
+  }
+
+  .choiceLayerV2 .sceneChoice {
+    min-height: 76px !important;
+    font-size: 16px !important;
+    padding: 14px !important;
+  }
+
+  .choiceLayerV2 .inventoryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .choiceLayerV2 .itemCard {
+    min-height: 112px;
+  }
+
+  .choiceLayerV2 .itemCard img {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+
+/* game-v2 — final result v2 */
+
+.finalResultPage {
+  min-height: 100vh;
+  padding: 26px 16px 54px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(107,92,255,.10), transparent 24%),
+    radial-gradient(circle at 88% 6%, rgba(40,215,199,.12), transparent 20%),
+    #f4efe6;
+}
+
+.finalResultShell {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.finalHeaderV2 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: end;
+  text-align: left;
+  margin-bottom: 26px;
+}
+
+.finalHeaderV2 h1 {
+  max-width: 780px;
+  font-size: clamp(48px, 7vw, 92px);
+  margin: 8px 0 10px;
+}
+
+.finalHeaderV2 p {
+  margin: 0;
+  max-width: 760px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.finalProgressChip {
+  border: 5px solid #111;
+  border-radius: 28px;
+  background: #111;
+  color: #fff;
+  box-shadow: 7px 7px 0 #6b5cff;
+  padding: 18px 22px;
+  min-width: 160px;
+  display: grid;
+  gap: 5px;
+}
+
+.finalProgressChip span {
+  color: #ffe24a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalProgressChip strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.finalResultGrid {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.orbitaPowerCardV2 {
+  position: sticky;
+  top: 18px;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.orbitaPowerCardV2::before,
+.orbitaPowerCardV2 .cardDecor {
+  display: none;
+}
+
+.finalCardFrameV2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+}
+
+.finalCardContentV2 {
+  position: relative;
+  z-index: 1;
+  padding: 34px 34px 38px;
+  display: grid;
+  gap: 14px;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader {
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader span {
+  margin-bottom: 7px;
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader h2 {
+  font-size: clamp(36px, 5vw, 52px);
+}
+
+.orbitaPowerCardV2 .orbitaCardHeader p {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.finalLevelSeal {
+  width: 62px;
+  height: 62px;
+  border: 4px solid #111;
+  border-radius: 50%;
+  background: #ff645f;
+  color: #fff;
+  box-shadow: 4px 4px 0 #111;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+.orbitaPowerCardV2 .orbitaHeroZone {
+  position: relative;
+  height: 260px;
+  margin: 0;
+  overflow: hidden;
+  border: 4px solid #111;
+  border-radius: 26px;
+  background: #6b5cff;
+}
+
+.orbitaPowerCardV2 .heroAura {
+  width: 190px;
+  height: 150px;
+  border-width: 4px;
+  background: #ffe24a;
+  box-shadow: 5px 5px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaHero {
+  width: 245px;
+  height: 245px;
+  object-position: bottom center;
+  filter: none;
+  align-self: end;
+}
+
+.finalAgentTag {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaBadges {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot {
+  position: relative;
+  min-height: 110px;
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  grid-template-areas:
+    "rank icon score"
+    "label label label";
+  align-items: center;
+  gap: 5px;
+  padding: 9px;
+  border-width: 3px;
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > span {
+  grid-area: rank;
+  font-size: 9px;
+  font-weight: 950;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot img {
+  grid-area: icon;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > strong {
+  grid-area: label;
+  font-size: 11px;
+}
+
+.orbitaPowerCardV2 .orbitaBadgeSlot > b {
+  grid-area: score;
+  font-size: 20px;
+}
+
+.finalMissionV2,
+.finalItemV2 {
+  margin: 0;
+}
+
+.finalItemV2 {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 3px solid #111;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #111;
+}
+
+.finalItemV2 img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.finalItemV2 p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.finalInsights {
+  display: grid;
+  gap: 16px;
+}
+
+.finalInsightPanel,
+.finalPassaporte {
+  border: 5px solid #111;
+  border-radius: 30px;
+  box-shadow: 7px 7px 0 #111;
+  padding: 24px;
+  background: #fff;
+}
+
+.finalTopSignals {
+  background: #fff8e8;
+}
+
+.finalPanelEyebrow {
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalInsightPanel h2,
+.finalPassaporte h2 {
+  margin: 6px 0 16px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1;
+}
+
+.finalInsightPanel > p {
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.finalTopSignalList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.finalTopSignalList > div {
+  border: 3px solid #111;
+  border-radius: 20px;
+  background: #fff;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 9px;
+  align-items: center;
+}
+
+.finalTopSignalList img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.finalTopSignalList span,
+.finalTopSignalList strong,
+.finalTopSignalList small {
+  display: block;
+}
+
+.finalTopSignalList strong {
+  font-size: 15px;
+}
+
+.finalTopSignalList small {
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.finalMetaCards {
+  display: grid;
+  grid-template-columns: 1.4fr .7fr .7fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.finalMetaCards > div {
+  border: 3px solid #111;
+  border-radius: 18px;
+  padding: 12px;
+  background: #e9e4ff;
+  display: grid;
+  gap: 4px;
+}
+
+.finalMetaCards span {
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.finalMetaCards strong {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.finalStatsPanel {
+  background: #dcfbf5;
+}
+
+.finalStatsV2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.finalStatsV2 .orbitaStatRow {
+  grid-template-columns: 112px 1fr 32px;
+  font-size: 13px;
+  margin-bottom: 9px;
+}
+
+.finalStatsV2 .orbitaStatTrack {
+  background: #fff;
+}
+
+.finalStatsV2 .orbitaStatTrack div {
+  background: #6b5cff;
+}
+
+.finalNextSteps {
+  background: #ffe24a;
+}
+
+.finalTrailsV2 {
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  background: transparent;
+  margin: 0;
+}
+
+.finalTrailsV2 article {
+  background: #fff;
+  padding: 12px;
+}
+
+.finalPassaporte {
+  background: #6b5cff;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 22px;
+  align-items: center;
+}
+
+.finalPassaporte > div > span {
+  color: #ffe24a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.finalPassaporte p {
+  max-width: 720px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.finalProfileButton {
+  margin: 0;
+  background: #ffe24a;
+  color: #111;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .finalResultGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orbitaPowerCardV2 {
+    position: relative;
+    top: auto;
+    width: min(520px, 100%);
+    margin: 0 auto;
+  }
+
+  .finalHeaderV2 {
+    grid-template-columns: 1fr;
+  }
+
+  .finalProgressChip {
+    width: fit-content;
+  }
+}
+
+@media (max-width: 700px) {
+  .finalResultPage {
+    padding: 16px 8px 38px;
+  }
+
+  .finalHeaderV2 h1 {
+    font-size: clamp(42px, 13vw, 62px);
+  }
+
+  .finalHeaderV2 p {
+    font-size: 14px;
+  }
+
+  .finalCardContentV2 {
+    padding: 26px 24px 30px;
+  }
+
+  .orbitaPowerCardV2 .orbitaHeroZone {
+    height: 220px;
+  }
+
+  .orbitaPowerCardV2 .orbitaHero {
+    width: 210px;
+    height: 210px;
+  }
+
+  .orbitaPowerCardV2 .orbitaBadges {
+    grid-template-columns: 1fr;
+  }
+
+  .orbitaPowerCardV2 .orbitaBadgeSlot {
+    min-height: 78px;
+    grid-template-columns: 26px 46px 1fr auto;
+    grid-template-areas: "rank icon label score";
+  }
+
+  .orbitaPowerCardV2 .orbitaBadgeSlot > strong {
+    font-size: 12px;
+  }
+
+  .finalTopSignalList,
+  .finalMetaCards,
+  .finalPassaporte {
+    grid-template-columns: 1fr;
+  }
+
+  .finalInsightPanel,
+  .finalPassaporte {
+    padding: 18px;
+    border-width: 4px;
+    border-radius: 24px;
+    box-shadow: 5px 5px 0 #111;
+  }
+
+  .finalStatsV2 .orbitaStatRow {
+    grid-template-columns: 96px 1fr 28px;
+    font-size: 11px;
+  }
+
+  .finalProfileButton {
+    width: 100%;
+  }
+}
+
+
+/* game-v3 — mobile first approved direction */
+
+:root {
+  --orbita-navy: #06233d;
+  --orbita-navy-2: #0b3554;
+  --orbita-cyan: #25d9ec;
+  --orbita-mint: #41f3b3;
+  --orbita-yellow: #ffd84d;
+  --orbita-cream: #f7f4e8;
+  --orbita-purple: #9e69f6;
+  --orbita-ink: #071724;
+}
+
+.mobileStartPage,
+.mobileMissionPage {
+  min-height: 100vh;
+  color: #fff;
+  background:
+    radial-gradient(circle at 50% 2%, rgba(37,217,236,.20), transparent 28%),
+    linear-gradient(180deg, #073353 0%, #06233d 46%, #041827 100%);
+  font-family: inherit;
+}
+
+.mobileStartShell,
+.mobileMissionShell {
+  width: min(560px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  padding: max(14px, env(safe-area-inset-top)) 12px calc(92px + env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+.mobileStartTop,
+.mobileMissionTop {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 9px;
+  align-items: center;
+  position: relative;
+  z-index: 20;
+}
+
+.mobileMissionTop {
+  grid-template-columns: 44px minmax(90px,1fr) auto;
+}
+
+.mobileRoundButton {
+  width: 46px;
+  height: 46px;
+  border: 2px solid rgba(255,255,255,.42);
+  border-radius: 15px;
+  color: #fff;
+  background: linear-gradient(180deg, #19bce7, #087dbd);
+  box-shadow: 0 6px 16px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.55);
+  font-size: 22px;
+  font-weight: 950;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.mobileBackDisabled:disabled {
+  opacity: 1;
+}
+
+.orbitaWordmark {
+  position: relative;
+  width: fit-content;
+  padding: 0 5px 5px;
+  line-height: 1;
+}
+
+.orbitaWordmark strong {
+  position: relative;
+  z-index: 2;
+  display: block;
+  color: #fff;
+  font-size: 38px;
+  font-weight: 1000;
+  letter-spacing: -0.075em;
+  text-shadow:
+    0 3px 0 #0b7ea8,
+    0 6px 12px rgba(0,0,0,.35);
+  transform: skew(-4deg);
+}
+
+.orbitaWordmark i {
+  position: absolute;
+  left: 2px;
+  right: -8px;
+  bottom: 3px;
+  height: 11px;
+  border: 3px solid var(--orbita-yellow);
+  border-top-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-7deg);
+  z-index: 1;
+}
+
+.orbitaWordmarkStar {
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  z-index: 3;
+  color: var(--orbita-yellow);
+  font-size: 16px;
+}
+
+.orbitaWordmark.compact strong {
+  font-size: 28px;
+}
+
+.mobileLevelPill,
+.mobileStagePill {
+  min-height: 46px;
+  border: 2px solid rgba(64,221,255,.72);
+  border-radius: 16px;
+  background: rgba(5,31,52,.88);
+  box-shadow: 0 7px 18px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.18);
+  padding: 7px 10px;
+}
+
+.mobileLevelPill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobileLevelPill > span {
+  color: var(--orbita-yellow);
+}
+
+.mobileLevelPill strong,
+.mobileStagePill span {
+  display: block;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.mobileLevelPill i,
+.mobileStagePill i {
+  display: block;
+  width: 82px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #173d58;
+}
+
+.mobileLevelPill em,
+.mobileStagePill em {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--orbita-mint), var(--orbita-cyan));
+}
+
+.mobileStartIntro {
+  margin: 28px 4px 12px;
+}
+
+.mobileStartIntro .gameBadge {
+  border: 0;
+  box-shadow: none;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  color: #061b2f;
+  background: var(--orbita-mint);
+  font-size: 9px;
+}
+
+.mobileStartIntro h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(45px, 13vw, 68px);
+  line-height: .88;
+  letter-spacing: -0.07em;
+}
+
+.mobileStartIntro h1 span {
+  display: block;
+  color: var(--orbita-yellow);
+}
+
+.mobileStartIntro p {
+  max-width: 410px;
+  margin: 13px 0 0;
+  color: #d9eef8;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 750;
+}
+
+/* Agent carousel */
+.mobileAgentCarousel {
+  display: flex;
+  gap: 12px;
+  margin: 18px -12px 0;
+  padding: 10px 18vw 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.mobileAgentCarousel::-webkit-scrollbar,
+.mobileScenarioRail::-webkit-scrollbar,
+.mobileInventoryRail::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileAgentCard {
+  flex: 0 0 66%;
+  scroll-snap-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 330px;
+  border: 2px solid rgba(74,217,255,.40);
+  border-radius: 28px;
+  padding: 0 0 16px;
+  color: #fff;
+  background: linear-gradient(180deg, #113f60, #09243c);
+  box-shadow: 0 14px 30px rgba(0,0,0,.30), inset 0 1px rgba(255,255,255,.20);
+  text-align: left;
+  transform: scale(.93);
+  opacity: .72;
+  transition: transform .18s ease, opacity .18s ease, border-color .18s ease;
+}
+
+.mobileAgentCard.active {
+  transform: scale(1);
+  opacity: 1;
+  border-color: var(--orbita-yellow);
+  box-shadow:
+    0 0 0 3px rgba(255,216,77,.22),
+    0 18px 38px rgba(0,0,0,.42);
+}
+
+.mobileAgentImageWrap {
+  height: 225px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255,255,255,.30), transparent 27%),
+    linear-gradient(180deg, #17aacf, #0b5978);
+  overflow: hidden;
+}
+
+.mobileAgentCard-luma .mobileAgentImageWrap { background: linear-gradient(180deg, #6073ff, #333485); }
+.mobileAgentCard-nexo .mobileAgentImageWrap { background: linear-gradient(180deg, #34d7b5, #13796c); }
+.mobileAgentCard-kira .mobileAgentImageWrap { background: linear-gradient(180deg, #b26bed, #633192); }
+.mobileAgentCard-teo .mobileAgentImageWrap { background: linear-gradient(180deg, #ffb04f, #b15c18); }
+.mobileAgentCard-zuri .mobileAgentImageWrap { background: linear-gradient(180deg, #52dd83, #21784a); }
+.mobileAgentCard-orin .mobileAgentImageWrap { background: linear-gradient(180deg, #2ed3e6, #0b7484); }
+.mobileAgentCard-vega .mobileAgentImageWrap { background: linear-gradient(180deg, #ff7b74, #a7354d); }
+.mobileAgentCard-mio .mobileAgentImageWrap { background: linear-gradient(180deg, #ff62b5, #8e3476); }
+
+.mobileAgentCard img {
+  width: 96%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.25));
+}
+
+.mobileAgentCard > span {
+  display: inline-flex;
+  width: fit-content;
+  margin: -12px 14px 5px;
+  position: relative;
+  z-index: 2;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: var(--orbita-ink);
+  background: var(--orbita-yellow);
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.mobileAgentCard > strong {
+  display: block;
+  padding: 0 14px;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+
+.mobileAgentCard > small {
+  display: block;
+  min-height: 38px;
+  padding: 7px 14px 0;
+  color: #d8edf6;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+/* Scenario rail */
+.mobileScenarioSection {
+  margin: 4px 0 14px;
+  border: 1px solid rgba(47,218,238,.45);
+  border-radius: 24px;
+  padding: 14px 0 12px;
+  background: rgba(4,28,47,.72);
+  box-shadow: inset 0 1px rgba(255,255,255,.10);
+}
+
+.mobileSectionHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 13px 9px;
+}
+
+.mobileSectionHeading > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobileSectionHeading strong {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.mobileSectionHeading small {
+  color: #aac9d9;
+  font-size: 9px;
+}
+
+.mobileSectionIcon {
+  color: var(--orbita-cyan);
+}
+
+.mobileScenarioRail {
+  display: flex;
+  gap: 9px;
+  padding: 0 12px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.mobileScenarioRail button {
+  flex: 0 0 82px;
+  min-height: 86px;
+  border: 1px solid #1b759d;
+  border-radius: 17px;
+  color: #fff;
+  background: linear-gradient(180deg, #164e70, #0a2943);
+  box-shadow: inset 0 1px rgba(255,255,255,.14);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+}
+
+.mobileScenarioRail button.active {
+  border-color: var(--orbita-mint);
+  box-shadow: 0 0 0 2px rgba(65,243,179,.18), 0 0 18px rgba(37,217,236,.25);
+  background: linear-gradient(180deg, #156a7f, #0b3d57);
+}
+
+.mobileScenarioRail button span {
+  font-size: 22px;
+  color: var(--orbita-yellow);
+}
+
+.mobileScenarioRail button strong {
+  font-size: 10px;
+}
+
+.mobilePrimaryCta {
+  width: 100%;
+  min-height: 76px;
+  margin: 10px 0;
+  border: 2px solid #fff0a5;
+  border-radius: 24px;
+  padding: 10px 14px;
+  color: #102037;
+  background: linear-gradient(180deg, #ffe96d 0%, #ffc83d 100%);
+  box-shadow:
+    0 10px 0 #c98313,
+    0 18px 28px rgba(0,0,0,.30),
+    inset 0 2px rgba(255,255,255,.72);
+  display: grid;
+  grid-template-columns: 54px 1fr 26px;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.mobilePrimaryCta:disabled {
+  opacity: .45;
+  filter: grayscale(.35);
+}
+
+.mobilePlayIcon {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #06405a;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(180deg, #11d7d9, #04869e);
+  box-shadow: inset 0 2px rgba(255,255,255,.45);
+  font-size: 18px;
+}
+
+.mobilePrimaryCta > span:nth-child(2) strong,
+.mobilePrimaryCta > span:nth-child(2) small {
+  display: block;
+}
+
+.mobilePrimaryCta > span:nth-child(2) strong {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.mobilePrimaryCta > span:nth-child(2) small {
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.mobilePrimaryCta > b {
+  font-size: 32px;
+}
+
+.mobileContinueButton {
+  width: 100%;
+  margin: 6px 0 18px;
+  border: 1px solid rgba(255,255,255,.34);
+  border-radius: 16px;
+  padding: 12px;
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  font-weight: 900;
+}
+
+/* Mobile mission header */
+.mobileSaveButton {
+  min-height: 42px;
+  border: 1px solid #ffe797;
+  border-radius: 14px;
+  padding: 8px 10px;
+  color: #0b2334;
+  background: linear-gradient(#ffe766,#ffc73e);
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  box-shadow: 0 5px 0 #b87014;
+}
+
+.mobileStagePill {
+  grid-column: 2 / -1;
+  margin-left: auto;
+  margin-top: -2px;
+  min-height: 34px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobileStagePill i {
+  width: 92px;
+  margin-top: 0;
+}
+
+.mobileSaveToast {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 70px);
+  left: 50%;
+  z-index: 100;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  padding: 8px 13px;
+  color: #06283f;
+  background: var(--orbita-mint);
+  box-shadow: 0 7px 22px rgba(0,0,0,.26);
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+/* Visual world */
+.mobileWorldHero {
+  position: relative;
+  height: clamp(340px, 53vh, 520px);
+  margin: 12px -12px 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,.14);
+  border-bottom: 1px solid rgba(68,219,245,.28);
+  background: #0d3148;
+}
+
+.mobileWorldImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.mobileWorldHero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(4,18,29,.02) 48%, rgba(3,20,34,.72) 100%),
+    linear-gradient(90deg, rgba(4,18,29,.28), transparent 45%);
+  pointer-events: none;
+}
+
+.mobileAgentHud {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  z-index: 4;
+  width: 142px;
+  border: 2px solid rgba(82,232,255,.8);
+  border-radius: 20px;
+  padding: 7px;
+  color: var(--orbita-ink);
+  background: rgba(245,251,250,.95);
+  box-shadow: 0 10px 24px rgba(0,0,0,.34);
+  backdrop-filter: blur(8px);
+}
+
+.mobileAgentHudPortrait {
+  height: 118px;
+  margin: -2px -2px 5px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg,#19bfd4,#0b6f86);
+}
+
+.mobileAgentHudPortrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.mobileAgentHudName {
+  margin-top: -15px;
+  position: relative;
+}
+
+.mobileAgentHudName span {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 3px 6px;
+  background: #102435;
+  color: #fff;
+  font-size: 6px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mobileAgentHudName strong {
+  display: block;
+  margin-top: 2px;
+  color: #071724;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.mobileAgentHudStats {
+  display: grid;
+  gap: 4px;
+  margin-top: 7px;
+}
+
+.mobileAgentHudStats > div {
+  display: grid;
+  grid-template-columns: 17px 1fr;
+  gap: 4px;
+  align-items: center;
+}
+
+.mobileAgentHudStats img {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+}
+
+.mobileAgentHudStats i {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #cbd5da;
+}
+
+.mobileAgentHudStats em {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,#1be0c7,#28a8e8);
+}
+
+.mobileAgentHudStats small {
+  color: #60717d;
+  font-size: 7px;
+}
+
+.mobileAgentHudInventory {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid #b9c9d1;
+}
+
+.mobileAgentHudInventory > span {
+  font-size: 7px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.mobileAgentHudInventory > div {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mobileAgentHudInventory img {
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
+
+.mobileAgentHudInventory small {
+  color: #7b8990;
+  font-size: 7px;
+}
+
+/* Decision panel */
+.mobileDecisionPanel {
+  position: relative;
+  z-index: 10;
+  margin: -34px 0 0;
+  border: 1px solid rgba(49,217,237,.58);
+  border-radius: 28px 28px 20px 20px;
+  padding: 18px 14px 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(35,215,236,.10), transparent 25%),
+    linear-gradient(180deg, #082d49, #051f35);
+  box-shadow: 0 -12px 28px rgba(0,0,0,.18), 0 14px 28px rgba(0,0,0,.22);
+}
+
+.mobileLocationTag {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #06243b;
+  background: var(--orbita-mint);
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.mobileDecisionPanel > h1 {
+  margin: 10px 0 7px;
+  color: #fff;
+  font-size: clamp(29px, 9vw, 44px);
+  line-height: .95;
+  letter-spacing: -.05em;
+}
+
+.mobileDecisionPanel > p {
+  margin: 0 0 13px;
+  color: #cee5f1;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.mobileChoices {
+  display: grid;
+  gap: 9px;
+}
+
+.mobileChoiceButton {
+  min-height: 70px;
+  border: 0;
+  border-radius: 18px;
+  padding: 10px 11px;
+  color: #082238;
+  background: linear-gradient(180deg,#c7fff0,#67efc5);
+  box-shadow: inset 0 1px rgba(255,255,255,.7), 0 5px 0 #198f78;
+  display: grid;
+  grid-template-columns: 38px 1fr 26px;
+  gap: 9px;
+  align-items: center;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.mobileChoiceButton:nth-child(2) {
+  background: linear-gradient(180deg,#ffe98a,#ffc849);
+  box-shadow: inset 0 1px rgba(255,255,255,.7), 0 5px 0 #b97818;
+}
+
+.mobileChoiceButton:nth-child(3) {
+  background: linear-gradient(180deg,#dbb8ff,#ae74ef);
+  box-shadow: inset 0 1px rgba(255,255,255,.7), 0 5px 0 #7540ad;
+}
+
+.mobileChoiceIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(8,38,58,.80);
+}
+
+.mobileChoiceButton > b {
+  font-size: 30px;
+  line-height: 1;
+}
+
+/* Inventory kit */
+.mobileKitBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.mobileKitHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.mobileKitHeading > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobileKitHeading > div > span {
+  color: var(--orbita-cyan);
+  font-size: 20px;
+}
+
+.mobileKitHeading strong {
+  font-size: 19px;
+}
+
+.mobileKitHeading small {
+  color: #99bece;
+  font-size: 9px;
+}
+
+.mobileInventoryRail {
+  display: flex;
+  gap: 9px;
+  margin: 0 -14px;
+  padding: 4px 14px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.mobileItemCard {
+  flex: 0 0 126px;
+  min-height: 160px;
+  scroll-snap-align: start;
+  border: 1px solid #2c7a9e;
+  border-radius: 18px;
+  padding: 8px;
+  color: #fff;
+  background: linear-gradient(180deg,#123d5c,#09253d);
+  text-align: center;
+  box-shadow: 0 7px 16px rgba(0,0,0,.2);
+}
+
+.mobileItemCard.selected {
+  border-color: var(--orbita-yellow);
+  box-shadow: 0 0 0 2px rgba(255,216,77,.22), 0 8px 20px rgba(0,0,0,.3);
+  background: linear-gradient(180deg,#16536b,#0b3149);
+}
+
+.mobileItemCard img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  margin: 0 auto 4px;
+}
+
+.mobileItemCard strong,
+.mobileItemCard small {
+  display: block;
+}
+
+.mobileItemCard strong {
+  min-height: 28px;
+  font-size: 10px;
+  line-height: 1.15;
+}
+
+.mobileItemCard small {
+  margin-top: 4px;
+  color: #a9cad8;
+  font-size: 8px;
+}
+
+.mobileKitCta {
+  margin-top: 4px;
+}
+
+/* Bottom nav */
+.mobileGameNav {
+  position: fixed;
+  z-index: 80;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(560px, 100%);
+  min-height: calc(67px + env(safe-area-inset-bottom));
+  padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(58,215,238,.5);
+  background: rgba(3,28,48,.96);
+  backdrop-filter: blur(16px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  box-shadow: 0 -12px 28px rgba(0,0,0,.25);
+}
+
+.mobileGameNav button {
+  min-height: 49px;
+  border: 0;
+  border-radius: 15px;
+  color: #88a9bb;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
+}
+
+.mobileGameNav button.active {
+  color: var(--orbita-yellow);
+  background: linear-gradient(180deg,rgba(19,142,172,.52),rgba(14,76,101,.40));
+  box-shadow: inset 0 0 0 1px rgba(58,224,241,.45);
+}
+
+.mobileGameNav button:disabled {
+  opacity: .56;
+}
+
+.mobileGameNav button > span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.mobileGameNav button > small {
+  font-size: 8px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+/* Student role switcher is secondary in game mode */
+.mobileStartShell > .roleSwitcher {
+  margin: 18px 0 0;
+  box-shadow: none;
+  border-width: 1px;
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+
+.mobileStartShell > .roleSwitcher > span {
+  color: #a9cad8;
+}
+
+.mobileStartShell > .roleSwitcher button {
+  border-width: 1px;
+  border-color: rgba(255,255,255,.20);
+  background: rgba(255,255,255,.06);
+  color: #dff2f8;
+}
+
+.mobileStartShell > .roleSwitcher button.active {
+  background: var(--orbita-cyan);
+  color: #06233d;
+}
+
+/* Mobile-first profile pass */
+@media (max-width: 700px) {
+  .myOrbitaPage {
+    background: #061f35;
+    color: #fff;
+    padding: 14px 10px 40px;
+  }
+
+  .myOrbitaShell {
+    width: 100%;
+  }
+
+  .myOrbitaHeader h1 {
+    color: #fff;
+    font-size: 42px;
+  }
+
+  .myOrbitaHeader p {
+    color: #c9e1eb;
+  }
+
+  .myOrbitaAgentCard,
+  .myOrbitaLevelCard,
+  .myOrbitaPanel,
+  .myOrbitaSection,
+  .myOrbitaRealLife {
+    border-width: 2px;
+    border-color: rgba(50,216,240,.55);
+    border-radius: 22px;
+    box-shadow: 0 9px 22px rgba(0,0,0,.24);
+  }
+
+  .myOrbitaSection,
+  .myOrbitaPanel {
+    color: #071724;
+  }
+}
+
+/* Progressive enhancement on larger screens: retain phone composition */
+@media (min-width: 760px) {
+  .mobileStartShell,
+  .mobileMissionShell {
+    border-left: 1px solid rgba(73,218,239,.18);
+    border-right: 1px solid rgba(73,218,239,.18);
+    box-shadow: 0 0 55px rgba(0,0,0,.28);
+  }
+
+  .mobileAgentCarousel {
+    padding-left: 105px;
+    padding-right: 105px;
+  }
+}
+
+
+/* game-v3 — mobile mission cards */
+
+.mobileUseItemStage,
+.mobileTradeoffStage,
+.mobilePowerStage,
+.mobileMissionChoices {
+  display: grid;
+  gap: 12px;
+}
+
+.mobileActiveItem {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(48,211,236,.45);
+  border-radius: 20px;
+  padding: 10px;
+  background: rgba(7,42,67,.86);
+}
+
+.mobileActiveItemArt {
+  height: 112px;
+  border-radius: 16px;
+  background: linear-gradient(180deg,#174f6f,#0c2d47);
+  display: grid;
+  place-items: center;
+}
+
+.mobileActiveItemArt img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+}
+
+.mobileActiveItem > div:last-child > span {
+  color: var(--orbita-cyan);
+  font-size: 8px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.mobileActiveItem strong {
+  display: block;
+  margin: 3px 0 4px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobileActiveItem p {
+  margin: 0;
+  color: #bad4df;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.mobileTradeoffGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.mobileTradeoffCard {
+  min-height: 82px;
+  border: 1px solid rgba(72,207,231,.42);
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(180deg,#174b69,#092942);
+  box-shadow: 0 6px 15px rgba(0,0,0,.18);
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 7px;
+  align-items: center;
+  padding: 10px;
+  text-align: left;
+}
+
+.mobileTradeoffCard > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.08);
+  color: #8db2c2;
+  font-size: 16px;
+}
+
+.mobileTradeoffCard > strong {
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.mobileTradeoffCard.selected {
+  border-color: var(--orbita-yellow);
+  color: #0a2337;
+  background: linear-gradient(180deg,#ffe979,#ffc849);
+  box-shadow: 0 0 0 2px rgba(255,216,77,.16),0 7px 18px rgba(0,0,0,.24);
+}
+
+.mobileTradeoffCard.selected > span {
+  color: #083c44;
+  background: var(--orbita-mint);
+}
+
+.mobileTokenRail {
+  display: flex;
+  gap: 7px;
+  margin: 0 -14px;
+  padding: 2px 14px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mobileTokenRail::-webkit-scrollbar,
+.mobilePowerCards::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileTokenPill {
+  flex: 0 0 auto;
+  min-width: 52px;
+  border: 1px solid rgba(55,208,232,.42);
+  border-radius: 999px;
+  padding: 5px 8px 5px 5px;
+  background: rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mobileTokenPill img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.mobileTokenPill span {
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.mobilePowerCards {
+  display: flex;
+  gap: 10px;
+  margin: 0 -14px;
+  padding: 2px 14px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.mobilePowerCard {
+  flex: 0 0 190px;
+  min-height: 230px;
+  scroll-snap-align: start;
+  border: 1px solid rgba(64,213,236,.46);
+  border-radius: 22px;
+  padding: 13px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(55,220,239,.16),transparent 34%),
+    linear-gradient(180deg,#154969,#092941);
+  box-shadow: 0 9px 22px rgba(0,0,0,.26);
+  text-align: left;
+}
+
+.mobilePowerCard img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.mobilePowerCard small {
+  display: block;
+  color: #9cc6d7;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 950;
+}
+
+.mobilePowerCard strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobilePowerCard p {
+  min-height: 48px;
+  margin: 7px 0 12px;
+  color: #d6e8ef;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.mobilePowerCard > b {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: var(--orbita-mint);
+  color: #06283c;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.mobilePowerCard.lockedPowerCard {
+  opacity: .42;
+}
+
+.mobileMissionChoices {
+  margin-top: 4px;
+}
+
+.mobileMissionChoice {
+  min-height: 86px;
+  border: 1px solid rgba(57,214,236,.48);
+  border-radius: 18px;
+  padding: 11px;
+  color: #fff;
+  background: linear-gradient(180deg,#164c6b,#092a43);
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+  display: grid;
+  grid-template-columns: 36px 1fr 22px;
+  gap: 9px;
+  align-items: center;
+  text-align: left;
+}
+
+.mobileMissionChoiceIndex {
+  color: var(--orbita-yellow);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.mobileMissionChoice strong,
+.mobileMissionChoice small {
+  display: block;
+}
+
+.mobileMissionChoice strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.mobileMissionChoice small {
+  margin-top: 5px;
+  color: #9ec3d3;
+  font-size: 8px;
+  text-transform: capitalize;
+}
+
+.mobileMissionChoice > b {
+  color: var(--orbita-cyan);
+  font-size: 28px;
+}
