@@ -27,6 +27,22 @@ jobs:
           ref: feat/orbita-generated-assets
           path: source
 
+      - name: Inspect source asset sample
+        shell: bash
+        run: |
+          echo "agent-kira:"
+          ls -l source/public/board/agent-kira.png
+          file source/public/board/agent-kira.png || true
+          xxd -l 96 source/public/board/agent-kira.png || true
+          echo
+          echo "world-schoolyard:"
+          ls -l source/public/board/world-schoolyard.png
+          file source/public/board/world-schoolyard.png || true
+          xxd -l 96 source/public/board/world-schoolyard.png || true
+          echo
+          echo "Git LFS entries:"
+          git -C source lfs ls-files || true
+
       - name: Validate and copy generated assets
         shell: bash
         run: |
