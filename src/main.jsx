@@ -19,37 +19,104 @@ import FamilyPortal from './family/FamilyPortal';
 import MunicipalityDashboard from './municipality/MunicipalityDashboard';
 import { buildDemoStudent } from './mock/demoStudent';
 import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
+import { scenarioOptions, OrbitaWordmark, MobileBottomNav } from './game/ui/MobileUI';
 import './styles.css';
 import './portals.css';
 
-function AgentSelect({ onSelect, onContinue, hasSave, onModeChange }) {
+function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
+  const [selectedAgentId, setSelectedAgentId] = useState('kira');
+  const [selectedScenarioId, setSelectedScenarioId] = useState('escola');
+
+  const selectedAgent = agents.find((item) => item.id === selectedAgentId) || agents[0];
+  const selectedScenario = scenarioOptions.find((item) => item.id === selectedScenarioId) || scenarioOptions[0];
+
   return (
-    <main className="gamePage">
-      <section className="gameIntro">
-        <RoleSwitcher mode="student" onChange={onModeChange} />
-        <div className="gameBadge">Órbita · Caminho dos Superpoderes</div>
-        <h1>Escolha seu Agente Órbita</h1>
-        <p>
-          Você não está escolhendo quem você é para sempre. Está escolhendo quem vai
-          te acompanhar no tabuleiro. Cada agente enxerga o mundo de um jeito.
-        </p>
+    <main className="mobileStartPage">
+      <section className="mobileStartShell">
+        <header className="mobileStartTop">
+          <button className="mobileRoundButton" type="button" aria-label="Menu">☰</button>
+          <OrbitaWordmark />
+          <div className="mobileLevelPill">
+            <span>✦</span>
+            <div>
+              <strong>Nível 1</strong>
+              <i><em style={{ width: '12%' }} /></i>
+            </div>
+          </div>
+        </header>
+
+        <div className="mobileStartIntro">
+          <div className="gameBadge">Sua jornada começa aqui</div>
+          <h1>Escolha seu <span>agente</span></h1>
+          <p>Cada agente enxerga desafios de um jeito. Escolha quem vai acompanhar você nesta missão.</p>
+        </div>
+
+        <div className="mobileAgentCarousel" role="list" aria-label="Agentes Órbita">
+          {agents.map((agent) => {
+            const active = agent.id === selectedAgent.id;
+            return (
+              <button
+                type="button"
+                className={`mobileAgentCard ${active ? 'active' : ''} mobileAgentCard-${agent.id}`}
+                key={agent.id}
+                onClick={() => setSelectedAgentId(agent.id)}
+              >
+                <div className="mobileAgentImageWrap">
+                  <img src={assets.agents[agent.id]} alt="" />
+                </div>
+                <span>{agent.role}</span>
+                <strong>{agent.name}</strong>
+                <small>{agent.phrase}</small>
+              </button>
+            );
+          })}
+        </div>
+
+        <section className="mobileScenarioSection">
+          <div className="mobileSectionHeading">
+            <div>
+              <span className="mobileSectionIcon">⌖</span>
+              <strong>Escolha um cenário</strong>
+            </div>
+            <small>Situações da sua vida real</small>
+          </div>
+
+          <div className="mobileScenarioRail">
+            {scenarioOptions.map((scenario) => (
+              <button
+                type="button"
+                key={scenario.id}
+                className={selectedScenario.id === scenario.id ? 'active' : ''}
+                onClick={() => setSelectedScenarioId(scenario.id)}
+              >
+                <span>{scenario.icon}</span>
+                <strong>{scenario.label}</strong>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <button
+          type="button"
+          className="mobilePrimaryCta"
+          onClick={() => onStart(selectedAgent, selectedScenario)}
+        >
+          <span className="mobilePlayIcon">▶</span>
+          <span>
+            <strong>Começar missão</strong>
+            <small>{selectedScenario.label} · com {selectedAgent.name}</small>
+          </span>
+          <b>›</b>
+        </button>
 
         {hasSave && (
-          <button className="sceneAction continueSaveButton" onClick={onContinue}>
+          <button className="mobileContinueButton" type="button" onClick={onContinue}>
             Continuar de onde parei
           </button>
         )}
 
-        <div className="agentGrid">
-          {agents.map((agent) => (
-            <button className={`agentCard agentCard-${agent.id}`} key={agent.id} onClick={() => onSelect(agent)}>
-              <img src={assets.agents[agent.id]} alt="" />
-              <strong>{agent.name}</strong>
-              <span>{agent.role}</span>
-              <small>{agent.phrase}</small>
-            </button>
-          ))}
-        </div>
+        <RoleSwitcher mode="student" onChange={onModeChange} />
+        <MobileBottomNav active="inicio" />
       </section>
     </main>
   );
@@ -449,59 +516,71 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
 
 
 function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onOpenProfile, justSaved, children }) {
+  const topPowers = Object.entries(powerTokens || {})
+    .filter(([, value]) => value > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
   return (
-    <main className="gamePage">
-      <section className="scene sceneV2">
-        <div className="sceneTop sceneTopV2">
-          <div>
-            <div className="gameBadge">{node.chapter}</div>
-            <h1>{node.title}</h1>
-            <p>{node.text}</p>
+    <main className="mobileMissionPage">
+      <section className="mobileMissionShell">
+        <header className="mobileMissionTop">
+          <button className="mobileRoundButton mobileBackDisabled" type="button" disabled aria-label="Voltar">‹</button>
+          <OrbitaWordmark compact />
+          <button className="mobileSaveButton" type="button" onClick={onSave}>
+            <span>▣</span> Salvar
+          </button>
+          <div className="mobileStagePill">
+            <span>Etapa {Math.max(1, visitedCount)} de 40+</span>
+            <i><em style={{ width: `${Math.min(100, Math.max(5, (visitedCount / 40) * 100))}%` }} /></i>
           </div>
-        </div>
+        </header>
 
-        <div className="sceneActionBar">
-          <button className="sceneAction sceneActionGhost" disabled>Voltar</button>
-          <button className="sceneAction" onClick={onSave}>Salvar</button>
-          <button className="sceneAction sceneActionProfile" onClick={onOpenProfile}>Meu Órbita</button>
-          {justSaved && <span className="saveStatus">Salvo</span>}
-          {playerProfile && (
-            <div className="playerXpCounter">
-              Nível {playerProfile.progression?.level || 1} · {playerProfile.progression?.xp || 0} XP
+        {justSaved && <div className="mobileSaveToast">Progresso salvo</div>}
+
+        <section className={`mobileWorldHero mobileWorld-${node.world}`}>
+          <img className="mobileWorldImage" src={assets.worlds[node.world]} alt="" />
+
+          <aside className="mobileAgentHud">
+            <div className="mobileAgentHudPortrait">
+              <img src={assets.agents[agent.id]} alt="" />
             </div>
-          )}
-          <div className="sceneStageCounter">Etapa {Math.max(1, visitedCount)} de 40+</div>
-        </div>
+            <div className="mobileAgentHudName">
+              <span>Agente Órbita</span>
+              <strong>{agent.name}</strong>
+            </div>
 
-        <div className={`boardStage boardStageV2 sceneWorld sceneWorld-${node.world}`}>
-          <div className="worldComposition">
-            <img className="worldArt worldArtV2" src={assets.worlds[node.world]} alt="" />
+            <div className="mobileAgentHudStats">
+              {topPowers.length ? topPowers.map(([key, value]) => (
+                <div key={key}>
+                  <img src={assets.badges[key]} alt="" />
+                  <i><em style={{ width: `${Math.min(100, 24 + value * 14)}%` }} /></i>
+                </div>
+              )) : (
+                <small>Seus poderes vão aparecer aqui.</small>
+              )}
+            </div>
 
-            <div className="agentGuide agentGuideV2 agentGuideWithCard">
-              <AgentLiveCard
-                agent={agent}
-                inventory={inventory}
-                powerTokens={powerTokens}
-                usedPowerCards={usedPowerCards}
-              />
-
-              <div className="agentSpeech">
-                <strong>{agent.name}</strong>
-                <p>{getAgentLine(agent.id, node.type, node.chapter)}</p>
+            <div className="mobileAgentHudInventory">
+              <span>Mochila</span>
+              <div>
+                {inventory.slice(0, 3).map((item) => (
+                  <img key={item.id} src={assets.items[item.id]} alt={item.label} />
+                ))}
+                {!inventory.length && <small>vazia</small>}
               </div>
             </div>
-          </div>
+          </aside>
+        </section>
 
-          <div className="choiceLayer choiceLayerV2">
-            <div className="sceneQuestionCard">
-              <div className="gameBadge">{node.chapter}</div>
-              <h1>{node.title}</h1>
-              <p>{node.text}</p>
-            </div>
+        <section className="mobileDecisionPanel">
+          <div className="mobileLocationTag">{node.chapter}</div>
+          <h1>{node.title}</h1>
+          <p>{node.text}</p>
+          {children}
+        </section>
 
-            {children}
-          </div>
-        </div>
+        <MobileBottomNav active="missao" onProfile={onOpenProfile} onSave={onSave} />
       </section>
     </main>
   );
@@ -509,12 +588,15 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
 
 function ChoiceNode({ node, onChoose }) {
   const uniqueChoices = Array.from(new Map((node.choices || []).map((choice) => [choice.label, choice])).values());
+  const icons = ['●', '◆', '⌕'];
 
   return (
-    <div className="floatingChoices">
-      {uniqueChoices.map((choice) => (
-        <button className="sceneChoice" key={choice.label} onClick={() => onChoose(choice)}>
+    <div className="mobileChoices">
+      {uniqueChoices.map((choice, index) => (
+        <button className="mobileChoiceButton" key={choice.label} onClick={() => onChoose(choice)}>
+          <span className="mobileChoiceIcon">{icons[index % icons.length]}</span>
           <span>{choice.label}</span>
+          <b>›</b>
         </button>
       ))}
     </div>
@@ -523,28 +605,42 @@ function ChoiceNode({ node, onChoose }) {
 
 function InventoryNode({ selected, onToggle, onContinue }) {
   return (
-    <>
-      <div className="inventoryGrid">
+    <div className="mobileKitBlock">
+      <div className="mobileKitHeading">
+        <div>
+          <span>▣</span>
+          <strong>Seu kit da missão</strong>
+        </div>
+        <small>Escolha 4 itens</small>
+      </div>
+
+      <div className="mobileInventoryRail">
         {inventoryItemsExpanded.map((item) => {
           const active = selected.some((selectedItem) => selectedItem.id === item.id);
 
           return (
             <button
-              className={`itemCard ${active ? 'selected' : ''}`}
+              className={`mobileItemCard ${active ? 'selected' : ''}`}
               key={item.id}
               onClick={() => onToggle(item)}
             >
               <img src={assets.items[item.id]} alt="" />
-              <span>{item.label}</span>
+              <strong>{item.label}</strong>
+              <small>{active ? 'Selecionado' : 'Toque para levar'}</small>
             </button>
           );
         })}
       </div>
 
-      <button className="sceneAction" disabled={selected.length !== 4} onClick={onContinue}>
-        Confirmar mochila {selected.length}/4
+      <button className="mobilePrimaryCta mobileKitCta" disabled={selected.length !== 4} onClick={onContinue}>
+        <span className="mobilePlayIcon">✓</span>
+        <span>
+          <strong>Pronto para jogar</strong>
+          <small>{selected.length}/4 itens escolhidos</small>
+        </span>
+        <b>›</b>
       </button>
-    </>
+    </div>
   );
 }
 
@@ -1300,12 +1396,12 @@ function GameApp() {
     );
   }
 
-  function chooseAgent(selectedAgent) {
+  function chooseAgent(selectedAgent, selectedScenario) {
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
     setPlayerProfile(startPlayerJourney(selectedAgent));
-    const startNode = agentStartNode[selectedAgent.id] || 'forest_entry';
-    setPath(['Agente ' + selectedAgent.name]);
+    const startNode = selectedScenario?.startNode || agentStartNode[selectedAgent.id] || 'forest_entry';
+    setPath(['Agente ' + selectedAgent.name, selectedScenario?.label || 'Início']);
     setVisitedNodeIds([startNode]);
     setNodeId(startNode);
   }
@@ -1441,7 +1537,7 @@ function GameApp() {
     );
   }
 
-  if (!agent) return <AgentSelect onSelect={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} onModeChange={setViewMode} />;
+  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} onModeChange={setViewMode} />;
 
   if (profileOpen) {
     return (
