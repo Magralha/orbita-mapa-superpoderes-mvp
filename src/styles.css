@@ -7069,3 +7069,26 @@ p {
     text-align: center;
   }
 }
+
+
+/* game-v2 — progression HUD */
+.playerXpCounter {
+  border: 4px solid #111;
+  border-radius: 999px;
+  background: #6b5cff;
+  color: #fff;
+  box-shadow: 4px 4px 0 #111;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .playerXpCounter {
+    width: 100%;
+    text-align: center;
+  }
+}
