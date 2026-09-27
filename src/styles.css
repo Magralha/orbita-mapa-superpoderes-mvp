@@ -9644,3 +9644,262 @@ p {
     padding-right: 105px;
   }
 }
+
+
+/* game-v3 — mobile mission cards */
+
+.mobileUseItemStage,
+.mobileTradeoffStage,
+.mobilePowerStage,
+.mobileMissionChoices {
+  display: grid;
+  gap: 12px;
+}
+
+.mobileActiveItem {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(48,211,236,.45);
+  border-radius: 20px;
+  padding: 10px;
+  background: rgba(7,42,67,.86);
+}
+
+.mobileActiveItemArt {
+  height: 112px;
+  border-radius: 16px;
+  background: linear-gradient(180deg,#174f6f,#0c2d47);
+  display: grid;
+  place-items: center;
+}
+
+.mobileActiveItemArt img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+}
+
+.mobileActiveItem > div:last-child > span {
+  color: var(--orbita-cyan);
+  font-size: 8px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.mobileActiveItem strong {
+  display: block;
+  margin: 3px 0 4px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobileActiveItem p {
+  margin: 0;
+  color: #bad4df;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.mobileTradeoffGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.mobileTradeoffCard {
+  min-height: 82px;
+  border: 1px solid rgba(72,207,231,.42);
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(180deg,#174b69,#092942);
+  box-shadow: 0 6px 15px rgba(0,0,0,.18);
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 7px;
+  align-items: center;
+  padding: 10px;
+  text-align: left;
+}
+
+.mobileTradeoffCard > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.08);
+  color: #8db2c2;
+  font-size: 16px;
+}
+
+.mobileTradeoffCard > strong {
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.mobileTradeoffCard.selected {
+  border-color: var(--orbita-yellow);
+  color: #0a2337;
+  background: linear-gradient(180deg,#ffe979,#ffc849);
+  box-shadow: 0 0 0 2px rgba(255,216,77,.16),0 7px 18px rgba(0,0,0,.24);
+}
+
+.mobileTradeoffCard.selected > span {
+  color: #083c44;
+  background: var(--orbita-mint);
+}
+
+.mobileTokenRail {
+  display: flex;
+  gap: 7px;
+  margin: 0 -14px;
+  padding: 2px 14px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mobileTokenRail::-webkit-scrollbar,
+.mobilePowerCards::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileTokenPill {
+  flex: 0 0 auto;
+  min-width: 52px;
+  border: 1px solid rgba(55,208,232,.42);
+  border-radius: 999px;
+  padding: 5px 8px 5px 5px;
+  background: rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mobileTokenPill img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.mobileTokenPill span {
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.mobilePowerCards {
+  display: flex;
+  gap: 10px;
+  margin: 0 -14px;
+  padding: 2px 14px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.mobilePowerCard {
+  flex: 0 0 190px;
+  min-height: 230px;
+  scroll-snap-align: start;
+  border: 1px solid rgba(64,213,236,.46);
+  border-radius: 22px;
+  padding: 13px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(55,220,239,.16),transparent 34%),
+    linear-gradient(180deg,#154969,#092941);
+  box-shadow: 0 9px 22px rgba(0,0,0,.26);
+  text-align: left;
+}
+
+.mobilePowerCard img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.mobilePowerCard small {
+  display: block;
+  color: #9cc6d7;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 950;
+}
+
+.mobilePowerCard strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobilePowerCard p {
+  min-height: 48px;
+  margin: 7px 0 12px;
+  color: #d6e8ef;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.mobilePowerCard > b {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: var(--orbita-mint);
+  color: #06283c;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.mobilePowerCard.lockedPowerCard {
+  opacity: .42;
+}
+
+.mobileMissionChoices {
+  margin-top: 4px;
+}
+
+.mobileMissionChoice {
+  min-height: 86px;
+  border: 1px solid rgba(57,214,236,.48);
+  border-radius: 18px;
+  padding: 11px;
+  color: #fff;
+  background: linear-gradient(180deg,#164c6b,#092a43);
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+  display: grid;
+  grid-template-columns: 36px 1fr 22px;
+  gap: 9px;
+  align-items: center;
+  text-align: left;
+}
+
+.mobileMissionChoiceIndex {
+  color: var(--orbita-yellow);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.mobileMissionChoice strong,
+.mobileMissionChoice small {
+  display: block;
+}
+
+.mobileMissionChoice strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.mobileMissionChoice small {
+  margin-top: 5px;
+  color: #9ec3d3;
+  font-size: 8px;
+  text-transform: capitalize;
+}
+
+.mobileMissionChoice > b {
+  color: var(--orbita-cyan);
+  font-size: 28px;
+}
