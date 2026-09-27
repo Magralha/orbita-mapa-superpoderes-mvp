@@ -717,27 +717,36 @@ function UseItemNode({ inventory, usedItems, onChoose }) {
   ];
 
   return (
-    <div className="backpackUseStage">
-      <div className="backpackProgress">
-        Item {Math.min(usedItems.length + 1, visibleInventory.length)} de {visibleInventory.length}
+    <div className="mobileUseItemStage">
+      <div className="mobileKitHeading">
+        <div>
+          <span>✦</span>
+          <strong>Use um item</strong>
+        </div>
+        <small>{Math.min(usedItems.length + 1, visibleInventory.length)}/{visibleInventory.length}</small>
       </div>
 
-      <div className="activeItemPanel">
-        <img src={assets.items[currentItem.id]} alt="" />
+      <div className="mobileActiveItem">
+        <div className="mobileActiveItemArt">
+          <img src={assets.items[currentItem.id]} alt="" />
+        </div>
         <div>
+          <span>Item atual</span>
           <strong>{currentItem.label}</strong>
           <p>{currentItem.useText}</p>
         </div>
       </div>
 
-      <div className="useItemGrid useItemGridSequential">
-        {prompts.map((prompt) => (
+      <div className="mobileChoices mobileItemChoices">
+        {prompts.map((prompt, index) => (
           <button
-            className="useItemCard useItemActionCard"
+            className="mobileChoiceButton"
             key={prompt.label}
             onClick={() => onChoose(currentItem, prompt)}
           >
+            <span className="mobileChoiceIcon">{['✦','◆','⌕'][index % 3]}</span>
             <span>{prompt.label}</span>
+            <b>›</b>
           </button>
         ))}
       </div>
@@ -747,27 +756,41 @@ function UseItemNode({ inventory, usedItems, onChoose }) {
 
 function TradeoffNode({ selected, onToggle, onContinue }) {
   return (
-    <>
-      <div className="tradeoffGrid">
+    <div className="mobileTradeoffStage">
+      <div className="mobileKitHeading">
+        <div>
+          <span>⇄</span>
+          <strong>Escolha o que preservar</strong>
+        </div>
+        <small>{selected.length}/2</small>
+      </div>
+
+      <div className="mobileTradeoffGrid">
         {tradeoffsExpanded.map((tradeoff) => {
           const active = selected.some((item) => item.id === tradeoff.id);
 
           return (
             <button
-              className={`tradeoffCard ${active ? 'selected' : ''}`}
+              className={`mobileTradeoffCard ${active ? 'selected' : ''}`}
               key={tradeoff.id}
               onClick={() => onToggle(tradeoff)}
             >
-              <span>{tradeoff.label}</span>
+              <span>{active ? '✓' : '○'}</span>
+              <strong>{tradeoff.label}</strong>
             </button>
           );
         })}
       </div>
 
-      <button className="sceneAction" disabled={selected.length !== 2} onClick={onContinue}>
-        Abrir o portão {selected.length}/2
+      <button className="mobilePrimaryCta mobileKitCta" disabled={selected.length !== 2} onClick={onContinue}>
+        <span className="mobilePlayIcon">✓</span>
+        <span>
+          <strong>Abrir o portão</strong>
+          <small>2 escolhas definem sua prioridade</small>
+        </span>
+        <b>›</b>
       </button>
-    </>
+    </div>
   );
 }
 
@@ -848,39 +871,41 @@ function PowerChallengeNode({ scores, powerTokens, usedPowerCards, onUse }) {
   const visibleCards = cards.length >= 3 ? cards : fallbackCards;
 
   return (
-    <div className="powerChallengeStage">
-      <div className="powerChallengeIntro">
-        <strong>Jogue uma carta</strong>
-        <span>Use 1 pote de poder. Carta usada não volta para a próxima rodada.</span>
+    <div className="mobilePowerStage">
+      <div className="mobileKitHeading">
+        <div>
+          <span>⚡</span>
+          <strong>Cartas especiais</strong>
+        </div>
+        <small>Use 1 pote</small>
       </div>
 
-      <div className="tokenShelf">
+      <div className="mobileTokenRail">
         {Object.keys(PLAYABLE_POWER_CARDS).map((key) => (
-          <div className="tokenPill" key={key}>
+          <div className="mobileTokenPill" key={key}>
             <img src={assets.badges[key]} alt="" />
             <span>{powerTokens[key] || 0}</span>
           </div>
         ))}
       </div>
 
-      <div className="playablePowerGrid">
+      <div className="mobilePowerCards">
         {visibleCards.map((card) => {
           const tokenCount = powerTokens[card.key] || 0;
           const locked = tokenCount <= 0;
 
           return (
             <button
-              className={`playablePowerCard power-${card.key} ${locked ? 'lockedPowerCard' : ''}`}
+              className={`mobilePowerCard power-${card.key} ${locked ? 'lockedPowerCard' : ''}`}
               key={card.key}
               disabled={locked}
               onClick={() => onUse(card)}
             >
               <img src={assets.badges[card.key]} alt="" />
-              <div>
-                <small>{card.label} · {tokenCount} pote{tokenCount === 1 ? '' : 's'}</small>
-                <strong>{card.title}</strong>
-                <p>{locked ? 'Você ainda não juntou pote suficiente deste poder.' : card.action}</p>
-              </div>
+              <small>{card.label} · {tokenCount} pote{tokenCount === 1 ? '' : 's'}</small>
+              <strong>{card.title}</strong>
+              <p>{locked ? 'Ganhe este poder para liberar a carta.' : card.action}</p>
+              <b>{locked ? 'Bloqueada' : 'Jogar carta'}</b>
             </button>
           );
         })}
@@ -906,11 +931,15 @@ function MissionNode({ scores, onChoose }) {
     .slice(0, 4);
 
   return (
-    <div className="floatingChoices missionChoices">
-      {relevantMissions.map((mission) => (
-        <button className="sceneChoice missionChoiceCard" key={mission.id} onClick={() => onChoose(mission)}>
-          <span>{mission.label}</span>
-          <small>Combina com: {Object.keys(mission.powers).slice(0, 3).join(' · ')}</small>
+    <div className="mobileMissionChoices">
+      {relevantMissions.map((mission, index) => (
+        <button className="mobileMissionChoice" key={mission.id} onClick={() => onChoose(mission)}>
+          <span className="mobileMissionChoiceIndex">0{index + 1}</span>
+          <div>
+            <strong>{mission.label}</strong>
+            <small>Combina com: {Object.keys(mission.powers).slice(0, 3).join(' · ')}</small>
+          </div>
+          <b>›</b>
         </button>
       ))}
     </div>
