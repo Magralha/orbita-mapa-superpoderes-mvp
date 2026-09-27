@@ -37,12 +37,12 @@ export const assets = {
     mapa: p('board/v2/item-mapa.svg'),
     ferramenta: p('board/v2/item-ferramenta.svg'),
     pincel: p('board/v2/item-pincel.svg'),
-    chave: p('board/item-chave.png'),
-    corda: p('board/item-corda.png'),
-    bussola: p('board/item-bussola.png'),
-    relogio: p('board/item-relogio.png'),
+    chave: p('board/v2/item-chave.svg'),
+    corda: p('board/v2/item-corda.svg'),
+    bussola: p('board/v2/item-bussola.svg'),
+    relogio: p('board/v2/item-relogio.svg'),
     lupa: p('board/v2/item-lupa.svg'),
-    coringa: p('board/item-carta-coringa.png'),
+    coringa: p('board/v2/item-carta-coringa.svg'),
   },
 
   badges: {
