@@ -1662,7 +1662,7 @@ export const expandedNodes = {
     choices: [
       {
         label: 'Futuro eficiente, mas frio',
-        next: 'city_future_scenario',
+        next: 'tradeoff',
         powers: { organizar: 2, proteger: 1 },
       },
       {
