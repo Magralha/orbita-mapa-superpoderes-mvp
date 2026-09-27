@@ -4,14 +4,14 @@ const p = (path) => `${base}${path}`;
 
 export const assets = {
   agents: {
-    luma: p('board/agent-luma.png'),
-    nexo: p('board/agent-nexo.png'),
+    luma: p('board/v2/agent-luma.svg'),
+    nexo: p('board/v2/agent-nexo.svg'),
     kira: p('board/v2/agent-kira.svg'),
-    teo: p('board/agent-teo.png'),
-    zuri: p('board/agent-zuri.png'),
-    orin: p('board/agent-orin.png'),
-    vega: p('board/agent-vega.png'),
-    mio: p('board/agent-mio.png'),
+    teo: p('board/v2/agent-teo.svg'),
+    zuri: p('board/v2/agent-zuri.svg'),
+    orin: p('board/v2/agent-orin.svg'),
+    vega: p('board/v2/agent-vega.svg'),
+    mio: p('board/v2/agent-mio.svg'),
   },
 
   worlds: {
