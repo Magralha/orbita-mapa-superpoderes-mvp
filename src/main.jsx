@@ -13,6 +13,7 @@ import {
   recordPowerCard,
   recordMission,
 } from './game/engine/rpgEngine';
+import { getTopPowers } from './game/player/playerProfile';
 import './styles.css';
 
 function AgentSelect({ onSelect, onContinue, hasSave }) {
@@ -253,7 +254,186 @@ function AgentLiveCard({ agent, inventory = [], powerTokens = {}, usedPowerCards
 }
 
 
-function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, justSaved, children }) {
+
+function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose }) {
+  if (!profile) return null;
+
+  const powerLabels = {
+    investigar: 'Investigar',
+    criar: 'Criar',
+    cuidar: 'Cuidar',
+    construir: 'Construir',
+    comunicar: 'Comunicar',
+    organizar: 'Organizar',
+    proteger: 'Proteger',
+    conectar: 'Conectar',
+  };
+
+  const rankedPowers = Object.entries(profile.powers || {})
+    .map(([key, value]) => ({ key, value, label: powerLabels[key] || key }))
+    .sort((a, b) => b.value - a.value);
+
+  const topPowers = getTopPowers(profile, 3);
+  const maxPower = Math.max(...rankedPowers.map((power) => power.value), 1);
+  const recentEvents = [...(profile.events || [])].slice(-5).reverse();
+  const nextLevelAt = (profile.progression?.level || 1) * 100;
+  const currentLevelStart = Math.max(0, nextLevelAt - 100);
+  const levelProgress = Math.min(
+    100,
+    Math.max(0, (((profile.progression?.xp || 0) - currentLevelStart) / 100) * 100),
+  );
+
+  return (
+    <main className="gamePage myOrbitaPage">
+      <section className="myOrbitaShell">
+        <header className="myOrbitaHeader">
+          <div>
+            <div className="gameBadge">Meu Órbita</div>
+            <h1>Seu mapa está ganhando forma.</h1>
+            <p>
+              Aqui aparecem os padrões que você está construindo no jogo. Eles podem mudar
+              conforme você experimenta novas missões, situações e atividades.
+            </p>
+          </div>
+
+          <button className="sceneAction myOrbitaBack" onClick={onClose}>Voltar ao jogo</button>
+        </header>
+
+        <section className="myOrbitaHeroGrid">
+          <article className="myOrbitaAgentCard">
+            <div className="myOrbitaAgentArt">
+              <img src={assets.agents[agent.id]} alt="" />
+            </div>
+            <div className="myOrbitaAgentCopy">
+              <span>Agente atual</span>
+              <h2>{agent.name}</h2>
+              <p>{agent.role}</p>
+              <small>{agent.phrase}</small>
+            </div>
+          </article>
+
+          <article className="myOrbitaLevelCard">
+            <span>Progressão</span>
+            <strong>Nível {profile.progression?.level || 1}</strong>
+            <b>{profile.progression?.xp || 0} XP</b>
+            <div className="myOrbitaXpTrack">
+              <i style={{ width: `${levelProgress}%` }} />
+            </div>
+            <small>Próximo nível em {Math.max(0, nextLevelAt - (profile.progression?.xp || 0))} XP</small>
+          </article>
+        </section>
+
+        <section className="myOrbitaSection">
+          <div className="myOrbitaSectionTitle">
+            <span>Seus sinais mais fortes agora</span>
+            <small>Não é um rótulo. É um retrato desta jornada.</small>
+          </div>
+
+          <div className="myOrbitaTopPowers">
+            {topPowers.map((power, index) => (
+              <article className="myOrbitaPowerHero" key={power.key}>
+                <span>0{index + 1}</span>
+                <img src={assets.badges[power.key]} alt="" />
+                <strong>{powerLabels[power.key] || power.key}</strong>
+                <b>{power.value}</b>
+              </article>
+            ))}
+          </div>
+
+          <div className="myOrbitaPowerList">
+            {rankedPowers.map((power) => (
+              <div className="myOrbitaPowerRow" key={power.key}>
+                <span>{power.label}</span>
+                <div><i style={{ width: `${Math.max(6, (power.value / maxPower) * 100)}%` }} /></div>
+                <b>{power.value}</b>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="myOrbitaColumns">
+          <article className="myOrbitaPanel">
+            <span className="myOrbitaPanelLabel">Mochila</span>
+            <div className="myOrbitaInventory">
+              {inventory.length ? inventory.map((item) => (
+                <div key={item.id}>
+                  <img src={assets.items[item.id]} alt="" />
+                  <small>{item.label}</small>
+                </div>
+              )) : <p>Você ainda vai montar sua mochila.</p>}
+            </div>
+          </article>
+
+          <article className="myOrbitaPanel">
+            <span className="myOrbitaPanelLabel">Cartas jogadas</span>
+            <div className="myOrbitaPlayedCards">
+              {usedPowerCards.length ? usedPowerCards.map((card, index) => (
+                <div key={`${card.key}-profile-${index}`}>
+                  <strong>{card.title}</strong>
+                  <small>{card.action}</small>
+                </div>
+              )) : <p>Suas cartas usadas vão aparecer aqui.</p>}
+            </div>
+          </article>
+        </section>
+
+        <section className="myOrbitaColumns">
+          <article className="myOrbitaPanel">
+            <span className="myOrbitaPanelLabel">Conquistas</span>
+            {(profile.achievements || []).length ? (
+              <div className="myOrbitaAchievements">
+                {profile.achievements.slice(-4).reverse().map((achievement) => (
+                  <div key={achievement.id}>
+                    <img src={assets.v2.rewardLevel} alt="" />
+                    <span>{achievement.label}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Complete missões para desbloquear conquistas.</p>
+            )}
+          </article>
+
+          <article className="myOrbitaPanel">
+            <span className="myOrbitaPanelLabel">Últimos movimentos</span>
+            <div className="myOrbitaTimeline">
+              {recentEvents.map((event) => (
+                <div key={event.id}>
+                  <i />
+                  <span>
+                    <strong>{event.label || 'Movimento da jornada'}</strong>
+                    <small>+{event.xp || 0} XP</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+
+        <section className="myOrbitaRealLife">
+          <div>
+            <span>Próxima camada</span>
+            <h2>O jogo também vai conversar com o mundo real.</h2>
+            <p>
+              Esporte, cultura, tecnologia, projetos e experiências da escola poderão
+              entrar aqui como novas experiências do seu Passaporte Órbita.
+            </p>
+          </div>
+          <div className="myOrbitaRealLifeTags">
+            <span>Escola</span>
+            <span>Esporte</span>
+            <span>Cultura</span>
+            <span>Tecnologia</span>
+            <span>Comunidade</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}
+
+
+function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onOpenProfile, justSaved, children }) {
   return (
     <main className="gamePage">
       <section className="scene sceneV2">
@@ -268,6 +448,7 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
         <div className="sceneActionBar">
           <button className="sceneAction sceneActionGhost" disabled>Voltar</button>
           <button className="sceneAction" onClick={onSave}>Salvar</button>
+          <button className="sceneAction sceneActionProfile" onClick={onOpenProfile}>Meu Órbita</button>
           {justSaved && <span className="saveStatus">Salvo</span>}
           {playerProfile && (
             <div className="playerXpCounter">
@@ -897,6 +1078,7 @@ function GameApp() {
   const [usedPowerCards, setUsedPowerCards] = useState([]);
   const [powerTokens, setPowerTokens] = useState({});
   const [playerProfile, setPlayerProfile] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const node = expandedNodes[nodeId];
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
@@ -1170,6 +1352,18 @@ function GameApp() {
 
   if (!agent) return <AgentSelect onSelect={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} />;
 
+  if (profileOpen) {
+    return (
+      <MyOrbita
+        agent={agent}
+        profile={playerProfile}
+        inventory={inventory}
+        usedPowerCards={usedPowerCards}
+        onClose={() => setProfileOpen(false)}
+      />
+    );
+  }
+
   if (mission) {
     return <PowerCard agent={agent} scores={scores} mission={mission} path={path} decisiveItem={decisiveItem} usedPowerCards={usedPowerCards} powerTokens={powerTokens} />;
   }
@@ -1177,7 +1371,7 @@ function GameApp() {
 
 
   return (
-    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} justSaved={justSaved}>
+    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
