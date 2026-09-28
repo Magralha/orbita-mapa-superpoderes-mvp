@@ -15,6 +15,9 @@ import {
   pilotStaff,
 } from '../pilot/pilotData';
 import { OrbitaWordmark } from '../game/ui/MobileUI';
+import { assets } from '../game/data/assets';
+import { agents } from '../game/data/gameData';
+import { immersiveSceneConfig, getImmersiveSceneConfig } from '../game/data/sceneConfig';
 import { analyticsSummary } from '../core/analytics/localAnalytics';
 
 const tabs = [
@@ -22,12 +25,14 @@ const tabs = [
   ['people', 'Pessoas'],
   ['content', 'Conteúdo'],
   ['missions', 'Missões'],
+  ['visual', 'Visual QA'],
   ['pilot', 'Piloto'],
 ];
 
 export default function AdminPortal({ assignments = [] }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [notice, setNotice] = useState('');
+  const [qaAgentId, setQaAgentId] = useState('kira');
   const analytics = analyticsSummary();
 
   const metrics = useMemo(() => {
@@ -225,6 +230,72 @@ export default function AdminPortal({ assignments = [] }) {
                   <small>{assignmentStatusLabel(item)}</small>
                 </div>
               )) : <p>Nenhuma missão registrada.</p>}
+            </div>
+          </section>
+        )}
+
+        {activeTab === 'visual' && (
+          <section className="adminPanel adminWidePanel">
+            <div className="adminVisualHead">
+              <div>
+                <span>Visual QA</span>
+                <h2>Calibração dos cenários</h2>
+                <p>
+                  Esta grade usa exatamente as posições do Scene Engine para facilitar o
+                  ajuste de escala, chão e enquadramento por mundo.
+                </p>
+              </div>
+              <label>
+                <span>Agente</span>
+                <select value={qaAgentId} onChange={(event) => setQaAgentId(event.target.value)}>
+                  {agents.map((agent) => (
+                    <option value={agent.id} key={agent.id}>{agent.name}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="adminSceneQaGrid">
+              {Object.keys(immersiveSceneConfig).map((world) => {
+                const config = getImmersiveSceneConfig(world, qaAgentId);
+                const worldAsset = assets.worlds[world];
+                if (!worldAsset) return null;
+
+                return (
+                  <article key={world}>
+                    <div className="adminSceneQaStage">
+                      <img
+                        className="adminSceneQaWorld"
+                        src={worldAsset}
+                        alt=""
+                        style={{ objectPosition: config.worldObjectPosition }}
+                      />
+                      <img
+                        className="adminSceneQaAgent"
+                        src={assets.agents[qaAgentId]}
+                        alt=""
+                        style={{
+                          left: `${config.agent.left}%`,
+                          top: `${config.agent.ground}%`,
+                          width: `${config.agent.width}%`,
+                          transform: `translate(-50%,-100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
+                        }}
+                      />
+                      <i
+                        className="adminSceneQaGround"
+                        style={{
+                          left: `${config.agent.left}%`,
+                          top: `${config.agent.ground}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="adminSceneQaMeta">
+                      <strong>{world}</strong>
+                      <span>L {config.agent.left} · chão {config.agent.ground} · W {config.agent.width}</span>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
         )}
