@@ -15,6 +15,7 @@ import {
   pilotStaff,
 } from '../pilot/pilotData';
 import { OrbitaWordmark } from '../game/ui/MobileUI';
+import { analyticsSummary } from '../core/analytics/localAnalytics';
 
 const tabs = [
   ['overview', 'Visão geral'],
@@ -27,6 +28,7 @@ const tabs = [
 export default function AdminPortal({ assignments = [] }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [notice, setNotice] = useState('');
+  const analytics = analyticsSummary();
 
   const metrics = useMemo(() => {
     const completed = assignments.filter((item) => item.status === 'completed').length;
@@ -106,6 +108,7 @@ export default function AdminPortal({ assignments = [] }) {
               <article><span>Conteúdos</span><strong>{metrics.content}</strong><small>missões + quests</small></article>
               <article><span>Pendentes</span><strong>{metrics.pending}</strong><small>missões em andamento</small></article>
               <article><span>Concluídas</span><strong>{metrics.completed}</strong><small>{metrics.acknowledged} acompanhada(s)</small></article>
+              <article><span>Eventos demo</span><strong>{analytics.total}</strong><small>analytics locais</small></article>
             </section>
 
             <section className="adminGrid">
@@ -141,6 +144,21 @@ export default function AdminPortal({ assignments = [] }) {
                   <div><strong>{weeklyQuests.length}</strong><span>Quests semanais</span></div>
                 </div>
               </article>
+            </section>
+
+            <section className="adminPanel adminWidePanel adminAnalyticsPanel">
+              <span>Analytics locais do protótipo</span>
+              <h2>Últimos eventos desta sessão</h2>
+              <div className="adminMissionTable">
+                {analytics.recent.length ? analytics.recent.map((event) => (
+                  <div key={event.id}>
+                    <b>evento</b>
+                    <strong>{event.name}</strong>
+                    <span>{new Date(event.createdAt).toLocaleString('pt-BR')}</span>
+                    <small>{Object.keys(event.properties || {}).length} propriedades</small>
+                  </div>
+                )) : <p>Nenhum evento registrado ainda.</p>}
+              </div>
             </section>
           </>
         )}
