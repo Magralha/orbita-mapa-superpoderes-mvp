@@ -21,6 +21,7 @@ export default function MunicipalityDashboard({
 }) {
   const [selectedMission, setSelectedMission] = useState(SCHOOL_MISSION_TEMPLATES[0].id);
   const [selectedSchool, setSelectedSchool] = useState(municipality.schools[0]?.id);
+  const [institutionPlanCreated, setInstitutionPlanCreated] = useState(false);
 
   const mission = useMemo(
     () => SCHOOL_MISSION_TEMPLATES.find((item) => item.id === selectedMission) || SCHOOL_MISSION_TEMPLATES[0],
@@ -135,7 +136,9 @@ export default function MunicipalityDashboard({
                 Interesse em tecnologia está alto, mas o acesso prático ainda é baixo.
                 Crie uma experiência de prototipagem nas próximas quatro semanas.
               </p>
-              <button type="button">Transformar em plano</button>
+              <button type="button" onClick={() => setInstitutionPlanCreated(true)}>
+                {institutionPlanCreated ? 'Plano criado ✓' : 'Transformar em plano'}
+              </button>
             </div>
           </article>
         </section>
@@ -219,7 +222,9 @@ export default function MunicipalityDashboard({
               O sinal orienta oferta e território. Ele não define mérito individual nem substitui avaliação humana.
             </p>
           </div>
-          <button type="button">Criar experiência</button>
+          <button type="button" onClick={() => setInstitutionPlanCreated(true)}>
+            {institutionPlanCreated ? 'Plano em preparação ✓' : 'Criar experiência'}
+          </button>
         </section>
       </div>
     </main>
