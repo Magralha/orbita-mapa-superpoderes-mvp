@@ -31,6 +31,7 @@ import {
 } from './game/engine/dailyEngine';
 import { V4Home, DailyMissionView } from './game/ui/V4UI';
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
+import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import './styles.css';
 import './portals.css';
 import './v4.css';
@@ -1825,6 +1826,53 @@ function GameApp() {
       >
         <ChoiceNode node={node} onChoose={choose} />
       </ImmersiveScene>
+    );
+  }
+
+  if (canUseImmersiveSpecialStage(node)) {
+    return (
+      <ImmersiveSpecialStage
+        agent={agent}
+        node={node}
+        visitedCount={visitedNodeIds.length}
+        inventory={inventory}
+        onExit={saveGame}
+      >
+        {node.type === 'inventory' && (
+          <InventoryNode
+            selected={inventory}
+            onToggle={toggleInventory}
+            onContinue={finishInventory}
+          />
+        )}
+
+        {node.type === 'use-item' && (
+          <UseItemNode
+            inventory={inventory}
+            usedItems={usedItems}
+            onChoose={chooseItemUse}
+          />
+        )}
+
+        {node.type === 'tradeoff' && (
+          <TradeoffNode
+            selected={tradeoffSelection}
+            onToggle={toggleTradeoff}
+            onContinue={finishTradeoff}
+          />
+        )}
+
+        {node.type === 'power-challenge' && (
+          <PowerChallengeNode
+            scores={scores}
+            powerTokens={powerTokens}
+            usedPowerCards={usedPowerCards}
+            onUse={usePowerCard}
+          />
+        )}
+
+        {node.type === 'mission' && <MissionNode scores={scores} onChoose={chooseMission} />}
+      </ImmersiveSpecialStage>
     );
   }
 
