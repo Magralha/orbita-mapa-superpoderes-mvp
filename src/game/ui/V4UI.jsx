@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { assets } from '../data/assets';
 import { getTopPowers } from '../player/playerProfile';
 import { OrbitaWordmark, MobileBottomNav } from './MobileUI';
-import { seasonOne, weeklyQuest } from '../data/seasonData';
+import { seasonOne, weeklyQuests } from '../data/seasonData';
 import {
   assignmentStatusLabel,
   formatAssignmentDue,
@@ -346,9 +346,18 @@ export function AssignedMissionView({ assignment, onComplete, onBack }) {
   );
 }
 
-export function SeasonView({ profile, onBack, onOpenProfile }) {
+export function SeasonView({
+  profile,
+  completedQuestIds = [],
+  onBack,
+  onOpenProfile,
+  onOpenQuest,
+}) {
   const level = profile?.progression?.level || 1;
   const xp = profile?.progression?.xp || 0;
+  const completedCount = completedQuestIds.length;
+  const activeQuest = weeklyQuests.find((quest) => !completedQuestIds.includes(quest.id)) || weeklyQuests[weeklyQuests.length - 1];
+  const seasonPercent = Math.round((completedCount / weeklyQuests.length) * 100);
 
   return (
     <main className="v4Page">
@@ -368,25 +377,31 @@ export function SeasonView({ profile, onBack, onOpenProfile }) {
               <strong>Nível {level}</strong>
               <small>{xp} XP acumulados</small>
             </div>
-            <i><em style={{ width: '25%' }} /></i>
+            <i><em style={{ width: `${seasonPercent}%` }} /></i>
           </div>
         </section>
 
         <section className="v4WeeklyQuestCard">
           <div className="v4MissionSourceHead">
-            <span>QUEST DA SEMANA</span>
-            <small>{weeklyQuest.duration} · +{weeklyQuest.xp} XP</small>
+            <span>QUEST DA SEMANA {activeQuest.week}</span>
+            <small>{activeQuest.duration} · +{activeQuest.xp} XP</small>
           </div>
-          <h2>{weeklyQuest.title}</h2>
+          <h2>{activeQuest.title}</h2>
           <ol>
-            {weeklyQuest.steps.map((step) => <li key={step}>{step}</li>)}
+            {activeQuest.steps.map((step) => <li key={step}>{step}</li>)}
           </ol>
-          <button type="button">Começar Quest</button>
+          <button type="button" onClick={() => onOpenQuest(activeQuest)}>
+            {completedQuestIds.includes(activeQuest.id) ? 'Quest concluída ✓' : 'Começar Quest'}
+          </button>
         </section>
 
         <section className="v4SeasonWeeks">
-          {seasonOne.weeks.map((week, index) => (
-            <article className={index === 0 ? 'active' : ''} key={week.id}>
+          {seasonOne.weeks.map((week, index) => {
+            const quest = weeklyQuests[index];
+            const completed = completedQuestIds.includes(quest.id);
+            const active = quest.id === activeQuest.id && !completed;
+            return (
+            <article className={completed ? 'completed' : active ? 'active' : ''} key={week.id}>
               <div className="v4SeasonWeekNumber">0{week.number}</div>
               <div className="v4SeasonWeekCopy">
                 <span>SEMANA {week.number}</span>
@@ -396,7 +411,8 @@ export function SeasonView({ profile, onBack, onOpenProfile }) {
               </div>
               <img src={assets.badges[week.power]} alt="" />
             </article>
-          ))}
+          );
+          })}
         </section>
 
         <section className="v4EpicQuest">
@@ -412,6 +428,79 @@ export function SeasonView({ profile, onBack, onOpenProfile }) {
           onMissions={onBack}
           onProfile={onOpenProfile}
         />
+      </section>
+    </main>
+  );
+}
+
+
+export function WeeklyQuestView({ quest, onComplete, onBack }) {
+  const [checked, setChecked] = useState([]);
+  const [reflection, setReflection] = useState('');
+  const allDone = checked.length === quest.steps.length;
+
+  function toggleStep(index) {
+    setChecked((current) => (
+      current.includes(index)
+        ? current.filter((item) => item !== index)
+        : [...current, index]
+    ));
+  }
+
+  return (
+    <main className="v4Page">
+      <section className="v4Shell v4QuestRunShell">
+        <header className="v4Top">
+          <button className="v4BackButton" type="button" onClick={onBack}>‹</button>
+          <OrbitaWordmark compact />
+          <span className="v4TerritoryTag">✦ Quest {quest.week}</span>
+        </header>
+
+        <section className="v4AssignedHero">
+          <span>QUEST DA SEMANA {quest.week}</span>
+          <h1>{quest.title}</h1>
+          <p>Complete os quatro movimentos abaixo. Não precisa fazer tudo de uma vez.</p>
+          <div className="v4AssignedMeta">
+            <span>{quest.duration}</span>
+            <strong>+{quest.xp} XP</strong>
+          </div>
+        </section>
+
+        <section className="v4QuestChecklist">
+          {quest.steps.map((step, index) => (
+            <button
+              type="button"
+              className={checked.includes(index) ? 'done' : ''}
+              onClick={() => toggleStep(index)}
+              key={step}
+            >
+              <span>{checked.includes(index) ? '✓' : index + 1}</span>
+              <strong>{step}</strong>
+            </button>
+          ))}
+        </section>
+
+        <section className="v4OptionalEvidence">
+          <span>REFLEXÃO DA QUEST</span>
+          <label htmlFor="quest-reflection">{quest.reflection}</label>
+          <textarea
+            id="quest-reflection"
+            value={reflection}
+            maxLength={280}
+            placeholder="Registre em poucas palavras o que você percebeu."
+            onChange={(event) => setReflection(event.target.value)}
+          />
+          <small>{reflection.length}/280</small>
+        </section>
+
+        <button
+          type="button"
+          className="v4PrimaryButton v4CompleteButton"
+          disabled={!allDone}
+          onClick={() => onComplete(reflection)}
+        >
+          Concluir Quest
+        </button>
       </section>
     </main>
   );
