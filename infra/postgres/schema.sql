@@ -153,12 +153,49 @@ create table if not exists orbita_season_progress (
   primary key (student_id, season_id)
 );
 
+
+create table if not exists orbita_consents (
+  id uuid primary key default gen_random_uuid(),
+  account_id uuid references orbita_accounts(id) on delete cascade,
+  student_id uuid references orbita_students(id) on delete cascade,
+  consent_type text not null,
+  document_version text not null,
+  status text not null check (status in ('granted','withdrawn','not_required')),
+  recorded_at timestamptz not null default now(),
+  withdrawn_at timestamptz,
+  meta jsonb not null default '{}'::jsonb
+);
+
+create table if not exists orbita_data_requests (
+  id uuid primary key default gen_random_uuid(),
+  requester_account_id uuid references orbita_accounts(id) on delete set null,
+  student_id uuid references orbita_students(id) on delete set null,
+  request_type text not null check (request_type in ('access','export','correction','deletion','unlink')),
+  status text not null default 'open' check (status in ('open','in_progress','completed','rejected')),
+  requested_at timestamptz not null default now(),
+  completed_at timestamptz,
+  notes text
+);
+
+create table if not exists orbita_audit_log (
+  id uuid primary key default gen_random_uuid(),
+  actor_account_id uuid references orbita_accounts(id) on delete set null,
+  action text not null,
+  target_type text,
+  target_id text,
+  meta jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists idx_orbita_students_class on orbita_students(class_id);
 create index if not exists idx_orbita_students_school on orbita_students(school_id);
 create index if not exists idx_orbita_events_student_created on orbita_events(student_id, created_at desc);
 create index if not exists idx_orbita_assignments_due on orbita_assignments(due_at);
 create index if not exists idx_orbita_assignment_targets_student_status on orbita_assignment_targets(student_id, status);
 create index if not exists idx_orbita_experiences_student_created on orbita_experiences(student_id, created_at desc);
+create index if not exists idx_orbita_consents_student on orbita_consents(student_id, recorded_at desc);
+create index if not exists idx_orbita_data_requests_student_status on orbita_data_requests(student_id, status);
+create index if not exists idx_orbita_audit_log_actor_created on orbita_audit_log(actor_account_id, created_at desc);
 
 -- Security note:
 -- Do not expose unrestricted table access to browser clients.
