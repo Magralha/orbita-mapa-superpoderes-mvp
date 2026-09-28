@@ -27,6 +27,7 @@ import { buildDemoStudent } from './mock/demoStudent';
 import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
 import { scenarioOptions, OrbitaWordmark, MobileBottomNav } from './game/ui/MobileUI';
 import { missionForDate } from './game/data/dailyMissions';
+import { seasonOne } from './game/data/seasonData';
 import {
   completeDailyMission,
   emptyV4State,
@@ -35,7 +36,7 @@ import {
   normalizeV4State,
   weeklyCompletionCount,
 } from './game/engine/dailyEngine';
-import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView, WeeklyQuestView } from './game/ui/V4UI';
+import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView, WeeklyQuestView, EpicQuestView } from './game/ui/V4UI';
 import {
   activeAssignments,
   addAssignment,
@@ -46,8 +47,11 @@ import {
   seededAssignmentState,
 } from './game/engine/assignmentEngine';
 import {
+  applyEpicQuestToProfile,
   applyWeeklyQuestToProfile,
   completedSeasonQuestCount,
+  isEpicQuestComplete,
+  markEpicQuestComplete,
   markWeeklyQuestComplete,
   nextSeasonQuest,
 } from './game/engine/seasonEngine';
@@ -1527,6 +1531,7 @@ function GameApp({ pilotSession }) {
   const selectedAssignment = assignmentState.assignments.find((item) => item.assignmentId === selectedAssignmentId) || null;
   const completedSeasonQuests = Object.keys(v4State.weeklyQuestCompletions || {});
   const activeSeasonQuest = nextSeasonQuest(v4State);
+  const epicQuestCompleted = isEpicQuestComplete(v4State);
   const selectedSeasonQuest =
     activeSeasonQuest?.id === selectedSeasonQuestId
       ? activeSeasonQuest
@@ -1837,6 +1842,58 @@ function GameApp({ pilotSession }) {
     setV4View('season');
   }
 
+  function openEpicQuest() {
+    if (completedSeasonQuestCount(v4State) < 4 || epicQuestCompleted) return;
+    trackEvent('epic_quest_started', { epicId: seasonOne.epic.id });
+    setV4View('epic-quest');
+  }
+
+  function completeEpicQuest(reflection) {
+    if (epicQuestCompleted) {
+      setV4View('season');
+      return;
+    }
+
+    trackEvent('epic_quest_completed', {
+      epicId: seasonOne.epic.id,
+      hasReflection: Boolean(String(reflection || '').trim()),
+    });
+
+    persistV4(markEpicQuestComplete(v4State, seasonOne.epic, reflection));
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = applyEpicQuestToProfile(
+        currentProfile,
+        seasonOne.epic,
+        reflection,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setV4View('season');
+  }
+
   function enterContinuousJourney() {
     const next = persistV4({
       ...v4State,
@@ -2114,14 +2171,26 @@ function GameApp({ pilotSession }) {
     );
   }
 
+  if (v4State.onboardingComplete && v4View === 'epic-quest') {
+    return (
+      <EpicQuestView
+        epic={seasonOne.epic}
+        onComplete={completeEpicQuest}
+        onBack={() => setV4View('season')}
+      />
+    );
+  }
+
   if (v4State.onboardingComplete && v4View === 'season') {
     return (
       <SeasonView
         profile={playerProfile}
         completedQuestIds={completedSeasonQuests}
+        epicCompleted={epicQuestCompleted}
         onBack={() => setV4View('home')}
         onOpenProfile={() => setProfileOpen(true)}
         onOpenQuest={openSeasonQuest}
+        onOpenEpic={openEpicQuest}
       />
     );
   }
