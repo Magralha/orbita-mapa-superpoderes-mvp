@@ -300,3 +300,126 @@
     grid-template-columns:1fr 1fr;
   }
 }
+
+
+.adminVisualHead {
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:14px;
+}
+
+.adminVisualHead > div {
+  max-width:660px;
+}
+
+.adminVisualHead > div > span {
+  color:#15997a;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.adminVisualHead h2 {
+  margin:5px 0 5px;
+}
+
+.adminVisualHead p {
+  margin:0;
+}
+
+.adminVisualHead label {
+  display:grid;
+  gap:5px;
+  min-width:160px;
+}
+
+.adminVisualHead label > span {
+  color:#617889;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.adminVisualHead select {
+  min-height:40px;
+  border:1px solid #d5e0e4;
+  border-radius:12px;
+  padding:0 10px;
+  background:#f7faf9;
+  color:#17354a;
+  font-weight:800;
+}
+
+.adminSceneQaGrid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+
+.adminSceneQaGrid article {
+  overflow:hidden;
+  border:1px solid #d7e2e5;
+  border-radius:16px;
+  background:#f7faf9;
+}
+
+.adminSceneQaStage {
+  position:relative;
+  aspect-ratio:9/16;
+  overflow:hidden;
+  background:#0b2948;
+}
+
+.adminSceneQaWorld {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.adminSceneQaAgent {
+  position:absolute;
+  height:auto;
+  object-fit:contain;
+  object-position:bottom center;
+  filter:drop-shadow(0 6px 7px rgba(0,0,0,.35));
+}
+
+.adminSceneQaGround {
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:#ffcf42;
+  box-shadow:0 0 0 4px rgba(255,207,66,.26);
+}
+
+.adminSceneQaMeta {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:8px 9px;
+}
+
+.adminSceneQaMeta strong {
+  text-transform:capitalize;
+  font-size:10px;
+}
+
+.adminSceneQaMeta span {
+  color:#6a7f8d;
+  font-size:7px;
+}
+
+@media (max-width:860px) {
+  .adminSceneQaGrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width:560px) {
+  .adminVisualHead { align-items:stretch; flex-direction:column; }
+  .adminSceneQaGrid { grid-template-columns:1fr 1fr; }
+}
