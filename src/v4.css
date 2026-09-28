@@ -817,3 +817,219 @@
   background: #d9e1e2;
   color: #718183;
 }
+
+
+.v4SeasonShell {
+  background:
+    radial-gradient(circle at 75% 0%, rgba(255,211,79,.10), transparent 13rem),
+    #f4f0e7;
+}
+
+.v4SeasonHero {
+  padding: 26px 18px 22px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(55,218,184,.18), transparent 14rem),
+    linear-gradient(180deg,#071a2e,#0b2948);
+  color:#fff;
+}
+
+.v4SeasonHero > span {
+  color:#ffd34f;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+
+.v4SeasonHero h1 {
+  margin:7px 0 8px;
+  color:#fff;
+  font-size:clamp(36px,10vw,50px);
+  line-height:.94;
+  letter-spacing:-.045em;
+}
+
+.v4SeasonHero p {
+  margin:0;
+  color:rgba(255,255,255,.72);
+  font-size:12px;
+  line-height:1.45;
+}
+
+.v4SeasonProgress {
+  margin-top:18px;
+  display:grid;
+  gap:8px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.v4SeasonProgress > div {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+}
+
+.v4SeasonProgress strong {
+  font-size:12px;
+}
+
+.v4SeasonProgress small {
+  color:#b8cfda;
+  font-size:9px;
+}
+
+.v4SeasonProgress > i {
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+}
+
+.v4SeasonProgress em {
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#32cfa6,#68edc8);
+}
+
+.v4WeeklyQuestCard,
+.v4EpicQuest {
+  margin:16px;
+  border-radius:22px;
+  padding:16px;
+  background:#fff;
+  box-shadow:0 10px 28px rgba(17,43,67,.09);
+}
+
+.v4WeeklyQuestCard h2,
+.v4EpicQuest h2 {
+  margin:7px 0 9px;
+  font-size:23px;
+  line-height:1;
+}
+
+.v4WeeklyQuestCard ol {
+  margin:0 0 14px;
+  padding-left:20px;
+  display:grid;
+  gap:7px;
+  color:#5c7082;
+  font-size:11px;
+  line-height:1.35;
+}
+
+.v4WeeklyQuestCard button {
+  width:100%;
+  min-height:44px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#21c69d,#62e9c5);
+  color:#073126;
+  font-weight:900;
+}
+
+.v4SeasonWeeks {
+  display:grid;
+  gap:10px;
+  padding:0 16px 16px;
+}
+
+.v4SeasonWeeks article {
+  display:grid;
+  grid-template-columns:44px 1fr 54px;
+  gap:11px;
+  align-items:center;
+  padding:13px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #dbe4e7;
+  box-shadow:0 7px 20px rgba(17,43,67,.06);
+}
+
+.v4SeasonWeeks article.active {
+  border-color:#29c99f;
+  background:#eefbf7;
+  box-shadow:inset 0 0 0 1px #29c99f, 0 8px 22px rgba(17,43,67,.07);
+}
+
+.v4SeasonWeekNumber {
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:#0b2948;
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+}
+
+.v4SeasonWeekCopy {
+  min-width:0;
+}
+
+.v4SeasonWeekCopy > span {
+  color:#149a7a;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.07em;
+}
+
+.v4SeasonWeekCopy h2 {
+  margin:2px 0 4px;
+  font-size:16px;
+}
+
+.v4SeasonWeekCopy p {
+  margin:0;
+  color:#687a8a;
+  font-size:9px;
+  line-height:1.35;
+}
+
+.v4SeasonWeekCopy small {
+  display:inline-block;
+  margin-top:5px;
+  color:#0d8e70;
+  font-size:9px;
+  font-weight:800;
+}
+
+.v4SeasonWeeks article > img {
+  width:50px;
+  height:50px;
+  object-fit:contain;
+}
+
+.v4EpicQuest {
+  margin-top:0;
+  margin-bottom:100px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255,211,79,.16), transparent 12rem),
+    #0b2948;
+  color:#fff;
+}
+
+.v4EpicQuest > span {
+  color:#ffd34f;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.v4EpicQuest h2 {
+  color:#fff;
+}
+
+.v4EpicQuest p {
+  color:rgba(255,255,255,.72);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.v4EpicQuest strong {
+  color:#55e1bf;
+}
