@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { dailyMissions } from '../game/data/dailyMissions';
 import {
   FAMILY_MISSION_TEMPLATES,
@@ -19,6 +19,10 @@ import { assets } from '../game/data/assets';
 import { agents } from '../game/data/gameData';
 import { immersiveSceneConfig, getImmersiveSceneConfig } from '../game/data/sceneConfig';
 import { analyticsSummary } from '../core/analytics/localAnalytics';
+import {
+  downloadPilotSnapshot,
+  importPilotSnapshotText,
+} from '../pilot/pilotBackup';
 
 const tabs = [
   ['overview', 'Visão geral'],
@@ -33,6 +37,7 @@ export default function AdminPortal({ assignments = [] }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [notice, setNotice] = useState('');
   const [qaAgentId, setQaAgentId] = useState('kira');
+  const restoreInputRef = useRef(null);
   const analytics = analyticsSummary();
 
   const metrics = useMemo(() => {
@@ -60,6 +65,22 @@ export default function AdminPortal({ assignments = [] }) {
   function demoAction(message) {
     setNotice(message);
     window.setTimeout(() => setNotice(''), 1800);
+  }
+
+  async function restoreSnapshot(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      importPilotSnapshotText(text);
+      setNotice('Snapshot restaurado. Recarregando a demo...');
+      window.setTimeout(() => window.location.reload(), 700);
+    } catch {
+      setNotice('Não foi possível restaurar este snapshot.');
+    } finally {
+      event.target.value = '';
+    }
   }
 
   return (
@@ -322,6 +343,30 @@ export default function AdminPortal({ assignments = [] }) {
               <button className="adminPrimary" type="button" onClick={() => demoAction('Aguardando backend/credenciais do piloto.')}>
                 Ver pendência
               </button>
+            </article>
+
+            <article className="adminPanel">
+              <span>Backup da demo</span>
+              <h2>Levar o estado para outro aparelho</h2>
+              <p>
+                Enquanto o backend compartilhado não existe, o Admin pode exportar um snapshot
+                local e restaurá-lo em outro navegador para testes controlados.
+              </p>
+              <div className="adminBackupActions">
+                <button className="adminPrimary" type="button" onClick={downloadPilotSnapshot}>
+                  Exportar snapshot
+                </button>
+                <button className="adminSecondary" type="button" onClick={() => restoreInputRef.current?.click()}>
+                  Restaurar snapshot
+                </button>
+                <input
+                  ref={restoreInputRef}
+                  type="file"
+                  accept="application/json,.json"
+                  hidden
+                  onChange={restoreSnapshot}
+                />
+              </div>
             </article>
           </section>
         )}
