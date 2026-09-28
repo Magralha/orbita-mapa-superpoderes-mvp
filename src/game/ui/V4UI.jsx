@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { assets } from '../data/assets';
 import { getTopPowers } from '../player/playerProfile';
 import { OrbitaWordmark, MobileBottomNav } from './MobileUI';
+import { seasonOne, weeklyQuest } from '../data/seasonData';
 
 const powerLabels = {
   investigar: 'Investigar',
@@ -30,6 +31,7 @@ export function V4Home({
   onOpenProfile,
   onOpenJourney,
   onOpenMissions,
+  onOpenSeason,
 }) {
   const top = getTopPowers(profile, 3);
   const level = profile?.progression?.level || 1;
@@ -125,7 +127,7 @@ export function V4Home({
             <h2>O futuro da minha escola</h2>
             <p>Observe um problema real, reúna pistas e imagine uma primeira solução que possa ser testada.</p>
           </div>
-          <button type="button" onClick={onOpenJourney}>Explorar</button>
+          <button type="button" onClick={onOpenSeason}>Explorar</button>
         </section>
 
         <MobileBottomNav active="inicio" onHome={() => {}} onMissions={onOpenMissions} onProfile={onOpenProfile} />
@@ -251,6 +253,78 @@ export function MissionCenter({ mission, completedToday, onStartDaily, onBack, o
           active="missao"
           onHome={onBack}
           onMissions={() => {}}
+          onProfile={onOpenProfile}
+        />
+      </section>
+    </main>
+  );
+}
+
+
+export function SeasonView({ profile, onBack, onOpenProfile }) {
+  const level = profile?.progression?.level || 1;
+  const xp = profile?.progression?.xp || 0;
+
+  return (
+    <main className="v4Page">
+      <section className="v4Shell v4SeasonShell">
+        <header className="v4Top">
+          <button className="v4BackButton" type="button" onClick={onBack}>‹</button>
+          <OrbitaWordmark compact />
+          <span className="v4TerritoryTag">✦ Temporada 01</span>
+        </header>
+
+        <section className="v4SeasonHero">
+          <span>TEMPORADA 01</span>
+          <h1>{seasonOne.title}</h1>
+          <p>{seasonOne.subtitle}</p>
+          <div className="v4SeasonProgress">
+            <div>
+              <strong>Nível {level}</strong>
+              <small>{xp} XP acumulados</small>
+            </div>
+            <i><em style={{ width: '25%' }} /></i>
+          </div>
+        </section>
+
+        <section className="v4WeeklyQuestCard">
+          <div className="v4MissionSourceHead">
+            <span>QUEST DA SEMANA</span>
+            <small>{weeklyQuest.duration} · +{weeklyQuest.xp} XP</small>
+          </div>
+          <h2>{weeklyQuest.title}</h2>
+          <ol>
+            {weeklyQuest.steps.map((step) => <li key={step}>{step}</li>)}
+          </ol>
+          <button type="button">Começar Quest</button>
+        </section>
+
+        <section className="v4SeasonWeeks">
+          {seasonOne.weeks.map((week, index) => (
+            <article className={index === 0 ? 'active' : ''} key={week.id}>
+              <div className="v4SeasonWeekNumber">0{week.number}</div>
+              <div className="v4SeasonWeekCopy">
+                <span>SEMANA {week.number}</span>
+                <h2>{week.title}</h2>
+                <p>{week.mission}</p>
+                <small>+{week.xp} XP</small>
+              </div>
+              <img src={assets.badges[week.power]} alt="" />
+            </article>
+          ))}
+        </section>
+
+        <section className="v4EpicQuest">
+          <span>FINAL DA TEMPORADA</span>
+          <h2>{seasonOne.epic.title}</h2>
+          <p>{seasonOne.epic.text}</p>
+          <strong>+{seasonOne.epic.xp} XP</strong>
+        </section>
+
+        <MobileBottomNav
+          active="missao"
+          onHome={onBack}
+          onMissions={onBack}
           onProfile={onOpenProfile}
         />
       </section>
