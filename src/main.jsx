@@ -81,7 +81,7 @@ function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
     <main className="mobileStartPage">
       <section className="mobileStartShell">
         <header className="mobileStartTop">
-          <button className="mobileRoundButton" type="button" aria-label="Menu">☰</button>
+          <span className="mobileRoundButton mobileRoundIcon" aria-hidden="true">✦</span>
           <OrbitaWordmark />
           <div className="mobileLevelPill">
             <span>✦</span>
