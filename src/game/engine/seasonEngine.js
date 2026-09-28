@@ -1,5 +1,5 @@
-import { applyDevelopmentEvent } from '../player/playerProfile';
-import { weeklyQuests } from '../data/seasonData';
+import { applyDevelopmentEvent } from '../player/playerProfile.js';
+import { weeklyQuests } from '../data/seasonData.js';
 
 export function getWeeklyQuestCompletions(v4State) {
   return { ...(v4State?.weeklyQuestCompletions || {}) };
