@@ -32,7 +32,7 @@ export default function ImmersiveScene({
   onExit,
   children,
 }) {
-  const config = getImmersiveSceneConfig(node.world);
+  const config = getImmersiveSceneConfig(node.world, agent?.id);
   if (!config) return null;
 
   const topPowers = Object.entries(powerTokens)
