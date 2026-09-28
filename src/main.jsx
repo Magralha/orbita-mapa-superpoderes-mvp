@@ -168,7 +168,6 @@ function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
         )}
 
         <RoleSwitcher mode="student" onChange={onModeChange} />
-        <MobileBottomNav active="inicio" />
       </section>
     </main>
   );
@@ -731,7 +730,7 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
 }
 
 
-function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onOpenProfile, justSaved, children }) {
+function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onExit, onOpenProfile, justSaved, children }) {
   const topPowers = Object.entries(powerTokens || {})
     .filter(([, value]) => value > 0)
     .sort((a, b) => b[1] - a[1])
@@ -741,7 +740,7 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
     <main className="mobileMissionPage">
       <section className="mobileMissionShell">
         <header className="mobileMissionTop">
-          <button className="mobileRoundButton mobileBackDisabled" type="button" disabled aria-label="Voltar">‹</button>
+          <button className="mobileRoundButton" type="button" onClick={onExit} aria-label="Voltar">‹</button>
           <OrbitaWordmark compact />
           <button className="mobileSaveButton" type="button" onClick={onSave}>
             <span>▣</span> Salvar
@@ -796,7 +795,7 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
           {children}
         </section>
 
-        <MobileBottomNav active="missao" onProfile={onOpenProfile} onSave={onSave} />
+
       </section>
     </main>
   );
@@ -1663,6 +1662,17 @@ function GameApp({ pilotSession }) {
     setJustSaved(true);
   }
 
+  function exitGameplay() {
+    saveGame();
+
+    if (v4State.onboardingComplete) {
+      setV4View('home');
+      return;
+    }
+
+    setAgent(null);
+  }
+
   function continueFromSave() {
     const snapshot = getSavedSnapshot();
     if (!snapshot) return;
@@ -1997,7 +2007,7 @@ function GameApp({ pilotSession }) {
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
         onAcknowledgeMission={acknowledgeMission}
-        onModeChange={setViewMode}
+        onModeChange={null}
       />
     );
   }
@@ -2012,12 +2022,12 @@ function GameApp({ pilotSession }) {
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
         onAcknowledgeMission={acknowledgeMission}
-        onModeChange={setViewMode}
+        onModeChange={null}
       />
     );
   }
 
-  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={setViewMode} />;
+  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={null} />;
 
   if (profileOpen) {
     return (
@@ -2027,7 +2037,7 @@ function GameApp({ pilotSession }) {
         inventory={inventory}
         usedPowerCards={usedPowerCards}
         onClose={() => setProfileOpen(false)}
-        onModeChange={setViewMode}
+        onModeChange={null}
       />
     );
   }
@@ -2138,7 +2148,7 @@ function GameApp({ pilotSession }) {
         visitedCount={visitedNodeIds.length}
         inventory={inventory}
         powerTokens={powerTokens}
-        onExit={saveGame}
+        onExit={exitGameplay}
       >
         <ChoiceNode node={node} onChoose={choose} />
       </ImmersiveScene>
@@ -2152,7 +2162,7 @@ function GameApp({ pilotSession }) {
         node={node}
         visitedCount={visitedNodeIds.length}
         inventory={inventory}
-        onExit={saveGame}
+        onExit={exitGameplay}
       >
         {node.type === 'inventory' && (
           <InventoryNode
@@ -2193,7 +2203,7 @@ function GameApp({ pilotSession }) {
   }
 
   return (
-    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
+    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onExit={exitGameplay} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
