@@ -1,4 +1,4 @@
-import { applyDevelopmentEvent } from '../player/playerProfile';
+import { applyDevelopmentEvent } from '../player/playerProfile.js';
 
 const DAY_MS = 86400000;
 
