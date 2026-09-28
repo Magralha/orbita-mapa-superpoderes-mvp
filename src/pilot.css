@@ -225,3 +225,8 @@
     bottom:8px;
   }
 }
+
+.pilotAccount-admin .pilotAccountIcon {
+  background:#b89cff;
+  color:#221544;
+}
