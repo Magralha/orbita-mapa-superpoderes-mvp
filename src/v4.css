@@ -634,3 +634,186 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+
+.v4MissionInboxCard {
+  margin: 0 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(255,211,79,.16), transparent 9rem),
+    #0b2948;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(7,26,46,.16);
+}
+
+.v4MissionInboxCard > div {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 3px;
+}
+
+.v4MissionInboxCard span {
+  color: #ffd34f;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.v4MissionInboxCard strong {
+  font-size: 17px;
+}
+
+.v4MissionInboxCard small {
+  color: rgba(255,255,255,.68);
+  font-size: 10px;
+}
+
+.v4MissionInboxCard button {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #0b2948;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.v4MissionCenterShell {
+  background:
+    radial-gradient(circle at 20% 0%,rgba(50,216,181,.14),transparent 15rem),
+    #f4f0e7;
+}
+
+.v4MissionCenterHero {
+  padding: 24px 18px 16px;
+  background:
+    radial-gradient(circle at 90% 20%,rgba(48,216,181,.16),transparent 13rem),
+    #071a2e;
+  color: #fff;
+}
+
+.v4MissionCenterHero > span {
+  color: #55e1bf;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4MissionCenterHero h1 {
+  margin: 7px 0 8px;
+  color: #fff;
+  font-size: clamp(32px, 9vw, 46px);
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.v4MissionCenterHero p {
+  margin: 0;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.v4MissionCenterList {
+  display: grid;
+  gap: 12px;
+  padding: 16px 16px 100px;
+}
+
+.v4MissionSourceCard {
+  border-radius: 22px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(17,43,67,.09);
+}
+
+.v4MissionSourceCard.orbita {
+  background:
+    radial-gradient(circle at 90% 15%,rgba(49,215,181,.15),transparent 11rem),
+    #0b2948;
+  color: #fff;
+}
+
+.v4MissionSourceCard.school {
+  border: 1px solid #cfe2e8;
+}
+
+.v4MissionSourceCard.family {
+  border: 1px solid #e9dcc1;
+  background: #fffaf0;
+}
+
+.v4MissionSourceHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v4MissionSourceHead span {
+  color: #15997a;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.v4MissionSourceCard.orbita .v4MissionSourceHead span {
+  color: #55e1bf;
+}
+
+.v4MissionSourceHead small {
+  color: #738494;
+  font-size: 10px;
+}
+
+.v4MissionSourceCard.orbita .v4MissionSourceHead small {
+  color: rgba(255,255,255,.62);
+}
+
+.v4MissionSourceCard h2 {
+  margin: 7px 0 6px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.v4MissionSourceCard.orbita h2 {
+  color: #fff;
+}
+
+.v4MissionSourceCard p {
+  margin: 0 0 13px;
+  color: #607286;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.v4MissionSourceCard.orbita p {
+  color: rgba(255,255,255,.7);
+}
+
+.v4MissionSourceCard button {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 13px;
+  background: #102f49;
+  color: #fff;
+  font-weight: 900;
+}
+
+.v4MissionSourceCard.orbita button {
+  background: linear-gradient(135deg,#20c79e,#61e9c5);
+  color: #073226;
+}
+
+.v4MissionSourceCard button:disabled {
+  background: #d9e1e2;
+  color: #718183;
+}
