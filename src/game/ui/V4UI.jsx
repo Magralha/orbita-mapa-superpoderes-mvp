@@ -27,6 +27,7 @@ export function V4Home({
   mission,
   completedToday,
   weeklyCount,
+  assignmentCount = 0,
   onStartMission,
   onOpenProfile,
   onOpenJourney,
@@ -115,8 +116,8 @@ export function V4Home({
         <section className="v4MissionInboxCard">
           <div>
             <span>NOVAS MISSÕES</span>
-            <strong>2 aguardando você</strong>
-            <small>1 da escola · 1 da família</small>
+            <strong>{assignmentCount} aguardando você</strong>
+            <small>Escola, família e Órbita no mesmo lugar</small>
           </div>
           <button type="button" onClick={onOpenMissions}>Abrir central</button>
         </section>
@@ -188,26 +189,15 @@ export function DailyMissionView({ mission, onComplete, onBack }) {
 }
 
 
-export function MissionCenter({ mission, completedToday, onStartDaily, onBack, onOpenProfile }) {
-  const inbox = [
-    {
-      id: 'school-recreio',
-      source: 'Escola',
-      sourceClass: 'school',
-      title: 'Desafio do Recreio',
-      text: 'Observe o recreio e identifique um problema que você gostaria de melhorar.',
-      meta: '15 min · +30 XP',
-    },
-    {
-      id: 'family-menos-caos',
-      source: 'Família',
-      sourceClass: 'family',
-      title: 'Missão Menos Caos',
-      text: 'Escolha uma rotina de casa que poderia ficar mais simples e organize em três passos.',
-      meta: '10 min · +25 XP',
-    },
-  ];
-
+export function MissionCenter({
+  mission,
+  completedToday,
+  assignments = [],
+  onStartDaily,
+  onBack,
+  onOpenProfile,
+  onOpenAssigned,
+}) {
   return (
     <main className="v4Page">
       <section className="v4Shell v4MissionCenterShell">
@@ -236,17 +226,26 @@ export function MissionCenter({ mission, completedToday, onStartDaily, onBack, o
             </button>
           </article>
 
-          {inbox.map((item) => (
-            <article className={`v4MissionSourceCard ${item.sourceClass}`} key={item.id}>
+          {assignments.map((item) => (
+            <article className={`v4MissionSourceCard ${item.source}`} key={item.assignmentId}>
               <div className="v4MissionSourceHead">
-                <span>{item.source}</span>
-                <small>{item.meta}</small>
+                <span>{item.sourceLabel}</span>
+                <small>{item.duration} · +{item.xp} XP</small>
               </div>
               <h2>{item.title}</h2>
               <p>{item.text}</p>
-              <button type="button">Abrir missão</button>
+              <button type="button" onClick={() => onOpenAssigned(item)}>
+                Abrir missão
+              </button>
             </article>
           ))}
+
+          {!assignments.length && (
+            <article className="v4MissionEmptyCard">
+              <strong>Nenhuma missão externa pendente.</strong>
+              <p>Quando escola ou família enviarem uma missão, ela aparece aqui.</p>
+            </article>
+          )}
         </section>
 
         <MobileBottomNav
@@ -260,6 +259,63 @@ export function MissionCenter({ mission, completedToday, onStartDaily, onBack, o
   );
 }
 
+export function AssignedMissionView({ assignment, onComplete, onBack }) {
+  const [selected, setSelected] = useState(null);
+  const options = [
+    { id: 'feito', label: 'Consegui fazer e percebi algo novo' },
+    { id: 'parcial', label: 'Tentei, mas ficou pela metade' },
+    { id: 'nao-rolou', label: 'Ainda não consegui realizar' },
+  ];
+
+  return (
+    <main className="v4Page">
+      <section className="v4Shell v4AssignedMissionShell">
+        <header className="v4Top">
+          <button className="v4BackButton" type="button" onClick={onBack}>‹</button>
+          <OrbitaWordmark compact />
+          <span className="v4TerritoryTag">{assignment.sourceLabel}</span>
+        </header>
+
+        <section className="v4AssignedHero">
+          <span>MISSÃO RECEBIDA · {assignment.targetLabel}</span>
+          <h1>{assignment.title}</h1>
+          <p>{assignment.text}</p>
+          <div className="v4AssignedMeta">
+            <span>{assignment.duration}</span>
+            <strong>+{assignment.xp} XP</strong>
+          </div>
+        </section>
+
+        <section className="v4ReflectionCard">
+          <span>RETORNO RÁPIDO</span>
+          <h2>Como foi colocar isso em prática?</h2>
+          <div className="v4ReflectionOptions">
+            {options.map((option) => (
+              <button
+                type="button"
+                key={option.id}
+                className={selected?.id === option.id ? 'selected' : ''}
+                onClick={() => setSelected(option)}
+              >
+                <span>{option.label}</span>
+                <b>{selected?.id === option.id ? '✓' : '›'}</b>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <button
+          type="button"
+          className="v4PrimaryButton v4CompleteButton"
+          disabled={!selected}
+          onClick={() => onComplete(selected.id)}
+        >
+          Registrar conclusão
+        </button>
+      </section>
+    </main>
+  );
+}
 
 export function SeasonView({ profile, onBack, onOpenProfile }) {
   const level = profile?.progression?.level || 1;
