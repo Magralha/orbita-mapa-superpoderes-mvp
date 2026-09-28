@@ -14,6 +14,12 @@ import {
   recordMission,
 } from './game/engine/rpgEngine';
 import { getTopPowers } from './game/player/playerProfile';
+import {
+  buildPassportHistory,
+  deriveInterestSignals,
+  deriveMilestones,
+  nextExplorationSuggestions,
+} from './game/player/passportInsights';
 import RoleSwitcher from './app/RoleSwitcher';
 import FamilyPortal from './family/FamilyPortal';
 import MunicipalityDashboard from './municipality/MunicipalityDashboard';
@@ -405,6 +411,11 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
     ).length,
   }));
 
+  const interestSignals = deriveInterestSignals(profile);
+  const passportHistory = buildPassportHistory(profile);
+  const milestones = deriveMilestones(profile);
+  const nextSuggestions = nextExplorationSuggestions(profile);
+
   const nextLevelAt = (profile.progression?.level || 1) * 100;
   const currentLevelStart = Math.max(0, nextLevelAt - 100);
   const levelProgress = Math.min(
@@ -521,7 +532,7 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
         <section className="myOrbitaSection myOrbitaPassport">
           <div className="myOrbitaSectionTitle">
             <span>Passaporte Órbita</span>
-            <small>Um histórico do que você explora — não um rótulo sobre quem você é.</small>
+            <small>Um histórico vivo do que você explora — não um rótulo sobre quem você é.</small>
           </div>
 
           <div className="myOrbitaPassportGrid">
@@ -534,13 +545,85 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
               <strong>{profile.experiences?.length || 0} registradas</strong>
             </article>
             <article>
-              <span>Minhas conquistas</span>
-              <strong>{profile.achievements?.length || 0} desbloqueadas</strong>
+              <span>Missões concluídas</span>
+              <strong>{profile.progression?.missionsCompleted || 0} grandes missões</strong>
             </article>
             <article>
-              <span>Próximos caminhos</span>
-              <strong>Experimentar contextos diferentes</strong>
+              <span>Minha jornada</span>
+              <strong>{passportHistory.length} movimentos registrados</strong>
             </article>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Sinais de interesse</span>
+              <small>Áreas que apareceram mais nas escolhas e experiências.</small>
+            </div>
+
+            <div className="myOrbitaInterestGrid">
+              {interestSignals.length ? interestSignals.map((interest) => (
+                <article key={interest.id}>
+                  <strong>{interest.label}</strong>
+                  <span>{interest.evidence} evidência{interest.evidence === 1 ? '' : 's'}</span>
+                  <i><em style={{ width: `${Math.min(100, 28 + interest.score * 8)}%` }} /></i>
+                </article>
+              )) : (
+                <p>Continue explorando para que seus sinais de interesse apareçam aqui.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Conquistas da jornada</span>
+              <small>Marcos de participação e exploração.</small>
+            </div>
+
+            <div className="myOrbitaMilestoneGrid">
+              {milestones.map((milestone) => (
+                <article className={milestone.unlocked ? 'unlocked' : 'locked'} key={milestone.id}>
+                  <div>{milestone.unlocked ? '✓' : '○'}</div>
+                  <strong>{milestone.label}</strong>
+                  <small>{milestone.text}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Próximos caminhos</span>
+              <small>Sugestões para ampliar repertório, não para definir profissão.</small>
+            </div>
+
+            <div className="myOrbitaNextPaths">
+              {nextSuggestions.map((suggestion, index) => (
+                <article key={suggestion}>
+                  <span>0{index + 1}</span>
+                  <strong>{suggestion}</strong>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Histórico do Passaporte</span>
+              <small>O que foi sendo registrado ao longo da jornada.</small>
+            </div>
+
+            <div className="myOrbitaPassportHistory">
+              {passportHistory.slice(0, 10).map((event) => (
+                <div key={event.id}>
+                  <i />
+                  <span>
+                    <small>{event.source}{event.territory ? ` · ${event.territory}` : ''}</small>
+                    <strong>{event.label}</strong>
+                  </span>
+                  <b>+{event.xp} XP</b>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
