@@ -47,10 +47,15 @@ import {
 } from './game/engine/assignmentEngine';
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
+import PilotLogin from './pilot/PilotLogin';
+import PilotSessionBar from './pilot/PilotSessionBar';
+import { createPilotSession, clearPilotSession, getPilotSession } from './pilot/sessionStore';
+import { resolvePilotLinks } from './pilot/pilotData';
 import './styles.css';
 import './portals.css';
 import './v4.css';
 import './immersive-game.css';
+import './pilot.css';
 
 function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('orin');
@@ -1477,7 +1482,8 @@ function getSavedSnapshot() {
   }
 }
 
-function GameApp() {
+function GameApp({ pilotSession }) {
+  const pilotLinks = resolvePilotLinks(pilotSession?.account);
   const [agent, setAgent] = useState(null);
   const [nodeId, setNodeId] = useState('world_entry');
   const [scores, setScores] = useState(emptyScores());
@@ -1492,7 +1498,11 @@ function GameApp() {
   const [powerTokens, setPowerTokens] = useState({});
   const [playerProfile, setPlayerProfile] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [viewMode, setViewMode] = useState('student');
+  const [viewMode, setViewMode] = useState(() => {
+    if (pilotSession?.account?.role === 'family') return 'family';
+    if (pilotSession?.account?.role === 'school') return 'municipality';
+    return 'student';
+  });
   const [v4State, setV4State] = useState(() => getSavedV4State());
   const [v4View, setV4View] = useState('home');
   const [assignmentState, setAssignmentState] = useState(() => getSavedAssignmentState());
@@ -1911,6 +1921,7 @@ function GameApp() {
         agent={agent || demo.agent}
         profile={playerProfile || demo.profile}
         opportunities={mockOpportunities}
+        pilotLinks={pilotLinks}
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
         onAcknowledgeMission={acknowledgeMission}
@@ -1925,6 +1936,7 @@ function GameApp() {
         municipality={mockMunicipality}
         signals={mockPublicSignals}
         opportunities={mockOpportunities}
+        pilotLinks={pilotLinks}
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
         onAcknowledgeMission={acknowledgeMission}
@@ -2135,4 +2147,35 @@ function GameApp() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<GameApp />);
+function RootApp() {
+  const [pilotSession, setPilotSession] = useState(() => getPilotSession());
+
+  function signInPilot(accountId) {
+    const next = createPilotSession(accountId);
+    if (next) setPilotSession(next);
+  }
+
+  function switchPilotProfile() {
+    clearPilotSession();
+    setPilotSession(null);
+  }
+
+  if (!pilotSession) {
+    return <PilotLogin onSelect={signInPilot} />;
+  }
+
+  const links = resolvePilotLinks(pilotSession.account);
+
+  return (
+    <>
+      <GameApp key={pilotSession.accountId} pilotSession={pilotSession} />
+      <PilotSessionBar
+        session={pilotSession}
+        links={links}
+        onSwitch={switchPilotProfile}
+      />
+    </>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<RootApp />);
