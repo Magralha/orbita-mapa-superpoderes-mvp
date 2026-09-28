@@ -6,6 +6,7 @@ const roleMeta = {
   student: { eyebrow: 'JOGAR', icon: '✦' },
   family: { eyebrow: 'ACOMPANHAR', icon: '⌂' },
   school: { eyebrow: 'ORGANIZAR', icon: '◆' },
+  admin: { eyebrow: 'OPERAR', icon: '⚙' },
 };
 
 export default function PilotLogin({ onSelect }) {
