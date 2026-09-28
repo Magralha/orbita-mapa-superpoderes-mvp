@@ -23,6 +23,7 @@ import {
   downloadPilotSnapshot,
   importPilotSnapshotText,
 } from '../pilot/pilotBackup';
+import { runtimeReadiness } from '../data/runtimeConfig';
 
 const tabs = [
   ['overview', 'Visão geral'],
@@ -39,6 +40,7 @@ export default function AdminPortal({ assignments = [] }) {
   const [qaAgentId, setQaAgentId] = useState('kira');
   const restoreInputRef = useRef(null);
   const analytics = analyticsSummary();
+  const runtime = runtimeReadiness();
 
   const metrics = useMemo(() => {
     const completed = assignments.filter((item) => item.status === 'completed').length;
@@ -122,8 +124,10 @@ export default function AdminPortal({ assignments = [] }) {
               </div>
               <div className="adminHeroStatus">
                 <span>STATUS</span>
-                <strong>Demo estruturada</strong>
-                <small>Backend real ainda não conectado</small>
+                <strong>{runtime.usingLocalDemo ? 'Demo estruturada' : 'Backend conectado'}</strong>
+                <small>
+                  {runtime.usingLocalDemo ? 'Persistência local · backend ainda não conectado' : 'Modo remoto ativo'}
+                </small>
               </div>
             </section>
 
