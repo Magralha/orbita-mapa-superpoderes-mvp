@@ -37,8 +37,8 @@ import './v4.css';
 import './immersive-game.css';
 
 function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
-  const [selectedAgentId, setSelectedAgentId] = useState('kira');
-  const [selectedScenarioId, setSelectedScenarioId] = useState('escola');
+  const [selectedAgentId, setSelectedAgentId] = useState('orin');
+  const [selectedScenarioId, setSelectedScenarioId] = useState('casa');
 
   const selectedAgent = agents.find((item) => item.id === selectedAgentId) || agents[0];
   const selectedScenario = scenarioOptions.find((item) => item.id === selectedScenarioId) || scenarioOptions[0];
