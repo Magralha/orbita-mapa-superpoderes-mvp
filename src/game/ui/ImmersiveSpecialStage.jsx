@@ -50,16 +50,16 @@ export default function ImmersiveSpecialStage({
         <div className="immersiveInventoryChip">
           <span>▣</span>
           <strong>Mochila</strong>
-          <b>{inventory.length}</b>
+          {inventory.length > 0 && <b>{inventory.length}</b>}
         </div>
 
         <div
           className={`immersiveAgentSprite immersiveAgentSprite-${agent.id}`}
           style={{
             left: `${config.agent.left}%`,
-            top: `${config.agent.top}%`,
+            top: `${config.agent.ground}%`,
             width: `${config.agent.width}%`,
-            transform: `translate(-50%, -50%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
+            transform: `translate(-50%, -100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
           }}
         >
           <span className="immersiveAgentGlow" />
