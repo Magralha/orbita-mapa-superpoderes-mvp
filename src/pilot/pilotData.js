@@ -46,6 +46,13 @@ export const pilotStaff = [
 
 export const pilotAccounts = [
   {
+    id: 'account-admin-orbita',
+    role: 'admin',
+    label: 'Admin',
+    displayName: 'Operação Órbita',
+    subtitle: 'Backoffice do piloto',
+  },
+  {
     id: 'account-student-lia',
     role: 'student',
     label: 'Aluno',
