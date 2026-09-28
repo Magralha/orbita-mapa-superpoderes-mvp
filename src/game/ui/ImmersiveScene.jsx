@@ -15,7 +15,8 @@ const powerLabels = {
 };
 
 function dominantPower(powers = {}) {
-  return Object.entries(powers).sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))[0]?.[0] || 'investigar';
+  return Object.entries(powers)
+    .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))[0]?.[0] || 'investigar';
 }
 
 export function canUseImmersiveScene(node) {
@@ -58,7 +59,7 @@ export default function ImmersiveScene({
             type="button"
             className="immersiveExitButton"
             onClick={onExit}
-            aria-label="Sair da missão"
+            aria-label="Salvar progresso"
           >
             ‹
           </button>
@@ -67,31 +68,26 @@ export default function ImmersiveScene({
 
           <div className="immersiveSavedChip">
             <span>✓</span>
-            <strong>Salvo</strong>
+            <strong>salvo</strong>
           </div>
 
           <div className="immersiveProgressChip">
-            <span>Etapa {Math.max(1, visitedCount)}/40</span>
+            <span>Jornada {Math.round(progress)}%</span>
             <i><em style={{ width: `${progress}%` }} /></i>
           </div>
         </header>
 
-        <aside className="immersiveAgentMiniHud">
-          <div className="immersiveAgentMiniPortrait">
-            <img src={assets.agents[agent.id]} alt="" />
-          </div>
-          <div className="immersiveAgentMiniInfo">
-            <strong>{agent.name}</strong>
-            <div className="immersiveMiniPowers">
-              {topPowers.length ? topPowers.map(([key, value]) => (
-                <span key={key} title={powerLabels[key] || key}>
-                  <img src={assets.badges[key]} alt="" />
-                  <i><em style={{ width: `${Math.min(100, 28 + Number(value) * 15)}%` }} /></i>
-                </span>
-              )) : (
-                <small>poderes carregando</small>
-              )}
-            </div>
+        <aside className="immersiveAgentChip">
+          <strong>{agent.name}</strong>
+          <div className="immersiveAgentPowerDots">
+            {topPowers.length ? topPowers.map(([key, value]) => (
+              <span key={key} title={powerLabels[key] || key}>
+                <img src={assets.badges[key]} alt="" />
+                <b>{Math.max(1, Number(value))}</b>
+              </span>
+            )) : (
+              <small>explorando</small>
+            )}
           </div>
         </aside>
 
@@ -131,7 +127,6 @@ export default function ImmersiveScene({
         </div>
 
         <section className="immersiveDecisionSheet">
-          <div className="immersiveDecisionGrabber" />
           <div className="immersiveLocationTag">{node.chapter}</div>
           <h1>{node.title}</h1>
           <p>{node.text}</p>
