@@ -20,8 +20,19 @@ import MunicipalityDashboard from './municipality/MunicipalityDashboard';
 import { buildDemoStudent } from './mock/demoStudent';
 import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
 import { scenarioOptions, OrbitaWordmark, MobileBottomNav } from './game/ui/MobileUI';
+import { missionForDate } from './game/data/dailyMissions';
+import {
+  completeDailyMission,
+  emptyV4State,
+  localDateKey,
+  markDailyComplete,
+  normalizeV4State,
+  weeklyCompletionCount,
+} from './game/engine/dailyEngine';
+import { V4Home, DailyMissionView } from './game/ui/V4UI';
 import './styles.css';
 import './portals.css';
+import './v4.css';
 
 function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('kira');
@@ -1047,6 +1058,7 @@ function PowerCard({
   usedPowerCards,
   playerProfile,
   onOpenProfile,
+  onContinueJourney,
 }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
@@ -1203,8 +1215,8 @@ function PowerCard({
                   experiências que você viver até o 9º ano.
                 </p>
               </div>
-              <button type="button" className="sceneAction finalProfileButton" onClick={onOpenProfile}>
-                Abrir Meu Órbita
+              <button type="button" className="sceneAction finalProfileButton" onClick={onContinueJourney || onOpenProfile}>
+                Continuar no Órbita
               </button>
             </section>
           </div>
@@ -1242,6 +1254,16 @@ function spendPowerToken(current, key) {
 
 
 const SAVE_KEY = 'orbita-superpoderes-save';
+const V4_KEY = 'orbita-v4-state';
+
+function getSavedV4State() {
+  try {
+    const raw = localStorage.getItem(V4_KEY);
+    return raw ? normalizeV4State(JSON.parse(raw)) : emptyV4State();
+  } catch {
+    return emptyV4State();
+  }
+}
 
 function getSavedSnapshot() {
   try {
@@ -1269,8 +1291,14 @@ function GameApp() {
   const [playerProfile, setPlayerProfile] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [viewMode, setViewMode] = useState('student');
+  const [v4State, setV4State] = useState(() => getSavedV4State());
+  const [v4View, setV4View] = useState('home');
 
   const node = expandedNodes[nodeId];
+  const dailyMission = missionForDate();
+  const todayKey = localDateKey();
+  const completedToday = Boolean(v4State.dailyCompletions?.[todayKey]);
+  const weeklyCount = weeklyCompletionCount(v4State);
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
   const [justSaved, setJustSaved] = useState(false);
 
@@ -1423,6 +1451,59 @@ function GameApp() {
     setPlayerProfile(
       snapshot.playerProfile || (restoredAgent ? startPlayerJourney(restoredAgent) : null),
     );
+  }
+
+  function persistV4(nextState) {
+    const normalized = normalizeV4State(nextState);
+    setV4State(normalized);
+    localStorage.setItem(V4_KEY, JSON.stringify(normalized));
+    return normalized;
+  }
+
+  function enterContinuousJourney() {
+    const next = persistV4({
+      ...v4State,
+      onboardingComplete: true,
+    });
+    setV4View('home');
+    saveGame();
+    return next;
+  }
+
+  function completeTodayMission(option) {
+    if (!agent || completedToday) {
+      setV4View('home');
+      return;
+    }
+
+    const nextV4 = markDailyComplete(v4State, dailyMission, option);
+    persistV4(nextV4);
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = completeDailyMission(currentProfile, dailyMission, option);
+
+      const snapshot = {
+        agent,
+        nodeId,
+        scores,
+        path,
+        inventory,
+        tradeoffSelection,
+        mission,
+        decisiveItem,
+        visitedNodeIds,
+        usedItems,
+        usedPowerCards,
+        powerTokens,
+        playerProfile: updatedProfile,
+      };
+
+      localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+      setHasSave(true);
+      return updatedProfile;
+    });
+
+    setV4View('home');
   }
 
   function chooseAgent(selectedAgent, selectedScenario) {
@@ -1581,6 +1662,31 @@ function GameApp() {
     );
   }
 
+  if (v4State.onboardingComplete && v4View === 'daily') {
+    return (
+      <DailyMissionView
+        mission={dailyMission}
+        onComplete={completeTodayMission}
+        onBack={() => setV4View('home')}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete) {
+    return (
+      <V4Home
+        agent={agent}
+        profile={playerProfile}
+        mission={dailyMission}
+        completedToday={completedToday}
+        weeklyCount={weeklyCount}
+        onStartMission={() => setV4View('daily')}
+        onOpenProfile={() => setProfileOpen(true)}
+        onOpenJourney={() => setProfileOpen(true)}
+      />
+    );
+  }
+
   if (mission) {
     return (
       <PowerCard
@@ -1592,6 +1698,7 @@ function GameApp() {
         usedPowerCards={usedPowerCards}
         playerProfile={playerProfile}
         onOpenProfile={() => setProfileOpen(true)}
+        onContinueJourney={enterContinuousJourney}
       />
     );
   }
