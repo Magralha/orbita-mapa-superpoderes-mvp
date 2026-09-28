@@ -1,4 +1,6 @@
 export default function RoleSwitcher({ mode, onChange }) {
+  if (typeof onChange !== 'function') return null;
+
   const options = [
     { id: 'student', label: 'Aluno' },
     { id: 'family', label: 'Responsável' },
