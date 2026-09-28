@@ -349,9 +349,11 @@ export function AssignedMissionView({ assignment, onComplete, onBack }) {
 export function SeasonView({
   profile,
   completedQuestIds = [],
+  epicCompleted = false,
   onBack,
   onOpenProfile,
   onOpenQuest,
+  onOpenEpic,
 }) {
   const level = profile?.progression?.level || 1;
   const xp = profile?.progression?.xp || 0;
@@ -415,11 +417,22 @@ export function SeasonView({
           })}
         </section>
 
-        <section className="v4EpicQuest">
+        <section className={`v4EpicQuest ${epicCompleted ? 'completed' : ''}`}>
           <span>FINAL DA TEMPORADA</span>
           <h2>{seasonOne.epic.title}</h2>
           <p>{seasonOne.epic.text}</p>
           <strong>+{seasonOne.epic.xp} XP</strong>
+          <button
+            type="button"
+            disabled={completedCount < weeklyQuests.length || epicCompleted}
+            onClick={onOpenEpic}
+          >
+            {epicCompleted
+              ? 'Epic Quest concluída ✓'
+              : completedCount < weeklyQuests.length
+                ? 'Complete as 4 semanas para liberar'
+                : 'Começar Epic Quest'}
+          </button>
         </section>
 
         <MobileBottomNav
@@ -500,6 +513,79 @@ export function WeeklyQuestView({ quest, onComplete, onBack }) {
           onClick={() => onComplete(reflection)}
         >
           Concluir Quest
+        </button>
+      </section>
+    </main>
+  );
+}
+
+
+export function EpicQuestView({ epic, onComplete, onBack }) {
+  const [checked, setChecked] = useState([]);
+  const [reflection, setReflection] = useState('');
+  const allDone = checked.length === epic.steps.length;
+
+  function toggleStep(index) {
+    setChecked((current) => (
+      current.includes(index)
+        ? current.filter((item) => item !== index)
+        : [...current, index]
+    ));
+  }
+
+  return (
+    <main className="v4Page">
+      <section className="v4Shell v4QuestRunShell">
+        <header className="v4Top">
+          <button className="v4BackButton" type="button" onClick={onBack}>‹</button>
+          <OrbitaWordmark compact />
+          <span className="v4TerritoryTag">★ Epic Quest</span>
+        </header>
+
+        <section className="v4AssignedHero v4EpicHero">
+          <span>FINAL DA TEMPORADA</span>
+          <h1>{epic.title}</h1>
+          <p>{epic.text}</p>
+          <div className="v4AssignedMeta">
+            <span>Projeto final</span>
+            <strong>+{epic.xp} XP</strong>
+          </div>
+        </section>
+
+        <section className="v4QuestChecklist">
+          {epic.steps.map((step, index) => (
+            <button
+              type="button"
+              className={checked.includes(index) ? 'done' : ''}
+              onClick={() => toggleStep(index)}
+              key={step}
+            >
+              <span>{checked.includes(index) ? '✓' : index + 1}</span>
+              <strong>{step}</strong>
+            </button>
+          ))}
+        </section>
+
+        <section className="v4OptionalEvidence">
+          <span>REFLEXÃO FINAL</span>
+          <label htmlFor="epic-reflection">{epic.reflection}</label>
+          <textarea
+            id="epic-reflection"
+            value={reflection}
+            maxLength={320}
+            placeholder="Registre o principal aprendizado desta temporada."
+            onChange={(event) => setReflection(event.target.value)}
+          />
+          <small>{reflection.length}/320</small>
+        </section>
+
+        <button
+          type="button"
+          className="v4PrimaryButton v4CompleteButton"
+          disabled={!allDone}
+          onClick={() => onComplete(reflection)}
+        >
+          Concluir temporada
         </button>
       </section>
     </main>
