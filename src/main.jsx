@@ -39,6 +39,7 @@ import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionVie
 import {
   activeAssignments,
   addAssignment,
+  acknowledgeAssignment,
   completeAssignedMissionProfile,
   completeAssignment,
   normalizeAssignmentState,
@@ -1682,21 +1683,25 @@ function GameApp() {
     setV4View('assigned');
   }
 
-  function completeAssignedMission(reflectionId) {
+  function acknowledgeMission(assignmentId) {
+    persistAssignments(acknowledgeAssignment(assignmentState, assignmentId));
+  }
+
+  function completeAssignedMission(result) {
     if (!selectedAssignment) {
       setV4View('missions');
       return;
     }
 
     persistAssignments(
-      completeAssignment(assignmentState, selectedAssignment.assignmentId, reflectionId),
+      completeAssignment(assignmentState, selectedAssignment.assignmentId, result),
     );
 
     setPlayerProfile((currentProfile) => {
       const updatedProfile = completeAssignedMissionProfile(
         currentProfile,
         selectedAssignment,
-        reflectionId,
+        result,
       );
 
       if (agent) {
@@ -1908,6 +1913,7 @@ function GameApp() {
         opportunities={mockOpportunities}
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
+        onAcknowledgeMission={acknowledgeMission}
         onModeChange={setViewMode}
       />
     );
@@ -1921,6 +1927,7 @@ function GameApp() {
         opportunities={mockOpportunities}
         assignments={assignmentState.assignments}
         onAssignMission={assignMission}
+        onAcknowledgeMission={acknowledgeMission}
         onModeChange={setViewMode}
       />
     );
