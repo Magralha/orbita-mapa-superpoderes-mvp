@@ -35,7 +35,15 @@ import {
   normalizeV4State,
   weeklyCompletionCount,
 } from './game/engine/dailyEngine';
-import { V4Home, DailyMissionView, MissionCenter, SeasonView } from './game/ui/V4UI';
+import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView } from './game/ui/V4UI';
+import {
+  activeAssignments,
+  addAssignment,
+  completeAssignedMissionProfile,
+  completeAssignment,
+  normalizeAssignmentState,
+  seededAssignmentState,
+} from './game/engine/assignmentEngine';
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import './styles.css';
@@ -1438,6 +1446,7 @@ function spendPowerToken(current, key) {
 
 const SAVE_KEY = 'orbita-superpoderes-save';
 const V4_KEY = 'orbita-v4-state';
+const ASSIGNMENT_KEY = 'orbita-assignment-state';
 
 function getSavedV4State() {
   try {
@@ -1445,6 +1454,15 @@ function getSavedV4State() {
     return raw ? normalizeV4State(JSON.parse(raw)) : emptyV4State();
   } catch {
     return emptyV4State();
+  }
+}
+
+function getSavedAssignmentState() {
+  try {
+    const raw = localStorage.getItem(ASSIGNMENT_KEY);
+    return raw ? normalizeAssignmentState(JSON.parse(raw)) : seededAssignmentState();
+  } catch {
+    return seededAssignmentState();
   }
 }
 
@@ -1476,12 +1494,16 @@ function GameApp() {
   const [viewMode, setViewMode] = useState('student');
   const [v4State, setV4State] = useState(() => getSavedV4State());
   const [v4View, setV4View] = useState('home');
+  const [assignmentState, setAssignmentState] = useState(() => getSavedAssignmentState());
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
 
   const node = expandedNodes[nodeId];
   const dailyMission = missionForDate();
   const todayKey = localDateKey();
   const completedToday = Boolean(v4State.dailyCompletions?.[todayKey]);
   const weeklyCount = weeklyCompletionCount(v4State);
+  const pendingAssignments = activeAssignments(assignmentState);
+  const selectedAssignment = assignmentState.assignments.find((item) => item.assignmentId === selectedAssignmentId) || null;
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
   const [justSaved, setJustSaved] = useState(false);
 
@@ -1641,6 +1663,67 @@ function GameApp() {
     setV4State(normalized);
     localStorage.setItem(V4_KEY, JSON.stringify(normalized));
     return normalized;
+  }
+
+  function persistAssignments(nextState) {
+    const normalized = normalizeAssignmentState(nextState);
+    setAssignmentState(normalized);
+    localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(normalized));
+    return normalized;
+  }
+
+  function assignMission(template, options = {}) {
+    const next = addAssignment(assignmentState, template, options);
+    persistAssignments(next);
+  }
+
+  function openAssignedMission(assignment) {
+    setSelectedAssignmentId(assignment.assignmentId);
+    setV4View('assigned');
+  }
+
+  function completeAssignedMission(reflectionId) {
+    if (!selectedAssignment) {
+      setV4View('missions');
+      return;
+    }
+
+    persistAssignments(
+      completeAssignment(assignmentState, selectedAssignment.assignmentId, reflectionId),
+    );
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = completeAssignedMissionProfile(
+        currentProfile,
+        selectedAssignment,
+        reflectionId,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setSelectedAssignmentId(null);
+    setV4View('missions');
   }
 
   function enterContinuousJourney() {
@@ -1823,6 +1906,8 @@ function GameApp() {
         agent={agent || demo.agent}
         profile={playerProfile || demo.profile}
         opportunities={mockOpportunities}
+        assignments={assignmentState.assignments}
+        onAssignMission={assignMission}
         onModeChange={setViewMode}
       />
     );
@@ -1834,6 +1919,8 @@ function GameApp() {
         municipality={mockMunicipality}
         signals={mockPublicSignals}
         opportunities={mockOpportunities}
+        assignments={assignmentState.assignments}
+        onAssignMission={assignMission}
         onModeChange={setViewMode}
       />
     );
@@ -1854,12 +1941,27 @@ function GameApp() {
     );
   }
 
+  if (v4State.onboardingComplete && v4View === 'assigned' && selectedAssignment) {
+    return (
+      <AssignedMissionView
+        assignment={selectedAssignment}
+        onComplete={completeAssignedMission}
+        onBack={() => {
+          setSelectedAssignmentId(null);
+          setV4View('missions');
+        }}
+      />
+    );
+  }
+
   if (v4State.onboardingComplete && v4View === 'missions') {
     return (
       <MissionCenter
         mission={dailyMission}
         completedToday={completedToday}
+        assignments={pendingAssignments}
         onStartDaily={() => setV4View('daily')}
+        onOpenAssigned={openAssignedMission}
         onBack={() => setV4View('home')}
         onOpenProfile={() => setProfileOpen(true)}
       />
@@ -1894,6 +1996,7 @@ function GameApp() {
         mission={dailyMission}
         completedToday={completedToday}
         weeklyCount={weeklyCount}
+        assignmentCount={pendingAssignments.length}
         onStartMission={() => setV4View('daily')}
         onOpenProfile={() => setProfileOpen(true)}
         onOpenJourney={() => setProfileOpen(true)}
