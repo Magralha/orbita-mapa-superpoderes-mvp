@@ -1,0 +1,516 @@
+/* Órbita V4 — continuous journey */
+
+.v4Page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(64, 224, 190, .18), transparent 26rem),
+    linear-gradient(180deg, #071a2e 0%, #0c2440 42%, #f4f0e7 42%, #f4f0e7 100%);
+  color: #10243a;
+  padding: 0;
+}
+
+.v4Shell {
+  width: min(560px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #f4f0e7;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 94px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, .22);
+}
+
+.v4Top {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 10px;
+  background: #071a2e;
+  color: #fff;
+}
+
+.v4Top .orbitaWordmark strong {
+  color: #fff;
+}
+
+.v4Level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+}
+
+.v4Level > span {
+  color: #ffd34f;
+  font-size: 18px;
+}
+
+.v4Level div {
+  display: grid;
+}
+
+.v4Level strong {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.v4Level small {
+  font-size: 10px;
+  opacity: .72;
+}
+
+.v4Welcome {
+  min-height: 210px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(120px, .8fr);
+  align-items: end;
+  padding: 24px 18px 0;
+  color: #fff;
+  background:
+    radial-gradient(circle at 80% 28%, rgba(53, 227, 191, .24), transparent 11rem),
+    linear-gradient(180deg, #071a2e, #0b2948);
+}
+
+.v4Welcome h1 {
+  margin: 7px 0 8px;
+  color: #fff;
+  font-size: clamp(30px, 8vw, 42px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+
+.v4Welcome p {
+  margin: 0 0 26px;
+  max-width: 330px;
+  color: rgba(255,255,255,.74);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.v4Welcome img {
+  width: 100%;
+  max-height: 190px;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 14px 18px rgba(0,0,0,.28));
+}
+
+.v4Eyebrow {
+  display: inline-flex;
+  color: #55e1bf;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.v4ProgressCard {
+  margin: -2px 16px 16px;
+  border-radius: 20px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(14, 35, 55, .12);
+  position: relative;
+  z-index: 2;
+}
+
+.v4ProgressCopy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v4ProgressCopy strong {
+  font-size: 13px;
+}
+
+.v4ProgressCopy span {
+  font-size: 11px;
+  color: #617083;
+}
+
+.v4WeekStars {
+  display: flex;
+  gap: 9px;
+  margin: 10px 0;
+}
+
+.v4WeekStars i {
+  font-style: normal;
+  font-size: 22px;
+  color: #d8dde3;
+  filter: grayscale(1);
+}
+
+.v4WeekStars i.done {
+  color: #f4c43e;
+  filter: none;
+  text-shadow: 0 3px 8px rgba(244, 196, 62, .25);
+}
+
+.v4XpTrack {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e8edf1;
+}
+
+.v4XpTrack i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #29c69f, #59e4c0);
+}
+
+.v4DailyCard {
+  margin: 0 16px 18px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(17, 43, 67, .13);
+}
+
+.v4DailyVisual {
+  position: relative;
+  height: 196px;
+  overflow: hidden;
+  background: #153653;
+}
+
+.v4DailyVisual:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 55%;
+  background: linear-gradient(180deg, transparent, rgba(7, 26, 46, .52));
+  pointer-events: none;
+}
+
+.v4DailyVisual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.v4TerritoryTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(7, 26, 46, .86);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+}
+
+.v4DailyVisual .v4TerritoryTag {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2;
+}
+
+.v4DailyBody {
+  padding: 17px;
+}
+
+.v4DailyMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #698094;
+}
+
+.v4DailyMeta span {
+  color: #0da681;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4DailyMeta small {
+  font-size: 11px;
+}
+
+.v4DailyBody h2 {
+  margin: 7px 0 8px;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
+.v4DailyBody p {
+  margin: 0 0 16px;
+  color: #52677a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.v4PrimaryButton {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #17b78f, #35d6ad);
+  color: #06231d;
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: 0 9px 20px rgba(20, 183, 143, .24);
+}
+
+.v4PrimaryButton:disabled {
+  background: #dce4e3;
+  color: #758681;
+  box-shadow: none;
+}
+
+.v4PowerStrip,
+.v4QuestCard {
+  margin: 0 16px 18px;
+}
+
+.v4SectionTitle {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.v4SectionTitle > div {
+  display: grid;
+  gap: 3px;
+}
+
+.v4SectionTitle span {
+  color: #179d7c;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.v4SectionTitle strong {
+  font-size: 16px;
+}
+
+.v4SectionTitle button,
+.v4QuestCard button {
+  border: 0;
+  background: transparent;
+  color: #147b67;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v4PowerCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.v4PowerCards article {
+  min-height: 118px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 10px 5px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(17, 43, 67, .08);
+}
+
+.v4PowerCards img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.v4PowerCards span {
+  margin-top: 5px;
+  font-size: 10px;
+  color: #607286;
+}
+
+.v4PowerCards strong {
+  font-size: 16px;
+}
+
+.v4QuestCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  border-radius: 22px;
+  background: #0b2948;
+  color: #fff;
+  box-shadow: 0 13px 34px rgba(7, 26, 46, .18);
+}
+
+.v4QuestCard div {
+  min-width: 0;
+  flex: 1;
+}
+
+.v4QuestCard span {
+  color: #ffd34f;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.v4QuestCard h2 {
+  margin: 4px 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.v4QuestCard p {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.v4QuestCard button {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #0b2948;
+}
+
+.v4MissionShell {
+  background:
+    linear-gradient(180deg, #071a2e 0 240px, #f4f0e7 240px 100%);
+}
+
+.v4BackButton {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 25px;
+}
+
+.v4MissionHero {
+  padding: 28px 19px 32px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(50, 222, 182, .2), transparent 14rem),
+    #071a2e;
+  color: #fff;
+}
+
+.v4MissionHero > span {
+  color: #54dfbd;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4MissionHero h1 {
+  margin: 8px 0 10px;
+  color: #fff;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.v4MissionHero p {
+  max-width: 440px;
+  margin: 0;
+  color: rgba(255,255,255,.76);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.v4Reward {
+  display: inline-flex;
+  margin-top: 18px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #ffd34f;
+  color: #2b240d;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.v4ReflectionCard {
+  margin: 18px 16px 12px;
+  padding: 17px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(17, 43, 67, .1);
+}
+
+.v4ReflectionCard > span {
+  color: #15997a;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4ReflectionCard h2 {
+  margin: 7px 0 14px;
+  font-size: 22px;
+  line-height: 1.08;
+}
+
+.v4ReflectionOptions {
+  display: grid;
+  gap: 9px;
+}
+
+.v4ReflectionOptions button {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dbe3e8;
+  border-radius: 15px;
+  background: #f8faf9;
+  color: #243b50;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.v4ReflectionOptions button.selected {
+  border-color: #1cc19a;
+  background: #e9faf5;
+  box-shadow: inset 0 0 0 1px #1cc19a;
+}
+
+.v4ReflectionOptions b {
+  color: #149677;
+  font-size: 18px;
+}
+
+.v4CompleteButton {
+  width: calc(100% - 32px);
+  margin: 0 16px;
+}
+
+@media (min-width: 760px) {
+  .v4Page {
+    padding: 28px 0;
+  }
+
+  .v4Shell {
+    min-height: calc(100vh - 56px);
+    border-radius: 30px;
+  }
+}
