@@ -40,6 +40,10 @@ requireCount(FAMILY_MISSION_TEMPLATES, 10, 'family mission templates');
 requireCount(SCHOOL_MISSION_TEMPLATES, 10, 'school mission templates');
 requireCount(weeklyQuests, 4, 'weekly quests');
 requireCount(seasonOne.weeks, 4, 'season weeks');
+if (!seasonOne.epic?.id || !Array.isArray(seasonOne.epic.steps) || seasonOne.epic.steps.length !== 5) {
+  errors.push('epic quest: expected id and 5 completion steps');
+}
+if (!seasonOne.epic?.reflection) errors.push('epic quest: missing reflection');
 
 for (const territory of ['escola', 'casa', 'mundo']) {
   const count = dailyMissions.filter((mission) => mission.territory === territory).length;
