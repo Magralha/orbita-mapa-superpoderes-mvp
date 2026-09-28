@@ -655,3 +655,213 @@
     min-height: 43px;
   }
 }
+
+
+/* V4 immersive special stages */
+.immersiveSpecialShade {
+  background:
+    linear-gradient(180deg, rgba(2,18,31,.56) 0%, rgba(2,18,31,.08) 16%, transparent 42%, rgba(2,18,31,.12) 60%, rgba(2,18,31,.64) 100%),
+    radial-gradient(circle at 50% 46%, transparent 0 25%, rgba(0,16,27,.12) 62%, rgba(0,16,27,.30) 100%);
+}
+
+.immersiveAgentChipSpecial {
+  gap: 6px;
+}
+
+.immersiveAgentChipSpecial > span {
+  color: #8fb3c4;
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.immersiveSpecialSheet {
+  min-height: 36dvh;
+  max-height: 48dvh;
+}
+
+.immersiveSpecialContent {
+  min-height: 0;
+}
+
+.immersiveSpecialContent .mobileKitBlock,
+.immersiveSpecialContent .mobileUseItemStage,
+.immersiveSpecialContent .mobileTradeoffStage,
+.immersiveSpecialContent .mobilePowerStage,
+.immersiveSpecialContent .mobileMissionChoices {
+  gap: 8px;
+}
+
+.immersiveSpecialContent .mobileKitHeading {
+  margin-top: 0;
+}
+
+.immersiveSpecialContent .mobileKitHeading strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.immersiveSpecialContent .mobileKitHeading small {
+  color: #a7c5d3;
+}
+
+.immersiveSpecialContent .mobileInventoryRail {
+  margin: 0 -11px;
+  padding: 2px 11px 8px;
+  gap: 7px;
+}
+
+.immersiveSpecialContent .mobileItemCard {
+  flex-basis: 104px;
+  min-height: 132px;
+  border-radius: 15px;
+  padding: 6px;
+}
+
+.immersiveSpecialContent .mobileItemCard img {
+  width: 70px;
+  height: 70px;
+}
+
+.immersiveSpecialContent .mobileItemCard strong {
+  font-size: 9px;
+}
+
+.immersiveSpecialContent .mobileItemCard small {
+  font-size: 7px;
+}
+
+.immersiveSpecialContent .mobilePrimaryCta {
+  min-height: 48px;
+  border-radius: 14px;
+}
+
+.immersiveSpecialContent .mobilePrimaryCta > span:nth-child(2) strong {
+  font-size: 16px;
+}
+
+.immersiveSpecialContent .mobilePrimaryCta > span:nth-child(2) small {
+  font-size: 8px;
+}
+
+.immersiveSpecialContent .mobileActiveItem {
+  grid-template-columns: 84px 1fr;
+  gap: 9px;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.immersiveSpecialContent .mobileActiveItemArt {
+  height: 84px;
+  border-radius: 13px;
+}
+
+.immersiveSpecialContent .mobileActiveItemArt img {
+  width: 68px;
+  height: 68px;
+}
+
+.immersiveSpecialContent .mobileActiveItem strong {
+  font-size: 15px;
+}
+
+.immersiveSpecialContent .mobileActiveItem p {
+  font-size: 9px;
+}
+
+.immersiveSpecialContent .mobileTradeoffGrid {
+  gap: 7px;
+}
+
+.immersiveSpecialContent .mobileTradeoffCard {
+  min-height: 62px;
+  border-radius: 14px;
+  padding: 8px;
+}
+
+.immersiveSpecialContent .mobileTradeoffCard > strong {
+  font-size: 10px;
+}
+
+.immersiveSpecialContent .mobileTokenRail {
+  margin: 0 -11px;
+  padding: 0 11px 5px;
+  gap: 5px;
+}
+
+.immersiveSpecialContent .mobileTokenPill {
+  min-width: 46px;
+  padding: 4px 6px 4px 4px;
+}
+
+.immersiveSpecialContent .mobilePowerCards {
+  margin: 0 -11px;
+  padding: 0 11px 7px;
+  gap: 7px;
+}
+
+.immersiveSpecialContent .mobilePowerCard {
+  flex-basis: 146px;
+  min-height: 178px;
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.immersiveSpecialContent .mobilePowerCard img {
+  width: 48px;
+  height: 48px;
+}
+
+.immersiveSpecialContent .mobilePowerCard strong {
+  font-size: 14px;
+}
+
+.immersiveSpecialContent .mobilePowerCard p {
+  min-height: 38px;
+  font-size: 8px;
+}
+
+.immersiveSpecialContent .mobilePowerCard > b {
+  font-size: 7px;
+}
+
+.immersiveSpecialContent .mobileMissionChoices {
+  gap: 7px;
+}
+
+.immersiveSpecialContent .mobileMissionChoice {
+  min-height: 60px;
+  border-radius: 14px;
+  padding: 8px;
+  grid-template-columns: 28px 1fr 18px;
+}
+
+.immersiveSpecialContent .mobileMissionChoice strong {
+  font-size: 10px;
+}
+
+.immersiveSpecialContent .mobileMissionChoice small {
+  font-size: 7px;
+}
+
+@media (max-height: 740px) {
+  .immersiveSpecialSheet {
+    min-height: 39dvh;
+    max-height: 50dvh;
+  }
+
+  .immersiveSpecialContent .mobileItemCard {
+    flex-basis: 92px;
+    min-height: 118px;
+  }
+
+  .immersiveSpecialContent .mobileItemCard img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .immersiveSpecialContent .mobilePowerCard {
+    flex-basis: 132px;
+    min-height: 166px;
+  }
+}
