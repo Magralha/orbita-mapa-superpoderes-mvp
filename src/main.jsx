@@ -34,7 +34,7 @@ import './styles.css';
 import './portals.css';
 import './v4.css';
 
-function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
+function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('kira');
   const [selectedScenarioId, setSelectedScenarioId] = useState('escola');
 
@@ -123,6 +123,16 @@ function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
         {hasSave && (
           <button className="mobileContinueButton" type="button" onClick={onContinue}>
             Continuar de onde parei
+          </button>
+        )}
+
+        {onV4Demo && (
+          <button
+            className="mobileContinueButton"
+            type="button"
+            onClick={() => onV4Demo(selectedAgent, selectedScenario)}
+          >
+            Ver demo da jornada contínua
           </button>
         )}
 
@@ -1516,6 +1526,15 @@ function GameApp() {
     setNodeId(startNode);
   }
 
+  function startV4Demo(selectedAgent, selectedScenario) {
+    chooseAgent(selectedAgent, selectedScenario);
+    persistV4({
+      ...v4State,
+      onboardingComplete: true,
+    });
+    setV4View('home');
+  }
+
   function choose(choice) {
     const resolvedNext = resolveProgressionTarget(choice.next);
 
@@ -1647,7 +1666,7 @@ function GameApp() {
     );
   }
 
-  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} onModeChange={setViewMode} />;
+  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={setViewMode} />;
 
   if (profileOpen) {
     return (
