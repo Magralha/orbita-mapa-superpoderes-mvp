@@ -13,6 +13,7 @@ export default function MunicipalityDashboard({
   municipality,
   signals,
   opportunities = [],
+  pilotLinks = {},
   assignments = [],
   onAssignMission,
   onAcknowledgeMission,
@@ -28,6 +29,8 @@ export default function MunicipalityDashboard({
 
   const selectedSchoolData = municipality.schools.find((school) => school.id === selectedSchool);
   const schoolAssignments = assignments.filter((item) => item.source === 'school');
+  const linkedClassLabel = pilotLinks?.classRooms?.[0]?.label || null;
+  const linkedSchoolName = pilotLinks?.school?.name || null;
 
   function launchMission() {
     onAssignMission?.(mission, { targetLabel: selectedSchoolData?.name || 'Turma selecionada' });
@@ -50,7 +53,9 @@ export default function MunicipalityDashboard({
           <div className="municipalityName municipalityGameName">
             <small>Rede demonstrativa</small>
             <strong>{municipality.name}</strong>
-            <span>{municipality.schools.length} escolas · {signals.totalStudents} alunos</span>
+            <span>
+              {linkedSchoolName ? `${linkedSchoolName}${linkedClassLabel ? ` · ${linkedClassLabel}` : ''}` : `${municipality.schools.length} escolas · ${signals.totalStudents} alunos`}
+            </span>
           </div>
         </header>
 
