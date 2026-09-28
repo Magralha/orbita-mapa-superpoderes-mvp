@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { assets } from '../game/data/assets';
 import { getTopPowers } from '../game/player/playerProfile';
-import { FAMILY_MISSION_TEMPLATES } from '../game/engine/assignmentEngine';
+import {
+  FAMILY_MISSION_TEMPLATES,
+  assignmentStatusLabel,
+  formatAssignmentDue,
+} from '../game/engine/assignmentEngine';
 import RoleSwitcher from '../app/RoleSwitcher';
 
 const POWER_LABELS = {
@@ -23,6 +27,7 @@ export default function FamilyPortal({
   opportunities = [],
   assignments = [],
   onAssignMission,
+  onAcknowledgeMission,
   onModeChange,
 }) {
   const top = getTopPowers(profile, 3);
@@ -149,10 +154,18 @@ export default function FamilyPortal({
             <h2>Continuidade em casa</h2>
             <div className="familySentMissions">
               {familyAssignments.length ? [...familyAssignments].reverse().map((mission) => (
-                <div key={mission.assignmentId}>
+                <div className="assignmentHistoryRow" key={mission.assignmentId}>
                   <span>{mission.status === 'completed' ? '✓' : '→'}</span>
                   <strong>{mission.title}</strong>
-                  <small>{mission.status === 'completed' ? 'Concluída pelo jovem' : 'Aguardando conclusão do jovem'}</small>
+                  <small>
+                    {assignmentStatusLabel(mission)} · prazo {formatAssignmentDue(mission)}
+                  </small>
+                  {mission.evidenceText && <p>“{mission.evidenceText}”</p>}
+                  {mission.status === 'completed' && !mission.acknowledgedAt && (
+                    <button type="button" onClick={() => onAcknowledgeMission?.(mission.assignmentId)}>
+                      Marcar como acompanhado
+                    </button>
+                  )}
                 </div>
               )) : (
                 <p>Nenhuma missão enviada ainda.</p>
