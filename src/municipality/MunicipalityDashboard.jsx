@@ -1,55 +1,31 @@
 import React, { useMemo, useState } from 'react';
 import { assets } from '../game/data/assets';
+import { SCHOOL_MISSION_TEMPLATES } from '../game/engine/assignmentEngine';
 import RoleSwitcher from '../app/RoleSwitcher';
 
-const SCHOOL_MISSIONS = [
-  {
-    id: 'school-recreio',
-    title: 'Desafio do Recreio',
-    territory: 'Escola',
-    duration: '15 min',
-    xp: 30,
-    powers: ['investigar', 'criar'],
-    text: 'Observe o recreio por dois dias e identifique um problema que você gostaria de melhorar.',
-  },
-  {
-    id: 'school-respeito',
-    title: 'Respeito Digital',
-    territory: 'Escola',
-    duration: '10 min',
-    xp: 25,
-    powers: ['proteger', 'comunicar'],
-    text: 'Crie uma ideia simples para melhorar a convivência digital da turma.',
-  },
-  {
-    id: 'school-prototipo',
-    title: 'Versão 0.1',
-    territory: 'Escola',
-    duration: '20 min',
-    xp: 35,
-    powers: ['construir', 'organizar'],
-    text: 'Transforme uma ideia da turma em uma primeira versão que possa ser testada.',
-  },
-];
+
 
 export default function MunicipalityDashboard({
   municipality,
   signals,
   opportunities = [],
+  assignments = [],
+  onAssignMission,
   onModeChange,
 }) {
-  const [selectedMission, setSelectedMission] = useState(SCHOOL_MISSIONS[0].id);
+  const [selectedMission, setSelectedMission] = useState(SCHOOL_MISSION_TEMPLATES[0].id);
   const [selectedSchool, setSelectedSchool] = useState(municipality.schools[0]?.id);
-  const [launched, setLaunched] = useState([]);
 
   const mission = useMemo(
-    () => SCHOOL_MISSIONS.find((item) => item.id === selectedMission) || SCHOOL_MISSIONS[0],
+    () => SCHOOL_MISSION_TEMPLATES.find((item) => item.id === selectedMission) || SCHOOL_MISSION_TEMPLATES[0],
     [selectedMission],
   );
 
+  const selectedSchoolData = municipality.schools.find((school) => school.id === selectedSchool);
+  const schoolAssignments = assignments.filter((item) => item.source === 'school');
+
   function launchMission() {
-    const key = `${selectedSchool}-${mission.id}`;
-    if (!launched.includes(key)) setLaunched((current) => [...current, key]);
+    onAssignMission?.(mission, { targetLabel: selectedSchoolData?.name || 'Turma selecionada' });
   }
 
   return (
@@ -107,7 +83,7 @@ export default function MunicipalityDashboard({
               </label>
 
               <div className="schoolMissionPicker">
-                {SCHOOL_MISSIONS.map((item) => (
+                {SCHOOL_MISSION_TEMPLATES.map((item) => (
                   <button
                     type="button"
                     key={item.id}
@@ -127,12 +103,14 @@ export default function MunicipalityDashboard({
               <h3>{mission.title}</h3>
               <p>{mission.text}</p>
               <div className="schoolMissionPowers">
-                {mission.powers.map((key) => (
+                {mission.powerKeys.map((key) => (
                   <span key={key}><img src={assets.badges[key]} alt="" />{key}</span>
                 ))}
               </div>
               <button type="button" className="portalPrimaryAction" onClick={launchMission}>
-                {launched.includes(`${selectedSchool}-${mission.id}`) ? 'Missão lançada ✓' : 'Lançar missão'}
+                {schoolAssignments.some((item) => item.templateId === mission.id && item.status === 'assigned')
+                  ? 'Missão lançada ✓'
+                  : 'Lançar missão'}
               </button>
             </div>
           </article>
@@ -150,6 +128,22 @@ export default function MunicipalityDashboard({
               <button type="button">Transformar em plano</button>
             </div>
           </article>
+        </section>
+
+        <section className="portalPanel portalGameCard">
+          <span className="portalEyebrow">Status das missões</span>
+          <h2>O que foi enviado e o que voltou</h2>
+          <div className="familySentMissions">
+            {schoolAssignments.length ? [...schoolAssignments].reverse().slice(0, 6).map((item) => (
+              <div key={item.assignmentId}>
+                <span>{item.status === 'completed' ? '✓' : '→'}</span>
+                <strong>{item.title}</strong>
+                <small>
+                  {item.targetLabel} · {item.status === 'completed' ? 'concluída' : 'aguardando conclusão'}
+                </small>
+              </div>
+            )) : <p>Nenhuma missão lançada ainda.</p>}
+          </div>
         </section>
 
         <section className="portalPanel portalGameCard">
