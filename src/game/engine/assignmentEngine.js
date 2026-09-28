@@ -84,12 +84,14 @@ export function seededAssignmentState() {
     assignments: [
       {
         ...SCHOOL_MISSION_TEMPLATES[0],
+        templateId: SCHOOL_MISSION_TEMPLATES[0].id,
         assignmentId: 'seed-school-recreio',
         status: 'assigned',
         targetLabel: 'Turma 7B',
       },
       {
         ...FAMILY_MISSION_TEMPLATES[0],
+        templateId: FAMILY_MISSION_TEMPLATES[0].id,
         assignmentId: 'seed-family-organiza',
         status: 'assigned',
         targetLabel: 'Meu jovem',
