@@ -377,7 +377,31 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
 
   const topPowers = getTopPowers(profile, 3);
   const maxPower = Math.max(...rankedPowers.map((power) => power.value), 1);
-  const recentEvents = [...(profile.events || [])].slice(-5).reverse();
+  const allEvents = profile.events || [];
+  const recentEvents = [...allEvents].slice(-5).reverse();
+  const signalSources = allEvents.reduce((acc, event) => {
+    if (event.type === 'daily_mission') {
+      const territory = event.meta?.territory || 'mundo';
+      acc[territory] = (acc[territory] || 0) + 1;
+    } else if (event.type === 'real_life_experience') {
+      acc.experiencias = (acc.experiencias || 0) + 1;
+    } else {
+      acc.jogo = (acc.jogo || 0) + 1;
+    }
+    return acc;
+  }, { jogo: 0, escola: 0, casa: 0, mundo: 0, experiencias: 0 });
+
+  const powerSignalDetails = rankedPowers.map((power) => ({
+    ...power,
+    signals: allEvents.filter((event) => Number(event.powers?.[power.key] || 0) > 0).length,
+    dailySignals: allEvents.filter(
+      (event) => event.type === 'daily_mission' && Number(event.powers?.[power.key] || 0) > 0,
+    ).length,
+    realExperiences: allEvents.filter(
+      (event) => event.type === 'real_life_experience' && Number(event.powers?.[power.key] || 0) > 0,
+    ).length,
+  }));
+
   const nextLevelAt = (profile.progression?.level || 1) * 100;
   const currentLevelStart = Math.max(0, nextLevelAt - 100);
   const levelProgress = Math.min(
@@ -394,8 +418,8 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
             <div className="gameBadge">Meu Órbita</div>
             <h1>Seu mapa está ganhando forma.</h1>
             <p>
-              Aqui aparecem os padrões que você está construindo no jogo. Eles podem mudar
-              conforme você experimenta novas missões, situações e atividades.
+              Aqui aparecem os padrões que surgem no jogo e nas experiências que você registra.
+              Eles podem mudar conforme você experimenta novos contextos, missões e atividades.
             </p>
           </div>
 
@@ -451,6 +475,69 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
                 <b>{power.value}</b>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="myOrbitaSection myOrbitaLiveMap">
+          <div className="myOrbitaSectionTitle">
+            <span>Mapa Vivo</span>
+            <small>O importante é a recorrência em contextos diferentes, não uma resposta isolada.</small>
+          </div>
+
+          <div className="myOrbitaSourceGrid">
+            {[
+              ['Jogo', signalSources.jogo],
+              ['Escola', signalSources.escola],
+              ['Casa', signalSources.casa],
+              ['Mundo', signalSources.mundo],
+              ['Experiências', signalSources.experiencias],
+            ].map(([label, value]) => (
+              <article key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+                <small>sinais</small>
+              </article>
+            ))}
+          </div>
+
+          <div className="myOrbitaEvidenceList">
+            {powerSignalDetails.slice(0, 4).map((power) => (
+              <div key={power.key}>
+                <img src={assets.badges[power.key]} alt="" />
+                <span>
+                  <strong>{power.label}</strong>
+                  <small>
+                    {power.signals} sinais · {power.dailySignals} em missões do dia · {power.realExperiences} experiências reais
+                  </small>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="myOrbitaSection myOrbitaPassport">
+          <div className="myOrbitaSectionTitle">
+            <span>Passaporte Órbita</span>
+            <small>Um histórico do que você explora — não um rótulo sobre quem você é.</small>
+          </div>
+
+          <div className="myOrbitaPassportGrid">
+            <article>
+              <span>Meus superpoderes</span>
+              <strong>{topPowers.map((power) => powerLabels[power.key] || power.key).join(' · ') || 'Em construção'}</strong>
+            </article>
+            <article>
+              <span>Minhas experiências</span>
+              <strong>{profile.experiences?.length || 0} registradas</strong>
+            </article>
+            <article>
+              <span>Minhas conquistas</span>
+              <strong>{profile.achievements?.length || 0} desbloqueadas</strong>
+            </article>
+            <article>
+              <span>Próximos caminhos</span>
+              <strong>Experimentar contextos diferentes</strong>
+            </article>
           </div>
         </section>
 
