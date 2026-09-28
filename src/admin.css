@@ -1,0 +1,302 @@
+.adminPage {
+  min-height:100vh;
+  background:#eef2ef;
+  color:#17354a;
+  padding:18px;
+}
+
+.adminShell {
+  width:min(1180px,100%);
+  margin:0 auto;
+}
+
+.adminTop {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:16px 18px;
+  border-radius:22px;
+  background:#071d31;
+  color:#fff;
+}
+
+.adminTop > div {
+  display:grid;
+  justify-items:end;
+  gap:2px;
+}
+
+.adminTop span {
+  color:#55e1bf;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.adminTop strong {
+  font-size:14px;
+}
+
+.adminTabs {
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  padding:14px 0;
+}
+
+.adminTabs button {
+  flex:0 0 auto;
+  border:1px solid #d2dde1;
+  border-radius:999px;
+  padding:9px 12px;
+  background:#fff;
+  color:#496174;
+  font-size:10px;
+  font-weight:800;
+}
+
+.adminTabs button.active {
+  border-color:#1fc49b;
+  background:#dff8f0;
+  color:#08664f;
+}
+
+.adminNotice {
+  margin-bottom:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#102f49;
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+}
+
+.adminHero {
+  display:grid;
+  grid-template-columns:1.6fr .7fr;
+  gap:18px;
+  padding:28px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(54,218,183,.17),transparent 16rem),
+    #0a2945;
+  color:#fff;
+}
+
+.adminHero > div > span,
+.adminPanel > span {
+  color:#55e1bf;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.adminHero h1 {
+  max-width:700px;
+  margin:7px 0 9px;
+  color:#fff;
+  font-size:clamp(34px,5vw,56px);
+  line-height:.95;
+  letter-spacing:-.045em;
+}
+
+.adminHero p,
+.adminPanel p {
+  color:#6c7f8f;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.adminHero p { color:#c2d7e2; }
+
+.adminHeroStatus {
+  align-self:end;
+  display:grid;
+  gap:5px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  background:rgba(255,255,255,.06);
+}
+
+.adminHeroStatus strong { font-size:18px; }
+.adminHeroStatus small { color:#9bb7c4; font-size:9px; }
+
+.adminMetricGrid {
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:9px;
+  margin:14px 0;
+}
+
+.adminMetricGrid article,
+.adminPanel {
+  border:1px solid #d9e3e7;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(17,43,67,.06);
+}
+
+.adminMetricGrid article {
+  min-height:110px;
+  display:grid;
+  align-content:center;
+  gap:3px;
+  padding:13px;
+}
+
+.adminMetricGrid span { color:#718290; font-size:9px; }
+.adminMetricGrid strong { font-size:28px; color:#17354a; }
+.adminMetricGrid small { color:#139577; font-size:8px; }
+
+.adminGrid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.adminPanel { padding:17px; }
+.adminPanel h2 { margin:5px 0 11px; font-size:22px; }
+.adminWidePanel { min-height:420px; }
+
+.adminChecklist {
+  display:grid;
+  gap:7px;
+}
+
+.adminChecklist > div {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 10px;
+  border-radius:12px;
+  background:#f5f7f7;
+  color:#72818d;
+  font-size:10px;
+}
+
+.adminChecklist > div.done {
+  background:#eaf9f4;
+  color:#194b3d;
+}
+
+.adminChecklist b {
+  color:#1bb68f;
+  font-size:14px;
+}
+
+.adminContentHealth {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.adminContentHealth.stacked { grid-template-columns:1fr; }
+
+.adminContentHealth > div {
+  min-height:76px;
+  display:grid;
+  align-content:center;
+  gap:2px;
+  padding:10px;
+  border-radius:14px;
+  background:#f4f8f7;
+}
+
+.adminContentHealth strong { font-size:24px; }
+.adminContentHealth span { color:#647787; font-size:9px; }
+
+.adminDirectory,
+.adminMissionTable,
+.adminSeasonRows,
+.adminPilotFacts {
+  display:grid;
+  gap:8px;
+}
+
+.adminDirectory > div {
+  display:grid;
+  grid-template-columns:90px 1fr 1fr auto;
+  gap:10px;
+  align-items:center;
+  padding:11px;
+  border-radius:13px;
+  background:#f6f9f8;
+}
+
+.adminDirectory b,
+.adminMissionTable b {
+  color:#119577;
+  font-size:8px;
+  text-transform:uppercase;
+}
+
+.adminDirectory strong,
+.adminMissionTable strong { font-size:11px; }
+.adminDirectory span,
+.adminMissionTable span { color:#6d7d8a; font-size:9px; }
+
+.adminDirectory button {
+  border:0;
+  border-radius:9px;
+  padding:7px 9px;
+  background:#e7efef;
+  color:#315067;
+  font-size:8px;
+  font-weight:800;
+}
+
+.adminMissionTable > div {
+  display:grid;
+  grid-template-columns:80px 1.3fr 1fr 1fr;
+  gap:10px;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1px solid #e6ecee;
+}
+
+.adminMissionTable small { color:#617687; font-size:9px; }
+
+.adminSeasonRows > div,
+.adminPilotFacts > div {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px;
+  border-radius:12px;
+  background:#f6f9f8;
+}
+
+.adminSeasonRows b,
+.adminPilotFacts b { color:#139577; font-size:9px; }
+.adminSeasonRows strong { font-size:10px; }
+.adminSeasonRows small,
+.adminPilotFacts span { color:#6b7c89; font-size:9px; }
+
+.adminPrimary {
+  margin-top:12px;
+  border:0;
+  border-radius:12px;
+  padding:10px 13px;
+  background:#0b2948;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+}
+
+@media (max-width:860px) {
+  .adminMetricGrid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .adminHero { grid-template-columns:1fr; }
+}
+
+@media (max-width:640px) {
+  .adminPage { padding:10px; }
+  .adminGrid { grid-template-columns:1fr; }
+  .adminMetricGrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .adminDirectory > div,
+  .adminMissionTable > div {
+    grid-template-columns:1fr 1fr;
+  }
+}
