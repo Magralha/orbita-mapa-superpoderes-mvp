@@ -30,9 +30,11 @@ import {
   weeklyCompletionCount,
 } from './game/engine/dailyEngine';
 import { V4Home, DailyMissionView } from './game/ui/V4UI';
+import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import './styles.css';
 import './portals.css';
 import './v4.css';
+import './immersive-game.css';
 
 function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('kira');
@@ -1810,6 +1812,21 @@ function GameApp() {
   }
 
 
+
+  if (canUseImmersiveScene(node)) {
+    return (
+      <ImmersiveScene
+        agent={agent}
+        node={node}
+        visitedCount={visitedNodeIds.length}
+        inventory={inventory}
+        powerTokens={powerTokens}
+        onExit={saveGame}
+      >
+        <ChoiceNode node={node} onChoose={choose} />
+      </ImmersiveScene>
+    );
+  }
 
   return (
     <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
