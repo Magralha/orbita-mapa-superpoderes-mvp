@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { assets } from '../game/data/assets';
-import { SCHOOL_MISSION_TEMPLATES } from '../game/engine/assignmentEngine';
+import {
+  SCHOOL_MISSION_TEMPLATES,
+  assignmentStatusLabel,
+  formatAssignmentDue,
+} from '../game/engine/assignmentEngine';
 import RoleSwitcher from '../app/RoleSwitcher';
 
 
@@ -11,6 +15,7 @@ export default function MunicipalityDashboard({
   opportunities = [],
   assignments = [],
   onAssignMission,
+  onAcknowledgeMission,
   onModeChange,
 }) {
   const [selectedMission, setSelectedMission] = useState(SCHOOL_MISSION_TEMPLATES[0].id);
@@ -134,13 +139,19 @@ export default function MunicipalityDashboard({
           <span className="portalEyebrow">Status das missões</span>
           <h2>O que foi enviado e o que voltou</h2>
           <div className="familySentMissions">
-            {schoolAssignments.length ? [...schoolAssignments].reverse().slice(0, 6).map((item) => (
-              <div key={item.assignmentId}>
+            {schoolAssignments.length ? [...schoolAssignments].reverse().slice(0, 8).map((item) => (
+              <div className="assignmentHistoryRow" key={item.assignmentId}>
                 <span>{item.status === 'completed' ? '✓' : '→'}</span>
                 <strong>{item.title}</strong>
                 <small>
-                  {item.targetLabel} · {item.status === 'completed' ? 'concluída' : 'aguardando conclusão'}
+                  {item.targetLabel} · {assignmentStatusLabel(item)} · prazo {formatAssignmentDue(item)}
                 </small>
+                {item.evidenceText && <p>“{item.evidenceText}”</p>}
+                {item.status === 'completed' && !item.acknowledgedAt && (
+                  <button type="button" onClick={() => onAcknowledgeMission?.(item.assignmentId)}>
+                    Marcar como acompanhado
+                  </button>
+                )}
               </div>
             )) : <p>Nenhuma missão lançada ainda.</p>}
           </div>
