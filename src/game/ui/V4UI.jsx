@@ -3,6 +3,11 @@ import { assets } from '../data/assets';
 import { getTopPowers } from '../player/playerProfile';
 import { OrbitaWordmark, MobileBottomNav } from './MobileUI';
 import { seasonOne, weeklyQuest } from '../data/seasonData';
+import {
+  assignmentStatusLabel,
+  formatAssignmentDue,
+  isAssignmentOverdue,
+} from '../engine/assignmentEngine';
 
 const powerLabels = {
   investigar: 'Investigar',
@@ -227,13 +232,20 @@ export function MissionCenter({
           </article>
 
           {assignments.map((item) => (
-            <article className={`v4MissionSourceCard ${item.source}`} key={item.assignmentId}>
+            <article
+              className={`v4MissionSourceCard ${item.source} ${isAssignmentOverdue(item) ? 'overdue' : ''}`}
+              key={item.assignmentId}
+            >
               <div className="v4MissionSourceHead">
                 <span>{item.sourceLabel}</span>
                 <small>{item.duration} · +{item.xp} XP</small>
               </div>
               <h2>{item.title}</h2>
               <p>{item.text}</p>
+              <div className="v4AssignmentMetaRow">
+                <span>Prazo {formatAssignmentDue(item)}</span>
+                <small>{assignmentStatusLabel(item)}</small>
+              </div>
               <button type="button" onClick={() => onOpenAssigned(item)}>
                 Abrir missão
               </button>
@@ -261,6 +273,7 @@ export function MissionCenter({
 
 export function AssignedMissionView({ assignment, onComplete, onBack }) {
   const [selected, setSelected] = useState(null);
+  const [evidenceText, setEvidenceText] = useState('');
   const options = [
     { id: 'feito', label: 'Consegui fazer e percebi algo novo' },
     { id: 'parcial', label: 'Tentei, mas ficou pela metade' },
@@ -282,6 +295,7 @@ export function AssignedMissionView({ assignment, onComplete, onBack }) {
           <p>{assignment.text}</p>
           <div className="v4AssignedMeta">
             <span>{assignment.duration}</span>
+            <span>Prazo {formatAssignmentDue(assignment)}</span>
             <strong>+{assignment.xp} XP</strong>
           </div>
         </section>
@@ -304,13 +318,28 @@ export function AssignedMissionView({ assignment, onComplete, onBack }) {
           </div>
         </section>
 
+        <section className="v4OptionalEvidence">
+          <span>REGISTRO OPCIONAL</span>
+          <label htmlFor="assignment-evidence">
+            {assignment.evidencePrompt || 'Se quiser, deixe uma frase sobre o que aconteceu.'}
+          </label>
+          <textarea
+            id="assignment-evidence"
+            value={evidenceText}
+            maxLength={240}
+            placeholder="Escreva só se fizer sentido para você."
+            onChange={(event) => setEvidenceText(event.target.value)}
+          />
+          <small>{evidenceText.length}/240 · não é obrigatório</small>
+        </section>
+
         <button
           type="button"
           className="v4PrimaryButton v4CompleteButton"
           disabled={!selected}
-          onClick={() => onComplete(selected.id)}
+          onClick={() => onComplete({ reflectionId: selected.id, evidenceText })}
         >
-          Registrar conclusão
+          {selected?.id === 'nao-rolou' ? 'Registrar tentativa' : 'Registrar conclusão'}
         </button>
       </section>
     </main>
