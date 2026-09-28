@@ -1481,3 +1481,31 @@
 .v4SeasonWeeks article.completed .v4SeasonWeekNumber:after {
   content:" ✓";
 }
+
+
+.v4EpicQuest button {
+  width:100%;
+  min-height:44px;
+  margin-top:14px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ffd34f,#f2bf30);
+  color:#30260a;
+  font-size:10px;
+  font-weight:900;
+}
+
+.v4EpicQuest button:disabled {
+  background:rgba(255,255,255,.10);
+  color:#8fa7b3;
+}
+
+.v4EpicQuest.completed {
+  border:1px solid rgba(83,226,190,.38);
+}
+
+.v4EpicHero {
+  background:
+    radial-gradient(circle at 86% 12%,rgba(255,211,79,.18),transparent 14rem),
+    linear-gradient(180deg,#071a2e,#0b2948);
+}
