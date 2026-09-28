@@ -54,7 +54,7 @@ export const FAMILY_MISSION_TEMPLATES = [
     powerKeys: ['criar', 'construir'],
     text: 'Escolha dois objetos de casa e imagine uma invenção que combine os dois.',
     evidencePrompt: 'Se quiser, descreva sua ideia em uma frase.',
-  },,
+  },
   {
     id: 'fam-curiosidade',
     source: 'family',
@@ -198,7 +198,7 @@ export const SCHOOL_MISSION_TEMPLATES = [
     powerKeys: ['construir', 'organizar'],
     text: 'Transforme uma ideia da turma em uma primeira versão que possa ser testada.',
     evidencePrompt: 'Se quiser, conte o que você testou primeiro.',
-  },,
+  },
   {
     id: 'school-escuta',
     source: 'school',
