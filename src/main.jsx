@@ -29,7 +29,7 @@ import {
   normalizeV4State,
   weeklyCompletionCount,
 } from './game/engine/dailyEngine';
-import { V4Home, DailyMissionView, MissionCenter } from './game/ui/V4UI';
+import { V4Home, DailyMissionView, MissionCenter, SeasonView } from './game/ui/V4UI';
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import './styles.css';
@@ -1783,6 +1783,16 @@ function GameApp() {
     );
   }
 
+  if (v4State.onboardingComplete && v4View === 'season') {
+    return (
+      <SeasonView
+        profile={playerProfile}
+        onBack={() => setV4View('home')}
+        onOpenProfile={() => setProfileOpen(true)}
+      />
+    );
+  }
+
   if (v4State.onboardingComplete && v4View === 'daily') {
     return (
       <DailyMissionView
@@ -1805,6 +1815,7 @@ function GameApp() {
         onOpenProfile={() => setProfileOpen(true)}
         onOpenJourney={() => setProfileOpen(true)}
         onOpenMissions={() => setV4View('missions')}
+        onOpenSeason={() => setV4View('season')}
       />
     );
   }
