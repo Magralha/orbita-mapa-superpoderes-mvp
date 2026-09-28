@@ -16,7 +16,7 @@ export function OrbitaWordmark({ compact = false }) {
   );
 }
 
-export function MobileBottomNav({ active = 'inicio', onProfile, onSave }) {
+export function MobileBottomNav({ active = 'inicio', onHome, onMissions, onInventory, onProfile }) {
   const items = [
     { id: 'inicio', icon: '⌂', label: 'Início' },
     { id: 'missao', icon: '◎', label: 'Missão' },
@@ -27,7 +27,12 @@ export function MobileBottomNav({ active = 'inicio', onProfile, onSave }) {
   return (
     <nav className="mobileGameNav" aria-label="Navegação do jogo">
       {items.map((item) => {
-        const clickable = item.id === 'perfil' ? onProfile : item.id === 'mochila' ? onSave : null;
+        const clickable =
+          item.id === 'inicio' ? onHome :
+          item.id === 'missao' ? onMissions :
+          item.id === 'mochila' ? onInventory :
+          item.id === 'perfil' ? onProfile :
+          null;
 
         return (
           <button
