@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { assets } from '../game/data/assets';
 import { getTopPowers } from '../game/player/playerProfile';
+import { FAMILY_MISSION_TEMPLATES } from '../game/engine/assignmentEngine';
 import RoleSwitcher from '../app/RoleSwitcher';
 
 const POWER_LABELS = {
@@ -14,50 +15,28 @@ const POWER_LABELS = {
   conectar: 'Conectar',
 };
 
-const FAMILY_MISSIONS = [
-  {
-    id: 'fam-organiza',
-    title: 'Missão Menos Caos',
-    territory: 'Casa',
-    duration: '10 min',
-    xp: 25,
-    powers: ['organizar', 'construir'],
-    text: 'Escolha uma rotina de casa que poderia ficar mais simples e organize em três passos.',
-  },
-  {
-    id: 'fam-ensina',
-    title: 'Ensine uma Coisa',
-    territory: 'Casa',
-    duration: '10 min',
-    xp: 25,
-    powers: ['comunicar', 'cuidar'],
-    text: 'Ensine para alguém de casa algo que você sabe fazer bem.',
-  },
-  {
-    id: 'fam-inventa',
-    title: 'Dois Objetos, Uma Ideia',
-    territory: 'Casa',
-    duration: '8 min',
-    xp: 20,
-    powers: ['criar', 'construir'],
-    text: 'Escolha dois objetos de casa e imagine uma invenção que combine os dois.',
-  },
-];
 
-export default function FamilyPortal({ agent, profile, opportunities = [], onModeChange }) {
+
+export default function FamilyPortal({
+  agent,
+  profile,
+  opportunities = [],
+  assignments = [],
+  onAssignMission,
+  onModeChange,
+}) {
   const top = getTopPowers(profile, 3);
-  const [sentMissions, setSentMissions] = useState([]);
-  const [selectedMission, setSelectedMission] = useState(FAMILY_MISSIONS[0].id);
+  const [selectedMission, setSelectedMission] = useState(FAMILY_MISSION_TEMPLATES[0].id);
 
   const selected = useMemo(
-    () => FAMILY_MISSIONS.find((mission) => mission.id === selectedMission) || FAMILY_MISSIONS[0],
+    () => FAMILY_MISSION_TEMPLATES.find((mission) => mission.id === selectedMission) || FAMILY_MISSION_TEMPLATES[0],
     [selectedMission],
   );
 
+  const familyAssignments = assignments.filter((item) => item.source === 'family');
+
   function sendMission() {
-    if (!sentMissions.includes(selected.id)) {
-      setSentMissions((current) => [...current, selected.id]);
-    }
+    onAssignMission?.(selected, { targetLabel: 'Meu jovem' });
   }
 
   return (
@@ -104,7 +83,7 @@ export default function FamilyPortal({ agent, profile, opportunities = [], onMod
             <span className="portalEyebrow">Missão para enviar</span>
             <h2>Crie continuidade em casa</h2>
             <div className="familyMissionPicker">
-              {FAMILY_MISSIONS.map((mission) => (
+              {FAMILY_MISSION_TEMPLATES.map((mission) => (
                 <button
                   type="button"
                   key={mission.id}
@@ -123,7 +102,7 @@ export default function FamilyPortal({ agent, profile, opportunities = [], onMod
               <h3>{selected.title}</h3>
               <p>{selected.text}</p>
               <div className="familyMissionPowers">
-                {selected.powers.map((key) => (
+                {selected.powerKeys.map((key) => (
                   <span key={key}>
                     <img src={assets.badges[key]} alt="" />
                     {POWER_LABELS[key]}
@@ -131,7 +110,9 @@ export default function FamilyPortal({ agent, profile, opportunities = [], onMod
                 ))}
               </div>
               <button type="button" className="portalPrimaryAction" onClick={sendMission}>
-                {sentMissions.includes(selected.id) ? 'Missão enviada ✓' : 'Enviar para o Órbita'}
+                {familyAssignments.some((item) => item.templateId === selected.id && item.status === 'assigned')
+                  ? 'Missão enviada ✓'
+                  : 'Enviar para o Órbita'}
               </button>
             </div>
           </article>
@@ -167,16 +148,13 @@ export default function FamilyPortal({ agent, profile, opportunities = [], onMod
             <span className="portalEyebrow">Missões enviadas</span>
             <h2>Continuidade em casa</h2>
             <div className="familySentMissions">
-              {sentMissions.length ? sentMissions.map((id) => {
-                const mission = FAMILY_MISSIONS.find((item) => item.id === id);
-                return (
-                  <div key={id}>
-                    <span>✓</span>
-                    <strong>{mission.title}</strong>
-                    <small>Aguardando conclusão do jovem</small>
-                  </div>
-                );
-              }) : (
+              {familyAssignments.length ? [...familyAssignments].reverse().map((mission) => (
+                <div key={mission.assignmentId}>
+                  <span>{mission.status === 'completed' ? '✓' : '→'}</span>
+                  <strong>{mission.title}</strong>
+                  <small>{mission.status === 'completed' ? 'Concluída pelo jovem' : 'Aguardando conclusão do jovem'}</small>
+                </div>
+              )) : (
                 <p>Nenhuma missão enviada ainda.</p>
               )}
             </div>
