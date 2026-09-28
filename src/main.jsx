@@ -54,6 +54,7 @@ import {
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import PilotLogin from './pilot/PilotLogin';
+import AdminPortal from './admin/AdminPortal';
 import PilotSessionBar from './pilot/PilotSessionBar';
 import { createPilotSession, clearPilotSession, getPilotSession } from './pilot/sessionStore';
 import { resolvePilotLinks } from './pilot/pilotData';
@@ -62,6 +63,7 @@ import './portals.css';
 import './v4.css';
 import './immersive-game.css';
 import './pilot.css';
+import './admin.css';
 
 function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('orin');
@@ -1507,6 +1509,7 @@ function GameApp({ pilotSession }) {
   const [viewMode, setViewMode] = useState(() => {
     if (pilotSession?.account?.role === 'family') return 'family';
     if (pilotSession?.account?.role === 'school') return 'municipality';
+    if (pilotSession?.account?.role === 'admin') return 'admin';
     return 'student';
   });
   const [v4State, setV4State] = useState(() => getSavedV4State());
@@ -1973,6 +1976,14 @@ function GameApp({ pilotSession }) {
     setMission(selectedMission);
     setPlayerProfile((prev) => recordMission(prev, selectedMission));
     setPath((prev) => [...prev, 'Missão Final']);
+  }
+
+  if (viewMode === 'admin') {
+    return (
+      <AdminPortal
+        assignments={assignmentState.assignments}
+      />
+    );
   }
 
   if (viewMode === 'family') {
