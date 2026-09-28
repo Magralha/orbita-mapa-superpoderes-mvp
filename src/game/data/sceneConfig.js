@@ -54,6 +54,16 @@ export const immersiveSceneConfig = {
     agent: { left: 45, top: 46, width: 26, flip: false },
     markers: [{ left: 28, top: 54 }, { left: 62, top: 43 }, { left: 78, top: 57 }],
   },
+  inventory: {
+    worldObjectPosition: '50% 42%',
+    agent: { left: 34, top: 42, width: 27, flip: false },
+    markers: [],
+  },
+  tradeoff: {
+    worldObjectPosition: '50% 43%',
+    agent: { left: 34, top: 43, width: 27, flip: false },
+    markers: [],
+  },
 };
 
 export function getImmersiveSceneConfig(world) {
