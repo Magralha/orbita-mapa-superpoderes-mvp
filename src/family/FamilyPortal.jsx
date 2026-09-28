@@ -25,6 +25,7 @@ export default function FamilyPortal({
   agent,
   profile,
   opportunities = [],
+  pilotLinks = {},
   assignments = [],
   onAssignMission,
   onAcknowledgeMission,
@@ -39,9 +40,10 @@ export default function FamilyPortal({
   );
 
   const familyAssignments = assignments.filter((item) => item.source === 'family');
+  const linkedStudentName = pilotLinks?.student?.displayName || 'Meu jovem';
 
   function sendMission() {
-    onAssignMission?.(selected, { targetLabel: 'Meu jovem' });
+    onAssignMission?.(selected, { targetLabel: linkedStudentName });
   }
 
   return (
@@ -67,7 +69,7 @@ export default function FamilyPortal({
             <span>
               <small>Agente atual</small>
               <strong>{agent.name}</strong>
-              <b>Nível {profile.progression?.level || 1} · {profile.progression?.xp || 0} XP</b>
+              <b>{linkedStudentName} · Nível {profile.progression?.level || 1} · {profile.progression?.xp || 0} XP</b>
             </span>
           </div>
         </header>
