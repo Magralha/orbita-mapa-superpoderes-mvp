@@ -50,3 +50,39 @@ export function applyWeeklyQuestToProfile(profile, quest, reflection = '') {
     },
   });
 }
+
+
+export function isEpicQuestComplete(v4State) {
+  return Boolean(v4State?.epicQuestCompletion);
+}
+
+export function markEpicQuestComplete(v4State, epic, reflection = '') {
+  return {
+    ...(v4State || {}),
+    epicQuestCompletion: {
+      epicId: epic?.id || 'epic',
+      completedAt: new Date().toISOString(),
+      reflection: String(reflection || '').trim(),
+      xp: Number(epic?.xp || 0),
+    },
+  };
+}
+
+export function applyEpicQuestToProfile(profile, epic, reflection = '') {
+  const powers = {};
+  (epic?.powerKeys || []).forEach((key) => {
+    powers[key] = 3;
+  });
+
+  return applyDevelopmentEvent(profile, {
+    type: 'epic_quest',
+    label: epic?.title || 'Epic Quest',
+    xp: Number(epic?.xp || 0),
+    powers,
+    meta: {
+      epicId: epic?.id || null,
+      territory: 'escola',
+      reflection: String(reflection || '').trim(),
+    },
+  });
+}
