@@ -41,6 +41,16 @@ export const seasonOne = {
     title: 'Epic Quest · Melhorar uma coisa de verdade',
     text: 'Transforme as quatro semanas em uma proposta simples para a escola: problema, evidências, ideia, teste e próximo passo.',
     xp: 150,
+    powerKeys: ['investigar', 'criar', 'construir', 'comunicar'],
+    steps: [
+      'Defina o problema em uma frase.',
+      'Escolha as duas evidências mais importantes.',
+      'Mostre a solução e o que foi testado.',
+      'Inclua um aprendizado ou ajuste feito no caminho.',
+      'Defina um próximo passo possível para a escola.',
+    ],
+    reflection: 'O que você faria diferente se tivesse mais uma semana para continuar?',
+
   },
 };
 
