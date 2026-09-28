@@ -55,6 +55,7 @@ import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import PilotLogin from './pilot/PilotLogin';
 import AdminPortal from './admin/AdminPortal';
+import { trackEvent } from './core/analytics/localAnalytics';
 import PilotSessionBar from './pilot/PilotSessionBar';
 import { createPilotSession, clearPilotSession, getPilotSession } from './pilot/sessionStore';
 import { resolvePilotLinks } from './pilot/pilotData';
@@ -1715,6 +1716,10 @@ function GameApp({ pilotSession }) {
   }
 
   function openAssignedMission(assignment) {
+    trackEvent('assigned_mission_opened', {
+      assignmentId: assignment.assignmentId,
+      source: assignment.source,
+    });
     setSelectedAssignmentId(assignment.assignmentId);
     setV4View('assigned');
   }
@@ -1728,6 +1733,16 @@ function GameApp({ pilotSession }) {
       setV4View('missions');
       return;
     }
+
+    trackEvent(
+      result?.reflectionId === 'nao-rolou' ? 'assigned_mission_attempted' : 'assigned_mission_completed',
+      {
+        assignmentId: selectedAssignment.assignmentId,
+        source: selectedAssignment.source,
+        reflectionId: result?.reflectionId || null,
+        hasEvidence: Boolean(result?.evidenceText?.trim()),
+      },
+    );
 
     persistAssignments(
       completeAssignment(assignmentState, selectedAssignment.assignmentId, result),
@@ -1768,6 +1783,7 @@ function GameApp({ pilotSession }) {
   }
 
   function openSeasonQuest(quest) {
+    trackEvent('weekly_quest_started', { questId: quest.id, week: quest.week });
     setSelectedSeasonQuestId(quest.id);
     setV4View('weekly-quest');
   }
@@ -1777,6 +1793,12 @@ function GameApp({ pilotSession }) {
       setV4View('season');
       return;
     }
+
+    trackEvent('weekly_quest_completed', {
+      questId: selectedSeasonQuest.id,
+      week: selectedSeasonQuest.week,
+      hasReflection: Boolean(String(reflection || '').trim()),
+    });
 
     const nextV4 = markWeeklyQuestComplete(v4State, selectedSeasonQuest, reflection);
     persistV4(nextV4);
@@ -1831,6 +1853,12 @@ function GameApp({ pilotSession }) {
       return;
     }
 
+    trackEvent('daily_mission_completed', {
+      missionId: dailyMission.id,
+      territory: dailyMission.territory,
+      optionId: option?.id || null,
+    });
+
     const nextV4 = markDailyComplete(v4State, dailyMission, option);
     persistV4(nextV4);
 
@@ -1862,6 +1890,10 @@ function GameApp({ pilotSession }) {
   }
 
   function chooseAgent(selectedAgent, selectedScenario) {
+    trackEvent('gameplay_started', {
+      agentId: selectedAgent.id,
+      scenarioId: selectedScenario?.id || null,
+    });
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
     setPlayerProfile(startPlayerJourney(selectedAgent));
@@ -2113,11 +2145,20 @@ function GameApp({ pilotSession }) {
         completedToday={completedToday}
         weeklyCount={weeklyCount}
         assignmentCount={pendingAssignments.length}
-        onStartMission={() => setV4View('daily')}
+        onStartMission={() => {
+          trackEvent('daily_mission_started', { missionId: dailyMission.id, territory: dailyMission.territory });
+          setV4View('daily');
+        }}
         onOpenProfile={() => setProfileOpen(true)}
         onOpenJourney={() => setProfileOpen(true)}
-        onOpenMissions={() => setV4View('missions')}
-        onOpenSeason={() => setV4View('season')}
+        onOpenMissions={() => {
+          trackEvent('mission_center_opened');
+          setV4View('missions');
+        }}
+        onOpenSeason={() => {
+          trackEvent('season_opened');
+          setV4View('season');
+        }}
       />
     );
   }
@@ -2249,10 +2290,16 @@ function RootApp() {
 
   function signInPilot(accountId) {
     const next = createPilotSession(accountId);
-    if (next) setPilotSession(next);
+    if (next) {
+      trackEvent('pilot_sign_in', { accountId, role: next.account.role });
+      setPilotSession(next);
+    }
   }
 
   function switchPilotProfile() {
+    trackEvent('pilot_switch_profile', {
+      fromRole: pilotSession?.account?.role || null,
+    });
     clearPilotSession();
     setPilotSession(null);
   }
