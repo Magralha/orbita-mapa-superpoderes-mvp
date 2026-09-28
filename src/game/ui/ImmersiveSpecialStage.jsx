@@ -16,7 +16,7 @@ export default function ImmersiveSpecialStage({
   onExit,
   children,
 }) {
-  const config = getImmersiveSceneConfig(node.world);
+  const config = getImmersiveSceneConfig(node.world, agent?.id);
   if (!config) return null;
 
   const progress = Math.min(100, Math.max(4, (visitedCount / 40) * 100));
