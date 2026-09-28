@@ -33,6 +33,7 @@ export default function FamilyPortal({
 }) {
   const top = getTopPowers(profile, 3);
   const [selectedMission, setSelectedMission] = useState(FAMILY_MISSION_TEMPLATES[0].id);
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState(null);
 
   const selected = useMemo(
     () => FAMILY_MISSION_TEMPLATES.find((mission) => mission.id === selectedMission) || FAMILY_MISSION_TEMPLATES[0],
@@ -181,11 +182,18 @@ export default function FamilyPortal({
           <h2>Experiências disponíveis no território</h2>
           <div className="opportunityCards">
             {opportunities.map((opportunity) => (
-              <article key={opportunity.id}>
+              <article className={selectedOpportunityId === opportunity.id ? 'selected' : ''} key={opportunity.id}>
                 <span>{opportunity.category}</span>
                 <strong>{opportunity.title}</strong>
                 <small>{opportunity.territory} · {opportunity.capacity} vagas</small>
-                <button type="button">Ver oportunidade</button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedOpportunityId(
+                    selectedOpportunityId === opportunity.id ? null : opportunity.id,
+                  )}
+                >
+                  {selectedOpportunityId === opportunity.id ? 'Selecionada ✓' : 'Quero explorar'}
+                </button>
               </article>
             ))}
           </div>
