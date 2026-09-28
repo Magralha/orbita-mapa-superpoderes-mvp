@@ -80,10 +80,9 @@ export default function ImmersiveScene({
         <aside className="immersiveAgentChip">
           <strong>{agent.name}</strong>
           <div className="immersiveAgentPowerDots">
-            {topPowers.length ? topPowers.map(([key, value]) => (
+            {topPowers.length ? topPowers.map(([key]) => (
               <span key={key} title={powerLabels[key] || key}>
                 <img src={assets.badges[key]} alt="" />
-                <b>{Math.max(1, Number(value))}</b>
               </span>
             )) : (
               <small>explorando</small>
@@ -94,16 +93,16 @@ export default function ImmersiveScene({
         <div className="immersiveInventoryChip" aria-label={`Mochila com ${inventory.length} itens`}>
           <span>▣</span>
           <strong>Mochila</strong>
-          <b>{inventory.length}</b>
+          {inventory.length > 0 && <b>{inventory.length}</b>}
         </div>
 
         <div
           className={`immersiveAgentSprite immersiveAgentSprite-${agent.id}`}
           style={{
             left: `${config.agent.left}%`,
-            top: `${config.agent.top}%`,
+            top: `${config.agent.ground}%`,
             width: `${config.agent.width}%`,
-            transform: `translate(-50%, -50%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
+            transform: `translate(-50%, -100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
           }}
         >
           <span className="immersiveAgentGlow" />
@@ -111,22 +110,7 @@ export default function ImmersiveScene({
           <i className="immersiveAgentShadow" />
         </div>
 
-        <div className="immersiveChoiceMarkers" aria-hidden="true">
-          {config.markers.map((marker, index) => {
-            const choice = choices[index];
-            const key = dominantPower(choice?.powers);
-            return (
-              <span
-                key={`${marker.left}-${marker.top}`}
-                style={{ left: `${marker.left}%`, top: `${marker.top}%` }}
-              >
-                <img src={assets.badges[key]} alt="" />
-              </span>
-            );
-          })}
-        </div>
-
-        <section className="immersiveDecisionSheet">
+        <section className={`immersiveDecisionSheet ${node.title.length > 34 ? 'immersiveDecisionSheetLongTitle' : ''} ${node.text.length > 105 ? 'immersiveDecisionSheetLongCopy' : ''}`}>
           <div className="immersiveLocationTag">{node.chapter}</div>
           <h1>{node.title}</h1>
           <p>{node.text}</p>
