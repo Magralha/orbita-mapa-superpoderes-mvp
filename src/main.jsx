@@ -14,18 +14,65 @@ import {
   recordMission,
 } from './game/engine/rpgEngine';
 import { getTopPowers } from './game/player/playerProfile';
+import {
+  buildPassportHistory,
+  deriveInterestSignals,
+  deriveMilestones,
+  nextExplorationSuggestions,
+} from './game/player/passportInsights';
 import RoleSwitcher from './app/RoleSwitcher';
 import FamilyPortal from './family/FamilyPortal';
 import MunicipalityDashboard from './municipality/MunicipalityDashboard';
 import { buildDemoStudent } from './mock/demoStudent';
 import { mockMunicipality, mockOpportunities, mockPublicSignals } from './mock/municipality';
 import { scenarioOptions, OrbitaWordmark, MobileBottomNav } from './game/ui/MobileUI';
+import { missionForDate } from './game/data/dailyMissions';
+import { seasonOne } from './game/data/seasonData';
+import {
+  completeDailyMission,
+  emptyV4State,
+  localDateKey,
+  markDailyComplete,
+  normalizeV4State,
+  weeklyCompletionCount,
+} from './game/engine/dailyEngine';
+import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView, WeeklyQuestView, EpicQuestView } from './game/ui/V4UI';
+import {
+  activeAssignments,
+  addAssignment,
+  acknowledgeAssignment,
+  completeAssignedMissionProfile,
+  completeAssignment,
+  normalizeAssignmentState,
+  seededAssignmentState,
+} from './game/engine/assignmentEngine';
+import {
+  applyEpicQuestToProfile,
+  applyWeeklyQuestToProfile,
+  completedSeasonQuestCount,
+  isEpicQuestComplete,
+  markEpicQuestComplete,
+  markWeeklyQuestComplete,
+  nextSeasonQuest,
+} from './game/engine/seasonEngine';
+import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
+import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
+import PilotLogin from './pilot/PilotLogin';
+import AdminPortal from './admin/AdminPortal';
+import { trackEvent } from './core/analytics/localAnalytics';
+import PilotSessionBar from './pilot/PilotSessionBar';
+import { createPilotSession, clearPilotSession, getPilotSession } from './pilot/sessionStore';
+import { resolvePilotLinks } from './pilot/pilotData';
 import './styles.css';
 import './portals.css';
+import './v4.css';
+import './immersive-game.css';
+import './pilot.css';
+import './admin.css';
 
-function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
-  const [selectedAgentId, setSelectedAgentId] = useState('kira');
-  const [selectedScenarioId, setSelectedScenarioId] = useState('escola');
+function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
+  const [selectedAgentId, setSelectedAgentId] = useState('orin');
+  const [selectedScenarioId, setSelectedScenarioId] = useState('casa');
 
   const selectedAgent = agents.find((item) => item.id === selectedAgentId) || agents[0];
   const selectedScenario = scenarioOptions.find((item) => item.id === selectedScenarioId) || scenarioOptions[0];
@@ -34,7 +81,7 @@ function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
     <main className="mobileStartPage">
       <section className="mobileStartShell">
         <header className="mobileStartTop">
-          <button className="mobileRoundButton" type="button" aria-label="Menu">☰</button>
+          <span className="mobileRoundButton mobileRoundIcon" aria-hidden="true">✦</span>
           <OrbitaWordmark />
           <div className="mobileLevelPill">
             <span>✦</span>
@@ -115,8 +162,17 @@ function AgentSelect({ onStart, onContinue, hasSave, onModeChange }) {
           </button>
         )}
 
+        {onV4Demo && (
+          <button
+            className="mobileContinueButton"
+            type="button"
+            onClick={() => onV4Demo(selectedAgent, selectedScenario)}
+          >
+            Ver demo da jornada contínua
+          </button>
+        )}
+
         <RoleSwitcher mode="student" onChange={onModeChange} />
-        <MobileBottomNav active="inicio" />
       </section>
     </main>
   );
@@ -356,7 +412,36 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
 
   const topPowers = getTopPowers(profile, 3);
   const maxPower = Math.max(...rankedPowers.map((power) => power.value), 1);
-  const recentEvents = [...(profile.events || [])].slice(-5).reverse();
+  const allEvents = profile.events || [];
+  const recentEvents = [...allEvents].slice(-5).reverse();
+  const signalSources = allEvents.reduce((acc, event) => {
+    if (event.type === 'daily_mission') {
+      const territory = event.meta?.territory || 'mundo';
+      acc[territory] = (acc[territory] || 0) + 1;
+    } else if (event.type === 'real_life_experience') {
+      acc.experiencias = (acc.experiencias || 0) + 1;
+    } else {
+      acc.jogo = (acc.jogo || 0) + 1;
+    }
+    return acc;
+  }, { jogo: 0, escola: 0, casa: 0, mundo: 0, experiencias: 0 });
+
+  const powerSignalDetails = rankedPowers.map((power) => ({
+    ...power,
+    signals: allEvents.filter((event) => Number(event.powers?.[power.key] || 0) > 0).length,
+    dailySignals: allEvents.filter(
+      (event) => event.type === 'daily_mission' && Number(event.powers?.[power.key] || 0) > 0,
+    ).length,
+    realExperiences: allEvents.filter(
+      (event) => event.type === 'real_life_experience' && Number(event.powers?.[power.key] || 0) > 0,
+    ).length,
+  }));
+
+  const interestSignals = deriveInterestSignals(profile);
+  const passportHistory = buildPassportHistory(profile);
+  const milestones = deriveMilestones(profile);
+  const nextSuggestions = nextExplorationSuggestions(profile);
+
   const nextLevelAt = (profile.progression?.level || 1) * 100;
   const currentLevelStart = Math.max(0, nextLevelAt - 100);
   const levelProgress = Math.min(
@@ -373,8 +458,8 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
             <div className="gameBadge">Meu Órbita</div>
             <h1>Seu mapa está ganhando forma.</h1>
             <p>
-              Aqui aparecem os padrões que você está construindo no jogo. Eles podem mudar
-              conforme você experimenta novas missões, situações e atividades.
+              Aqui aparecem os padrões que surgem no jogo e nas experiências que você registra.
+              Eles podem mudar conforme você experimenta novos contextos, missões e atividades.
             </p>
           </div>
 
@@ -430,6 +515,141 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
                 <b>{power.value}</b>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="myOrbitaSection myOrbitaLiveMap">
+          <div className="myOrbitaSectionTitle">
+            <span>Mapa Vivo</span>
+            <small>O importante é a recorrência em contextos diferentes, não uma resposta isolada.</small>
+          </div>
+
+          <div className="myOrbitaSourceGrid">
+            {[
+              ['Jogo', signalSources.jogo],
+              ['Escola', signalSources.escola],
+              ['Casa', signalSources.casa],
+              ['Mundo', signalSources.mundo],
+              ['Experiências', signalSources.experiencias],
+            ].map(([label, value]) => (
+              <article key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+                <small>sinais</small>
+              </article>
+            ))}
+          </div>
+
+          <div className="myOrbitaEvidenceList">
+            {powerSignalDetails.slice(0, 4).map((power) => (
+              <div key={power.key}>
+                <img src={assets.badges[power.key]} alt="" />
+                <span>
+                  <strong>{power.label}</strong>
+                  <small>
+                    {power.signals} sinais · {power.dailySignals} em missões do dia · {power.realExperiences} experiências reais
+                  </small>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="myOrbitaSection myOrbitaPassport">
+          <div className="myOrbitaSectionTitle">
+            <span>Passaporte Órbita</span>
+            <small>Um histórico vivo do que você explora — não um rótulo sobre quem você é.</small>
+          </div>
+
+          <div className="myOrbitaPassportGrid">
+            <article>
+              <span>Meus superpoderes</span>
+              <strong>{topPowers.map((power) => powerLabels[power.key] || power.key).join(' · ') || 'Em construção'}</strong>
+            </article>
+            <article>
+              <span>Minhas experiências</span>
+              <strong>{profile.experiences?.length || 0} registradas</strong>
+            </article>
+            <article>
+              <span>Missões concluídas</span>
+              <strong>{profile.progression?.missionsCompleted || 0} grandes missões</strong>
+            </article>
+            <article>
+              <span>Minha jornada</span>
+              <strong>{passportHistory.length} movimentos registrados</strong>
+            </article>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Sinais de interesse</span>
+              <small>Áreas que apareceram mais nas escolhas e experiências.</small>
+            </div>
+
+            <div className="myOrbitaInterestGrid">
+              {interestSignals.length ? interestSignals.map((interest) => (
+                <article key={interest.id}>
+                  <strong>{interest.label}</strong>
+                  <span>{interest.evidence} evidência{interest.evidence === 1 ? '' : 's'}</span>
+                  <i><em style={{ width: `${Math.min(100, 28 + interest.score * 8)}%` }} /></i>
+                </article>
+              )) : (
+                <p>Continue explorando para que seus sinais de interesse apareçam aqui.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Conquistas da jornada</span>
+              <small>Marcos de participação e exploração.</small>
+            </div>
+
+            <div className="myOrbitaMilestoneGrid">
+              {milestones.map((milestone) => (
+                <article className={milestone.unlocked ? 'unlocked' : 'locked'} key={milestone.id}>
+                  <div>{milestone.unlocked ? '✓' : '○'}</div>
+                  <strong>{milestone.label}</strong>
+                  <small>{milestone.text}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Próximos caminhos</span>
+              <small>Sugestões para ampliar repertório, não para definir profissão.</small>
+            </div>
+
+            <div className="myOrbitaNextPaths">
+              {nextSuggestions.map((suggestion, index) => (
+                <article key={suggestion}>
+                  <span>0{index + 1}</span>
+                  <strong>{suggestion}</strong>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="myOrbitaPassportBlock">
+            <div className="myOrbitaPassportBlockHead">
+              <span>Histórico do Passaporte</span>
+              <small>O que foi sendo registrado ao longo da jornada.</small>
+            </div>
+
+            <div className="myOrbitaPassportHistory">
+              {passportHistory.slice(0, 10).map((event) => (
+                <div key={event.id}>
+                  <i />
+                  <span>
+                    <small>{event.source}{event.territory ? ` · ${event.territory}` : ''}</small>
+                    <strong>{event.label}</strong>
+                  </span>
+                  <b>+{event.xp} XP</b>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -515,7 +735,7 @@ function MyOrbita({ agent, profile, inventory = [], usedPowerCards = [], onClose
 }
 
 
-function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onOpenProfile, justSaved, children }) {
+function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPowerCards, playerProfile, onSave, onExit, onOpenProfile, justSaved, children }) {
   const topPowers = Object.entries(powerTokens || {})
     .filter(([, value]) => value > 0)
     .sort((a, b) => b[1] - a[1])
@@ -525,7 +745,7 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
     <main className="mobileMissionPage">
       <section className="mobileMissionShell">
         <header className="mobileMissionTop">
-          <button className="mobileRoundButton mobileBackDisabled" type="button" disabled aria-label="Voltar">‹</button>
+          <button className="mobileRoundButton" type="button" onClick={onExit} aria-label="Voltar">‹</button>
           <OrbitaWordmark compact />
           <button className="mobileSaveButton" type="button" onClick={onSave}>
             <span>▣</span> Salvar
@@ -580,7 +800,7 @@ function SceneShell({ agent, node, visitedCount, inventory, powerTokens, usedPow
           {children}
         </section>
 
-        <MobileBottomNav active="missao" onProfile={onOpenProfile} onSave={onSave} />
+
       </section>
     </main>
   );
@@ -1047,6 +1267,7 @@ function PowerCard({
   usedPowerCards,
   playerProfile,
   onOpenProfile,
+  onContinueJourney,
 }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
@@ -1203,8 +1424,8 @@ function PowerCard({
                   experiências que você viver até o 9º ano.
                 </p>
               </div>
-              <button type="button" className="sceneAction finalProfileButton" onClick={onOpenProfile}>
-                Abrir Meu Órbita
+              <button type="button" className="sceneAction finalProfileButton" onClick={onContinueJourney || onOpenProfile}>
+                Continuar no Órbita
               </button>
             </section>
           </div>
@@ -1242,6 +1463,26 @@ function spendPowerToken(current, key) {
 
 
 const SAVE_KEY = 'orbita-superpoderes-save';
+const V4_KEY = 'orbita-v4-state';
+const ASSIGNMENT_KEY = 'orbita-assignment-state';
+
+function getSavedV4State() {
+  try {
+    const raw = localStorage.getItem(V4_KEY);
+    return raw ? normalizeV4State(JSON.parse(raw)) : emptyV4State();
+  } catch {
+    return emptyV4State();
+  }
+}
+
+function getSavedAssignmentState() {
+  try {
+    const raw = localStorage.getItem(ASSIGNMENT_KEY);
+    return raw ? normalizeAssignmentState(JSON.parse(raw)) : seededAssignmentState();
+  } catch {
+    return seededAssignmentState();
+  }
+}
 
 function getSavedSnapshot() {
   try {
@@ -1253,7 +1494,8 @@ function getSavedSnapshot() {
   }
 }
 
-function GameApp() {
+function GameApp({ pilotSession }) {
+  const pilotLinks = resolvePilotLinks(pilotSession?.account);
   const [agent, setAgent] = useState(null);
   const [nodeId, setNodeId] = useState('world_entry');
   const [scores, setScores] = useState(emptyScores());
@@ -1268,9 +1510,32 @@ function GameApp() {
   const [powerTokens, setPowerTokens] = useState({});
   const [playerProfile, setPlayerProfile] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [viewMode, setViewMode] = useState('student');
+  const [viewMode, setViewMode] = useState(() => {
+    if (pilotSession?.account?.role === 'family') return 'family';
+    if (pilotSession?.account?.role === 'school') return 'municipality';
+    if (pilotSession?.account?.role === 'admin') return 'admin';
+    return 'student';
+  });
+  const [v4State, setV4State] = useState(() => getSavedV4State());
+  const [v4View, setV4View] = useState('home');
+  const [assignmentState, setAssignmentState] = useState(() => getSavedAssignmentState());
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [selectedSeasonQuestId, setSelectedSeasonQuestId] = useState(null);
 
   const node = expandedNodes[nodeId];
+  const dailyMission = missionForDate();
+  const todayKey = localDateKey();
+  const completedToday = Boolean(v4State.dailyCompletions?.[todayKey]);
+  const weeklyCount = weeklyCompletionCount(v4State);
+  const pendingAssignments = activeAssignments(assignmentState);
+  const selectedAssignment = assignmentState.assignments.find((item) => item.assignmentId === selectedAssignmentId) || null;
+  const completedSeasonQuests = Object.keys(v4State.weeklyQuestCompletions || {});
+  const activeSeasonQuest = nextSeasonQuest(v4State);
+  const epicQuestCompleted = isEpicQuestComplete(v4State);
+  const selectedSeasonQuest =
+    activeSeasonQuest?.id === selectedSeasonQuestId
+      ? activeSeasonQuest
+      : null;
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
   const [justSaved, setJustSaved] = useState(false);
 
@@ -1403,6 +1668,17 @@ function GameApp() {
     setJustSaved(true);
   }
 
+  function exitGameplay() {
+    saveGame();
+
+    if (v4State.onboardingComplete) {
+      setV4View('home');
+      return;
+    }
+
+    setAgent(null);
+  }
+
   function continueFromSave() {
     const snapshot = getSavedSnapshot();
     if (!snapshot) return;
@@ -1425,7 +1701,256 @@ function GameApp() {
     );
   }
 
+  function persistV4(nextState) {
+    const normalized = normalizeV4State(nextState);
+    setV4State(normalized);
+    localStorage.setItem(V4_KEY, JSON.stringify(normalized));
+    return normalized;
+  }
+
+  function persistAssignments(nextState) {
+    const normalized = normalizeAssignmentState(nextState);
+    setAssignmentState(normalized);
+    localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(normalized));
+    return normalized;
+  }
+
+  function assignMission(template, options = {}) {
+    const next = addAssignment(assignmentState, template, options);
+    persistAssignments(next);
+  }
+
+  function openAssignedMission(assignment) {
+    trackEvent('assigned_mission_opened', {
+      assignmentId: assignment.assignmentId,
+      source: assignment.source,
+    });
+    setSelectedAssignmentId(assignment.assignmentId);
+    setV4View('assigned');
+  }
+
+  function acknowledgeMission(assignmentId) {
+    persistAssignments(acknowledgeAssignment(assignmentState, assignmentId));
+  }
+
+  function completeAssignedMission(result) {
+    if (!selectedAssignment) {
+      setV4View('missions');
+      return;
+    }
+
+    trackEvent(
+      result?.reflectionId === 'nao-rolou' ? 'assigned_mission_attempted' : 'assigned_mission_completed',
+      {
+        assignmentId: selectedAssignment.assignmentId,
+        source: selectedAssignment.source,
+        reflectionId: result?.reflectionId || null,
+        hasEvidence: Boolean(result?.evidenceText?.trim()),
+      },
+    );
+
+    persistAssignments(
+      completeAssignment(assignmentState, selectedAssignment.assignmentId, result),
+    );
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = completeAssignedMissionProfile(
+        currentProfile,
+        selectedAssignment,
+        result,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setSelectedAssignmentId(null);
+    setV4View('missions');
+  }
+
+  function openSeasonQuest(quest) {
+    trackEvent('weekly_quest_started', { questId: quest.id, week: quest.week });
+    setSelectedSeasonQuestId(quest.id);
+    setV4View('weekly-quest');
+  }
+
+  function completeSeasonQuest(reflection) {
+    if (!selectedSeasonQuest) {
+      setV4View('season');
+      return;
+    }
+
+    trackEvent('weekly_quest_completed', {
+      questId: selectedSeasonQuest.id,
+      week: selectedSeasonQuest.week,
+      hasReflection: Boolean(String(reflection || '').trim()),
+    });
+
+    const nextV4 = markWeeklyQuestComplete(v4State, selectedSeasonQuest, reflection);
+    persistV4(nextV4);
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = applyWeeklyQuestToProfile(
+        currentProfile,
+        selectedSeasonQuest,
+        reflection,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setSelectedSeasonQuestId(null);
+    setV4View('season');
+  }
+
+  function openEpicQuest() {
+    if (completedSeasonQuestCount(v4State) < 4 || epicQuestCompleted) return;
+    trackEvent('epic_quest_started', { epicId: seasonOne.epic.id });
+    setV4View('epic-quest');
+  }
+
+  function completeEpicQuest(reflection) {
+    if (epicQuestCompleted) {
+      setV4View('season');
+      return;
+    }
+
+    trackEvent('epic_quest_completed', {
+      epicId: seasonOne.epic.id,
+      hasReflection: Boolean(String(reflection || '').trim()),
+    });
+
+    persistV4(markEpicQuestComplete(v4State, seasonOne.epic, reflection));
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = applyEpicQuestToProfile(
+        currentProfile,
+        seasonOne.epic,
+        reflection,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setV4View('season');
+  }
+
+  function enterContinuousJourney() {
+    const next = persistV4({
+      ...v4State,
+      onboardingComplete: true,
+    });
+    setV4View('home');
+    saveGame();
+    return next;
+  }
+
+  function completeTodayMission(option) {
+    if (!agent || completedToday) {
+      setV4View('home');
+      return;
+    }
+
+    trackEvent('daily_mission_completed', {
+      missionId: dailyMission.id,
+      territory: dailyMission.territory,
+      optionId: option?.id || null,
+    });
+
+    const nextV4 = markDailyComplete(v4State, dailyMission, option);
+    persistV4(nextV4);
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = completeDailyMission(currentProfile, dailyMission, option);
+
+      const snapshot = {
+        agent,
+        nodeId,
+        scores,
+        path,
+        inventory,
+        tradeoffSelection,
+        mission,
+        decisiveItem,
+        visitedNodeIds,
+        usedItems,
+        usedPowerCards,
+        powerTokens,
+        playerProfile: updatedProfile,
+      };
+
+      localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+      setHasSave(true);
+      return updatedProfile;
+    });
+
+    setV4View('home');
+  }
+
   function chooseAgent(selectedAgent, selectedScenario) {
+    trackEvent('gameplay_started', {
+      agentId: selectedAgent.id,
+      scenarioId: selectedScenario?.id || null,
+    });
     setAgent(selectedAgent);
     setScores(addScores(emptyScores(), selectedAgent.powers));
     setPlayerProfile(startPlayerJourney(selectedAgent));
@@ -1433,6 +1958,15 @@ function GameApp() {
     setPath(['Agente ' + selectedAgent.name, selectedScenario?.label || 'Início']);
     setVisitedNodeIds([startNode]);
     setNodeId(startNode);
+  }
+
+  function startV4Demo(selectedAgent, selectedScenario) {
+    chooseAgent(selectedAgent, selectedScenario);
+    persistV4({
+      ...v4State,
+      onboardingComplete: true,
+    });
+    setV4View('home');
   }
 
   function choose(choice) {
@@ -1543,6 +2077,14 @@ function GameApp() {
     setPath((prev) => [...prev, 'Missão Final']);
   }
 
+  if (viewMode === 'admin') {
+    return (
+      <AdminPortal
+        assignments={assignmentState.assignments}
+      />
+    );
+  }
+
   if (viewMode === 'family') {
     const demo = buildDemoStudent();
     return (
@@ -1550,7 +2092,11 @@ function GameApp() {
         agent={agent || demo.agent}
         profile={playerProfile || demo.profile}
         opportunities={mockOpportunities}
-        onModeChange={setViewMode}
+        pilotLinks={pilotLinks}
+        assignments={assignmentState.assignments}
+        onAssignMission={assignMission}
+        onAcknowledgeMission={acknowledgeMission}
+        onModeChange={null}
       />
     );
   }
@@ -1561,12 +2107,16 @@ function GameApp() {
         municipality={mockMunicipality}
         signals={mockPublicSignals}
         opportunities={mockOpportunities}
-        onModeChange={setViewMode}
+        pilotLinks={pilotLinks}
+        assignments={assignmentState.assignments}
+        onAssignMission={assignMission}
+        onAcknowledgeMission={acknowledgeMission}
+        onModeChange={null}
       />
     );
   }
 
-  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} hasSave={hasSave} onModeChange={setViewMode} />;
+  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={null} />;
 
   if (profileOpen) {
     return (
@@ -1576,7 +2126,108 @@ function GameApp() {
         inventory={inventory}
         usedPowerCards={usedPowerCards}
         onClose={() => setProfileOpen(false)}
-        onModeChange={setViewMode}
+        onModeChange={null}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'assigned' && selectedAssignment) {
+    return (
+      <AssignedMissionView
+        assignment={selectedAssignment}
+        onComplete={completeAssignedMission}
+        onBack={() => {
+          setSelectedAssignmentId(null);
+          setV4View('missions');
+        }}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'missions') {
+    return (
+      <MissionCenter
+        mission={dailyMission}
+        completedToday={completedToday}
+        assignments={pendingAssignments}
+        onStartDaily={() => setV4View('daily')}
+        onOpenAssigned={openAssignedMission}
+        onBack={() => setV4View('home')}
+        onOpenProfile={() => setProfileOpen(true)}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'weekly-quest' && selectedSeasonQuest) {
+    return (
+      <WeeklyQuestView
+        quest={selectedSeasonQuest}
+        onComplete={completeSeasonQuest}
+        onBack={() => {
+          setSelectedSeasonQuestId(null);
+          setV4View('season');
+        }}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'epic-quest') {
+    return (
+      <EpicQuestView
+        epic={seasonOne.epic}
+        onComplete={completeEpicQuest}
+        onBack={() => setV4View('season')}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'season') {
+    return (
+      <SeasonView
+        profile={playerProfile}
+        completedQuestIds={completedSeasonQuests}
+        epicCompleted={epicQuestCompleted}
+        onBack={() => setV4View('home')}
+        onOpenProfile={() => setProfileOpen(true)}
+        onOpenQuest={openSeasonQuest}
+        onOpenEpic={openEpicQuest}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete && v4View === 'daily') {
+    return (
+      <DailyMissionView
+        mission={dailyMission}
+        onComplete={completeTodayMission}
+        onBack={() => setV4View('home')}
+      />
+    );
+  }
+
+  if (v4State.onboardingComplete) {
+    return (
+      <V4Home
+        agent={agent}
+        profile={playerProfile}
+        mission={dailyMission}
+        completedToday={completedToday}
+        weeklyCount={weeklyCount}
+        assignmentCount={pendingAssignments.length}
+        onStartMission={() => {
+          trackEvent('daily_mission_started', { missionId: dailyMission.id, territory: dailyMission.territory });
+          setV4View('daily');
+        }}
+        onOpenProfile={() => setProfileOpen(true)}
+        onOpenJourney={() => setProfileOpen(true)}
+        onOpenMissions={() => {
+          trackEvent('mission_center_opened');
+          setV4View('missions');
+        }}
+        onOpenSeason={() => {
+          trackEvent('season_opened');
+          setV4View('season');
+        }}
       />
     );
   }
@@ -1592,14 +2243,77 @@ function GameApp() {
         usedPowerCards={usedPowerCards}
         playerProfile={playerProfile}
         onOpenProfile={() => setProfileOpen(true)}
+        onContinueJourney={enterContinuousJourney}
       />
     );
   }
 
 
 
+  if (canUseImmersiveScene(node)) {
+    return (
+      <ImmersiveScene
+        agent={agent}
+        node={node}
+        visitedCount={visitedNodeIds.length}
+        inventory={inventory}
+        powerTokens={powerTokens}
+        onExit={exitGameplay}
+      >
+        <ChoiceNode node={node} onChoose={choose} />
+      </ImmersiveScene>
+    );
+  }
+
+  if (canUseImmersiveSpecialStage(node)) {
+    return (
+      <ImmersiveSpecialStage
+        agent={agent}
+        node={node}
+        visitedCount={visitedNodeIds.length}
+        inventory={inventory}
+        onExit={exitGameplay}
+      >
+        {node.type === 'inventory' && (
+          <InventoryNode
+            selected={inventory}
+            onToggle={toggleInventory}
+            onContinue={finishInventory}
+          />
+        )}
+
+        {node.type === 'use-item' && (
+          <UseItemNode
+            inventory={inventory}
+            usedItems={usedItems}
+            onChoose={chooseItemUse}
+          />
+        )}
+
+        {node.type === 'tradeoff' && (
+          <TradeoffNode
+            selected={tradeoffSelection}
+            onToggle={toggleTradeoff}
+            onContinue={finishTradeoff}
+          />
+        )}
+
+        {node.type === 'power-challenge' && (
+          <PowerChallengeNode
+            scores={scores}
+            powerTokens={powerTokens}
+            usedPowerCards={usedPowerCards}
+            onUse={usePowerCard}
+          />
+        )}
+
+        {node.type === 'mission' && <MissionNode scores={scores} onChoose={chooseMission} />}
+      </ImmersiveSpecialStage>
+    );
+  }
+
   return (
-    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
+    <SceneShell agent={agent} node={node} visitedCount={visitedNodeIds.length} inventory={inventory} powerTokens={powerTokens} usedPowerCards={usedPowerCards} playerProfile={playerProfile} onSave={saveGame} onExit={exitGameplay} onOpenProfile={() => setProfileOpen(true)} justSaved={justSaved}>
       {node.type === 'choice' && <ChoiceNode node={node} onChoose={choose} />}
 
       {node.type === 'inventory' && (
@@ -1640,4 +2354,41 @@ function GameApp() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<GameApp />);
+function RootApp() {
+  const [pilotSession, setPilotSession] = useState(() => getPilotSession());
+
+  function signInPilot(accountId) {
+    const next = createPilotSession(accountId);
+    if (next) {
+      trackEvent('pilot_sign_in', { accountId, role: next.account.role });
+      setPilotSession(next);
+    }
+  }
+
+  function switchPilotProfile() {
+    trackEvent('pilot_switch_profile', {
+      fromRole: pilotSession?.account?.role || null,
+    });
+    clearPilotSession();
+    setPilotSession(null);
+  }
+
+  if (!pilotSession) {
+    return <PilotLogin onSelect={signInPilot} />;
+  }
+
+  const links = resolvePilotLinks(pilotSession.account);
+
+  return (
+    <>
+      <GameApp key={pilotSession.accountId} pilotSession={pilotSession} />
+      <PilotSessionBar
+        session={pilotSession}
+        links={links}
+        onSwitch={switchPilotProfile}
+      />
+    </>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<RootApp />);

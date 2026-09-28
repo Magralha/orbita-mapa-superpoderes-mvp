@@ -1,0 +1,1511 @@
+/* Órbita V4 — continuous journey */
+
+.v4Page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(64, 224, 190, .18), transparent 26rem),
+    linear-gradient(180deg, #071a2e 0%, #0c2440 42%, #f4f0e7 42%, #f4f0e7 100%);
+  color: #10243a;
+  padding: 0;
+}
+
+.v4Shell {
+  width: min(560px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #f4f0e7;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 94px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, .22);
+}
+
+.v4Top {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 10px;
+  background: #071a2e;
+  color: #fff;
+}
+
+.v4Top .orbitaWordmark strong {
+  color: #fff;
+}
+
+.v4Level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+}
+
+.v4Level > span {
+  color: #ffd34f;
+  font-size: 18px;
+}
+
+.v4Level div {
+  display: grid;
+}
+
+.v4Level strong {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.v4Level small {
+  font-size: 10px;
+  opacity: .72;
+}
+
+.v4Welcome {
+  min-height: 210px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(120px, .8fr);
+  align-items: end;
+  padding: 24px 18px 0;
+  color: #fff;
+  background:
+    radial-gradient(circle at 80% 28%, rgba(53, 227, 191, .24), transparent 11rem),
+    linear-gradient(180deg, #071a2e, #0b2948);
+}
+
+.v4Welcome h1 {
+  margin: 7px 0 8px;
+  color: #fff;
+  font-size: clamp(30px, 8vw, 42px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+
+.v4Welcome p {
+  margin: 0 0 26px;
+  max-width: 330px;
+  color: rgba(255,255,255,.74);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.v4Welcome img {
+  width: 100%;
+  max-height: 190px;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 14px 18px rgba(0,0,0,.28));
+}
+
+.v4Eyebrow {
+  display: inline-flex;
+  color: #55e1bf;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.v4ProgressCard {
+  margin: -2px 16px 16px;
+  border-radius: 20px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(14, 35, 55, .12);
+  position: relative;
+  z-index: 2;
+}
+
+.v4ProgressCopy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v4ProgressCopy strong {
+  font-size: 13px;
+}
+
+.v4ProgressCopy span {
+  font-size: 11px;
+  color: #617083;
+}
+
+.v4WeekStars {
+  display: flex;
+  gap: 9px;
+  margin: 10px 0;
+}
+
+.v4WeekStars i {
+  font-style: normal;
+  font-size: 22px;
+  color: #d8dde3;
+  filter: grayscale(1);
+}
+
+.v4WeekStars i.done {
+  color: #f4c43e;
+  filter: none;
+  text-shadow: 0 3px 8px rgba(244, 196, 62, .25);
+}
+
+.v4XpTrack {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e8edf1;
+}
+
+.v4XpTrack i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #29c69f, #59e4c0);
+}
+
+.v4DailyCard {
+  margin: 0 16px 18px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(17, 43, 67, .13);
+}
+
+.v4DailyVisual {
+  position: relative;
+  height: 196px;
+  overflow: hidden;
+  background: #153653;
+}
+
+.v4DailyVisual:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 55%;
+  background: linear-gradient(180deg, transparent, rgba(7, 26, 46, .52));
+  pointer-events: none;
+}
+
+.v4DailyVisual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.v4TerritoryTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(7, 26, 46, .86);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+}
+
+.v4DailyVisual .v4TerritoryTag {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2;
+}
+
+.v4DailyBody {
+  padding: 17px;
+}
+
+.v4DailyMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #698094;
+}
+
+.v4DailyMeta span {
+  color: #0da681;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4DailyMeta small {
+  font-size: 11px;
+}
+
+.v4DailyBody h2 {
+  margin: 7px 0 8px;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
+.v4DailyBody p {
+  margin: 0 0 16px;
+  color: #52677a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.v4PrimaryButton {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #17b78f, #35d6ad);
+  color: #06231d;
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: 0 9px 20px rgba(20, 183, 143, .24);
+}
+
+.v4PrimaryButton:disabled {
+  background: #dce4e3;
+  color: #758681;
+  box-shadow: none;
+}
+
+.v4PowerStrip,
+.v4QuestCard {
+  margin: 0 16px 18px;
+}
+
+.v4SectionTitle {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.v4SectionTitle > div {
+  display: grid;
+  gap: 3px;
+}
+
+.v4SectionTitle span {
+  color: #179d7c;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.v4SectionTitle strong {
+  font-size: 16px;
+}
+
+.v4SectionTitle button,
+.v4QuestCard button {
+  border: 0;
+  background: transparent;
+  color: #147b67;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v4PowerCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.v4PowerCards article {
+  min-height: 118px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 10px 5px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(17, 43, 67, .08);
+}
+
+.v4PowerCards img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.v4PowerCards span {
+  margin-top: 5px;
+  font-size: 10px;
+  color: #607286;
+}
+
+.v4PowerCards strong {
+  font-size: 16px;
+}
+
+.v4QuestCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  border-radius: 22px;
+  background: #0b2948;
+  color: #fff;
+  box-shadow: 0 13px 34px rgba(7, 26, 46, .18);
+}
+
+.v4QuestCard div {
+  min-width: 0;
+  flex: 1;
+}
+
+.v4QuestCard span {
+  color: #ffd34f;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.v4QuestCard h2 {
+  margin: 4px 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.v4QuestCard p {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.v4QuestCard button {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #0b2948;
+}
+
+.v4MissionShell {
+  background:
+    linear-gradient(180deg, #071a2e 0 240px, #f4f0e7 240px 100%);
+}
+
+.v4BackButton {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 25px;
+}
+
+.v4MissionHero {
+  padding: 28px 19px 32px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(50, 222, 182, .2), transparent 14rem),
+    #071a2e;
+  color: #fff;
+}
+
+.v4MissionHero > span {
+  color: #54dfbd;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4MissionHero h1 {
+  margin: 8px 0 10px;
+  color: #fff;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.v4MissionHero p {
+  max-width: 440px;
+  margin: 0;
+  color: rgba(255,255,255,.76);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.v4Reward {
+  display: inline-flex;
+  margin-top: 18px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #ffd34f;
+  color: #2b240d;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.v4ReflectionCard {
+  margin: 18px 16px 12px;
+  padding: 17px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(17, 43, 67, .1);
+}
+
+.v4ReflectionCard > span {
+  color: #15997a;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4ReflectionCard h2 {
+  margin: 7px 0 14px;
+  font-size: 22px;
+  line-height: 1.08;
+}
+
+.v4ReflectionOptions {
+  display: grid;
+  gap: 9px;
+}
+
+.v4ReflectionOptions button {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dbe3e8;
+  border-radius: 15px;
+  background: #f8faf9;
+  color: #243b50;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.v4ReflectionOptions button.selected {
+  border-color: #1cc19a;
+  background: #e9faf5;
+  box-shadow: inset 0 0 0 1px #1cc19a;
+}
+
+.v4ReflectionOptions b {
+  color: #149677;
+  font-size: 18px;
+}
+
+.v4CompleteButton {
+  width: calc(100% - 32px);
+  margin: 0 16px;
+}
+
+@media (min-width: 760px) {
+  .v4Page {
+    padding: 28px 0;
+  }
+
+  .v4Shell {
+    min-height: calc(100vh - 56px);
+    border-radius: 30px;
+  }
+}
+
+
+.myOrbitaLiveMap,
+.myOrbitaPassport {
+  margin-top: 18px;
+}
+
+.myOrbitaSourceGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.myOrbitaSourceGrid article {
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 10px 6px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(17, 43, 67, .08);
+}
+
+.myOrbitaSourceGrid span {
+  font-size: 10px;
+  color: #647487;
+  text-align: center;
+}
+
+.myOrbitaSourceGrid strong {
+  margin-top: 3px;
+  font-size: 23px;
+  color: #10243a;
+}
+
+.myOrbitaSourceGrid small {
+  font-size: 9px;
+  color: #15997a;
+  font-weight: 800;
+}
+
+.myOrbitaEvidenceList {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.myOrbitaEvidenceList > div {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #f8faf9;
+  border: 1px solid #e1e7ea;
+}
+
+.myOrbitaEvidenceList img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.myOrbitaEvidenceList span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.myOrbitaEvidenceList strong {
+  font-size: 13px;
+}
+
+.myOrbitaEvidenceList small {
+  color: #68798a;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.myOrbitaPassportGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.myOrbitaPassportGrid article {
+  min-height: 112px;
+  display: grid;
+  align-content: end;
+  gap: 7px;
+  padding: 14px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(65, 219, 181, .14), transparent 7rem),
+    #0b2948;
+  color: #fff;
+}
+
+.myOrbitaPassportGrid span {
+  color: #55e1bf;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.myOrbitaPassportGrid strong {
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+@media (max-width: 520px) {
+  .myOrbitaSourceGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+.v4MissionInboxCard {
+  margin: 0 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(255,211,79,.16), transparent 9rem),
+    #0b2948;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(7,26,46,.16);
+}
+
+.v4MissionInboxCard > div {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 3px;
+}
+
+.v4MissionInboxCard span {
+  color: #ffd34f;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.v4MissionInboxCard strong {
+  font-size: 17px;
+}
+
+.v4MissionInboxCard small {
+  color: rgba(255,255,255,.68);
+  font-size: 10px;
+}
+
+.v4MissionInboxCard button {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #0b2948;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.v4MissionCenterShell {
+  background:
+    radial-gradient(circle at 20% 0%,rgba(50,216,181,.14),transparent 15rem),
+    #f4f0e7;
+}
+
+.v4MissionCenterHero {
+  padding: 24px 18px 16px;
+  background:
+    radial-gradient(circle at 90% 20%,rgba(48,216,181,.16),transparent 13rem),
+    #071a2e;
+  color: #fff;
+}
+
+.v4MissionCenterHero > span {
+  color: #55e1bf;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.v4MissionCenterHero h1 {
+  margin: 7px 0 8px;
+  color: #fff;
+  font-size: clamp(32px, 9vw, 46px);
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.v4MissionCenterHero p {
+  margin: 0;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.v4MissionCenterList {
+  display: grid;
+  gap: 12px;
+  padding: 16px 16px 100px;
+}
+
+.v4MissionSourceCard {
+  border-radius: 22px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(17,43,67,.09);
+}
+
+.v4MissionSourceCard.orbita {
+  background:
+    radial-gradient(circle at 90% 15%,rgba(49,215,181,.15),transparent 11rem),
+    #0b2948;
+  color: #fff;
+}
+
+.v4MissionSourceCard.school {
+  border: 1px solid #cfe2e8;
+}
+
+.v4MissionSourceCard.family {
+  border: 1px solid #e9dcc1;
+  background: #fffaf0;
+}
+
+.v4MissionSourceHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v4MissionSourceHead span {
+  color: #15997a;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.v4MissionSourceCard.orbita .v4MissionSourceHead span {
+  color: #55e1bf;
+}
+
+.v4MissionSourceHead small {
+  color: #738494;
+  font-size: 10px;
+}
+
+.v4MissionSourceCard.orbita .v4MissionSourceHead small {
+  color: rgba(255,255,255,.62);
+}
+
+.v4MissionSourceCard h2 {
+  margin: 7px 0 6px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.v4MissionSourceCard.orbita h2 {
+  color: #fff;
+}
+
+.v4MissionSourceCard p {
+  margin: 0 0 13px;
+  color: #607286;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.v4MissionSourceCard.orbita p {
+  color: rgba(255,255,255,.7);
+}
+
+.v4MissionSourceCard button {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 13px;
+  background: #102f49;
+  color: #fff;
+  font-weight: 900;
+}
+
+.v4MissionSourceCard.orbita button {
+  background: linear-gradient(135deg,#20c79e,#61e9c5);
+  color: #073226;
+}
+
+.v4MissionSourceCard button:disabled {
+  background: #d9e1e2;
+  color: #718183;
+}
+
+
+.v4SeasonShell {
+  background:
+    radial-gradient(circle at 75% 0%, rgba(255,211,79,.10), transparent 13rem),
+    #f4f0e7;
+}
+
+.v4SeasonHero {
+  padding: 26px 18px 22px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(55,218,184,.18), transparent 14rem),
+    linear-gradient(180deg,#071a2e,#0b2948);
+  color:#fff;
+}
+
+.v4SeasonHero > span {
+  color:#ffd34f;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+
+.v4SeasonHero h1 {
+  margin:7px 0 8px;
+  color:#fff;
+  font-size:clamp(36px,10vw,50px);
+  line-height:.94;
+  letter-spacing:-.045em;
+}
+
+.v4SeasonHero p {
+  margin:0;
+  color:rgba(255,255,255,.72);
+  font-size:12px;
+  line-height:1.45;
+}
+
+.v4SeasonProgress {
+  margin-top:18px;
+  display:grid;
+  gap:8px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.v4SeasonProgress > div {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+}
+
+.v4SeasonProgress strong {
+  font-size:12px;
+}
+
+.v4SeasonProgress small {
+  color:#b8cfda;
+  font-size:9px;
+}
+
+.v4SeasonProgress > i {
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+}
+
+.v4SeasonProgress em {
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#32cfa6,#68edc8);
+}
+
+.v4WeeklyQuestCard,
+.v4EpicQuest {
+  margin:16px;
+  border-radius:22px;
+  padding:16px;
+  background:#fff;
+  box-shadow:0 10px 28px rgba(17,43,67,.09);
+}
+
+.v4WeeklyQuestCard h2,
+.v4EpicQuest h2 {
+  margin:7px 0 9px;
+  font-size:23px;
+  line-height:1;
+}
+
+.v4WeeklyQuestCard ol {
+  margin:0 0 14px;
+  padding-left:20px;
+  display:grid;
+  gap:7px;
+  color:#5c7082;
+  font-size:11px;
+  line-height:1.35;
+}
+
+.v4WeeklyQuestCard button {
+  width:100%;
+  min-height:44px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#21c69d,#62e9c5);
+  color:#073126;
+  font-weight:900;
+}
+
+.v4SeasonWeeks {
+  display:grid;
+  gap:10px;
+  padding:0 16px 16px;
+}
+
+.v4SeasonWeeks article {
+  display:grid;
+  grid-template-columns:44px 1fr 54px;
+  gap:11px;
+  align-items:center;
+  padding:13px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #dbe4e7;
+  box-shadow:0 7px 20px rgba(17,43,67,.06);
+}
+
+.v4SeasonWeeks article.active {
+  border-color:#29c99f;
+  background:#eefbf7;
+  box-shadow:inset 0 0 0 1px #29c99f, 0 8px 22px rgba(17,43,67,.07);
+}
+
+.v4SeasonWeekNumber {
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:#0b2948;
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+}
+
+.v4SeasonWeekCopy {
+  min-width:0;
+}
+
+.v4SeasonWeekCopy > span {
+  color:#149a7a;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.07em;
+}
+
+.v4SeasonWeekCopy h2 {
+  margin:2px 0 4px;
+  font-size:16px;
+}
+
+.v4SeasonWeekCopy p {
+  margin:0;
+  color:#687a8a;
+  font-size:9px;
+  line-height:1.35;
+}
+
+.v4SeasonWeekCopy small {
+  display:inline-block;
+  margin-top:5px;
+  color:#0d8e70;
+  font-size:9px;
+  font-weight:800;
+}
+
+.v4SeasonWeeks article > img {
+  width:50px;
+  height:50px;
+  object-fit:contain;
+}
+
+.v4EpicQuest {
+  margin-top:0;
+  margin-bottom:100px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255,211,79,.16), transparent 12rem),
+    #0b2948;
+  color:#fff;
+}
+
+.v4EpicQuest > span {
+  color:#ffd34f;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.v4EpicQuest h2 {
+  color:#fff;
+}
+
+.v4EpicQuest p {
+  color:rgba(255,255,255,.72);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.v4EpicQuest strong {
+  color:#55e1bf;
+}
+
+
+/* Passport V4 */
+.myOrbitaPassportBlock {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #dde6e9;
+  box-shadow: 0 8px 22px rgba(17,43,67,.06);
+}
+
+.myOrbitaPassportBlockHead {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.myOrbitaPassportBlockHead > span {
+  color: #0f9577;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.myOrbitaPassportBlockHead > small {
+  color: #6d7e8e;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.myOrbitaInterestGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.myOrbitaInterestGrid article {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(48,216,181,.11), transparent 7rem),
+    #f7faf9;
+  border: 1px solid #dce6e8;
+}
+
+.myOrbitaInterestGrid strong {
+  color: #17354a;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.myOrbitaInterestGrid span {
+  color: #6d7e8f;
+  font-size: 9px;
+}
+
+.myOrbitaInterestGrid i {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e1e9eb;
+}
+
+.myOrbitaInterestGrid em {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,#20c89e,#59e3bd);
+}
+
+.myOrbitaMilestoneGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.myOrbitaMilestoneGrid article {
+  min-height: 104px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 11px;
+  border-radius: 16px;
+  border: 1px solid #dde5e8;
+  background: #f7faf9;
+}
+
+.myOrbitaMilestoneGrid article.unlocked {
+  border-color: #42d5ae;
+  background: #ebfaf5;
+}
+
+.myOrbitaMilestoneGrid article.locked {
+  opacity: .52;
+  filter: grayscale(.35);
+}
+
+.myOrbitaMilestoneGrid div {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #0b2948;
+  color: #55e1bf;
+  font-weight: 900;
+}
+
+.myOrbitaMilestoneGrid strong {
+  font-size: 12px;
+  color: #17354a;
+}
+
+.myOrbitaMilestoneGrid small {
+  color: #6c7c8b;
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.myOrbitaNextPaths {
+  display: grid;
+  gap: 8px;
+}
+
+.myOrbitaNextPaths article {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 9px;
+  align-items: center;
+  min-height: 54px;
+  padding: 9px 11px;
+  border-radius: 15px;
+  background: #0b2948;
+  color: #fff;
+}
+
+.myOrbitaNextPaths span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #39d6ae;
+  color: #062c24;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.myOrbitaNextPaths strong {
+  font-size: 11px;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.myOrbitaPassportHistory {
+  display: grid;
+  gap: 7px;
+}
+
+.myOrbitaPassportHistory > div {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e4ebed;
+}
+
+.myOrbitaPassportHistory > div:last-child {
+  border-bottom: 0;
+}
+
+.myOrbitaPassportHistory i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #33cfa7;
+  box-shadow: 0 0 0 4px rgba(51,207,167,.10);
+}
+
+.myOrbitaPassportHistory span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.myOrbitaPassportHistory small {
+  color: #6a7d8e;
+  font-size: 8px;
+  text-transform: capitalize;
+}
+
+.myOrbitaPassportHistory strong {
+  color: #18364b;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.myOrbitaPassportHistory b {
+  color: #0e8e70;
+  font-size: 9px;
+}
+
+@media (max-width: 520px) {
+  .myOrbitaInterestGrid,
+  .myOrbitaMilestoneGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+.v4AssignedMissionShell {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(50,216,181,.12), transparent 14rem),
+    #f4f0e7;
+}
+
+.v4AssignedHero {
+  padding: 28px 18px 24px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(255,211,79,.13), transparent 12rem),
+    linear-gradient(180deg,#071a2e,#0b2948);
+  color:#fff;
+}
+
+.v4AssignedHero > span {
+  color:#55e1bf;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.v4AssignedHero h1 {
+  margin:7px 0 8px;
+  color:#fff;
+  font-size:clamp(34px,9vw,46px);
+  line-height:.95;
+  letter-spacing:-.04em;
+}
+
+.v4AssignedHero p {
+  margin:0;
+  color:rgba(255,255,255,.74);
+  font-size:13px;
+  line-height:1.5;
+}
+
+.v4AssignedMeta {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:16px;
+}
+
+.v4AssignedMeta span,
+.v4AssignedMeta strong {
+  display:inline-flex;
+  min-height:30px;
+  align-items:center;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:10px;
+  font-weight:900;
+}
+
+.v4AssignedMeta span {
+  background:rgba(255,255,255,.08);
+  color:#d8eaf1;
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.v4AssignedMeta strong {
+  background:#ffd34f;
+  color:#2a230b;
+}
+
+.v4MissionEmptyCard {
+  padding:18px;
+  border:1px dashed #bdcbd0;
+  border-radius:18px;
+  background:rgba(255,255,255,.55);
+}
+
+.v4MissionEmptyCard strong {
+  color:#203b50;
+  font-size:13px;
+}
+
+.v4MissionEmptyCard p {
+  margin:5px 0 0;
+  color:#728391;
+  font-size:10px;
+}
+
+
+.v4AssignmentMetaRow {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:10px 0 12px;
+  padding:8px 10px;
+  border-radius:12px;
+  background:#f3f7f6;
+  color:#526b7d;
+}
+
+.v4AssignmentMetaRow span {
+  font-size:9px;
+  font-weight:800;
+  color:#173a4f;
+}
+
+.v4AssignmentMetaRow small {
+  font-size:8px;
+  text-align:right;
+}
+
+.v4MissionSourceCard.overdue .v4AssignmentMetaRow {
+  background:#fff3df;
+}
+
+.v4OptionalEvidence {
+  margin:12px 16px;
+  padding:14px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #dde6e9;
+  box-shadow:0 8px 22px rgba(17,43,67,.06);
+}
+
+.v4OptionalEvidence > span {
+  display:block;
+  color:#15997a;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.v4OptionalEvidence label {
+  display:block;
+  margin:6px 0 8px;
+  color:#2a4357;
+  font-size:12px;
+  line-height:1.35;
+  font-weight:800;
+}
+
+.v4OptionalEvidence textarea {
+  width:100%;
+  min-height:92px;
+  resize:vertical;
+  border:1px solid #d7e1e4;
+  border-radius:14px;
+  padding:11px 12px;
+  background:#f8fbfa;
+  color:#17354a;
+  font:inherit;
+  font-size:12px;
+  line-height:1.45;
+  outline:none;
+}
+
+.v4OptionalEvidence textarea:focus {
+  border-color:#24c69d;
+  box-shadow:0 0 0 3px rgba(36,198,157,.10);
+}
+
+.v4OptionalEvidence small {
+  display:block;
+  margin-top:6px;
+  color:#81909c;
+  font-size:8px;
+}
+
+
+/* Playable weekly quest */
+.v4QuestRunShell {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(50,216,181,.12), transparent 14rem),
+    #f4f0e7;
+}
+
+.v4QuestChecklist {
+  display:grid;
+  gap:9px;
+  margin:16px;
+}
+
+.v4QuestChecklist button {
+  display:grid;
+  grid-template-columns:38px 1fr;
+  gap:10px;
+  align-items:center;
+  min-height:62px;
+  padding:11px 12px;
+  border:1px solid #d8e2e5;
+  border-radius:16px;
+  background:#fff;
+  color:#244157;
+  text-align:left;
+  box-shadow:0 7px 18px rgba(17,43,67,.05);
+}
+
+.v4QuestChecklist button > span {
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#e9efef;
+  color:#53697a;
+  font-size:11px;
+  font-weight:900;
+}
+
+.v4QuestChecklist button > strong {
+  font-size:11px;
+  line-height:1.35;
+}
+
+.v4QuestChecklist button.done {
+  border-color:#36cca5;
+  background:#ebfaf5;
+}
+
+.v4QuestChecklist button.done > span {
+  background:#35d0a7;
+  color:#062e25;
+}
+
+.v4SeasonWeeks article.completed {
+  border-color:#64d9bc;
+  background:#effaf6;
+}
+
+.v4SeasonWeeks article.completed .v4SeasonWeekNumber {
+  background:#2bc69d;
+  color:#062b23;
+}
+
+.v4SeasonWeeks article.completed .v4SeasonWeekNumber:after {
+  content:" ✓";
+}
+
+
+.v4EpicQuest button {
+  width:100%;
+  min-height:44px;
+  margin-top:14px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ffd34f,#f2bf30);
+  color:#30260a;
+  font-size:10px;
+  font-weight:900;
+}
+
+.v4EpicQuest button:disabled {
+  background:rgba(255,255,255,.10);
+  color:#8fa7b3;
+}
+
+.v4EpicQuest.completed {
+  border:1px solid rgba(83,226,190,.38);
+}
+
+.v4EpicHero {
+  background:
+    radial-gradient(circle at 86% 12%,rgba(255,211,79,.18),transparent 14rem),
+    linear-gradient(180deg,#071a2e,#0b2948);
+}

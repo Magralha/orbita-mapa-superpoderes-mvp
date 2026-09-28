@@ -1,0 +1,232 @@
+.pilotLoginPage {
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(52,217,186,.20), transparent 24rem),
+    linear-gradient(180deg,#051a2d,#0a2a46);
+  color:#fff;
+  padding:20px;
+}
+
+.pilotLoginShell {
+  width:min(980px,100%);
+  margin:0 auto;
+}
+
+.pilotLoginTop {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:8px 0 24px;
+}
+
+.pilotLoginTop > span {
+  border:1px solid rgba(87,226,198,.35);
+  border-radius:999px;
+  padding:7px 10px;
+  color:#5ae3c3;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+
+.pilotLoginHero {
+  max-width:720px;
+  padding:30px 0 24px;
+}
+
+.pilotLoginHero > span {
+  color:#ffd34f;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.10em;
+}
+
+.pilotLoginHero h1 {
+  margin:8px 0 12px;
+  color:#fff;
+  font-size:clamp(42px,7vw,76px);
+  line-height:.92;
+  letter-spacing:-.05em;
+}
+
+.pilotLoginHero p {
+  max-width:600px;
+  margin:0;
+  color:#bfd6e2;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.pilotAccountGrid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:14px;
+  margin-top:12px;
+}
+
+.pilotAccountCard {
+  min-height:250px;
+  display:grid;
+  align-content:end;
+  justify-items:start;
+  gap:5px;
+  padding:18px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 85% 8%,rgba(255,255,255,.08),transparent 9rem),
+    rgba(255,255,255,.06);
+  color:#fff;
+  text-align:left;
+  box-shadow:0 18px 38px rgba(0,0,0,.18);
+  backdrop-filter:blur(10px);
+}
+
+.pilotAccountIcon {
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin-bottom:20px;
+  border-radius:15px;
+  background:#35d6ad;
+  color:#06271e;
+  font-size:20px;
+  font-weight:900;
+}
+
+.pilotAccountCard > span {
+  color:#55e1bf;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.pilotAccountCard > strong {
+  font-size:24px;
+  line-height:1;
+}
+
+.pilotAccountCard > b {
+  color:#d9eaf2;
+  font-size:12px;
+}
+
+.pilotAccountCard > small {
+  color:#8eabb9;
+  font-size:10px;
+}
+
+.pilotAccountCard > i {
+  margin-top:10px;
+  color:#ffd34f;
+  font-size:10px;
+  font-style:normal;
+  font-weight:900;
+}
+
+.pilotAccount-family .pilotAccountIcon {
+  background:#ffd34f;
+  color:#33290a;
+}
+
+.pilotAccount-school .pilotAccountIcon {
+  background:#6ed6ff;
+  color:#082b3e;
+}
+
+.pilotLoginFoot {
+  padding:18px 0;
+  color:#6f92a4;
+  font-size:9px;
+}
+
+@media (max-width:760px) {
+  .pilotLoginPage { padding:14px; }
+  .pilotLoginHero { padding-top:14px; }
+  .pilotAccountGrid { grid-template-columns:1fr; }
+  .pilotAccountCard {
+    min-height:180px;
+    grid-template-columns:58px 1fr;
+    grid-template-areas:
+      "icon eyebrow"
+      "icon role"
+      "icon name"
+      "icon sub"
+      "icon enter";
+    align-items:center;
+  }
+  .pilotAccountIcon { grid-area:icon; margin:0; }
+  .pilotAccountCard > span { grid-area:eyebrow; }
+  .pilotAccountCard > strong { grid-area:role; }
+  .pilotAccountCard > b { grid-area:name; }
+  .pilotAccountCard > small { grid-area:sub; }
+  .pilotAccountCard > i { grid-area:enter; margin:5px 0 0; }
+}
+
+
+.pilotSessionBar {
+  position:fixed;
+  z-index:999;
+  right:12px;
+  bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 9px 8px 11px;
+  border:1px solid rgba(82,225,197,.36);
+  border-radius:16px;
+  background:rgba(3,28,47,.92);
+  color:#fff;
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+  backdrop-filter:blur(12px);
+}
+
+.pilotSessionBar > span {
+  display:grid;
+  gap:1px;
+}
+
+.pilotSessionBar b {
+  color:#56e0be;
+  font-size:7px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.pilotSessionBar strong {
+  font-size:10px;
+  line-height:1.1;
+}
+
+.pilotSessionBar small {
+  color:#93aeba;
+  font-size:7px;
+}
+
+.pilotSessionBar button {
+  border:0;
+  border-radius:10px;
+  padding:7px 8px;
+  background:rgba(255,255,255,.09);
+  color:#eaf7fa;
+  font-size:8px;
+  font-weight:800;
+}
+
+@media (max-width:560px) {
+  .pilotSessionBar {
+    right:8px;
+    bottom:82px;
+    max-width:190px;
+  }
+  .immersiveGamePage ~ .pilotSessionBar {
+    bottom:8px;
+  }
+}
+
+.pilotAccount-admin .pilotAccountIcon {
+  background:#b89cff;
+  color:#221544;
+}
