@@ -38,6 +38,9 @@ The backend should treat these as separate entities:
 13. Real-life experience
 14. Daily completion
 15. Season progress
+16. Versioned consent/authorization records
+17. Data access/deletion requests
+18. Privileged audit log
 
 The SQL reference is in `infra/postgres/schema.sql`.
 
@@ -169,7 +172,7 @@ A managed PostgreSQL service with authentication and row-level authorization is 
 - data retention/deletion rules;
 - backend environment/secrets;
 - migration of localStorage state to the shared database;
-- audit logging;
+- production audit-log review and retention;
 - operational admin tooling.
 
 Do not put production secret keys in the GitHub repository or browser bundle.
