@@ -423,3 +423,21 @@
   .adminVisualHead { align-items:stretch; flex-direction:column; }
   .adminSceneQaGrid { grid-template-columns:1fr 1fr; }
 }
+
+
+.adminBackupActions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.adminSecondary {
+  margin-top:12px;
+  border:1px solid #ccd9de;
+  border-radius:12px;
+  padding:10px 13px;
+  background:#f5f8f8;
+  color:#365267;
+  font-size:9px;
+  font-weight:900;
+}
