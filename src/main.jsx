@@ -35,7 +35,7 @@ import {
   normalizeV4State,
   weeklyCompletionCount,
 } from './game/engine/dailyEngine';
-import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView } from './game/ui/V4UI';
+import { V4Home, DailyMissionView, MissionCenter, SeasonView, AssignedMissionView, WeeklyQuestView } from './game/ui/V4UI';
 import {
   activeAssignments,
   addAssignment,
@@ -45,6 +45,12 @@ import {
   normalizeAssignmentState,
   seededAssignmentState,
 } from './game/engine/assignmentEngine';
+import {
+  applyWeeklyQuestToProfile,
+  completedSeasonQuestCount,
+  markWeeklyQuestComplete,
+  nextSeasonQuest,
+} from './game/engine/seasonEngine';
 import ImmersiveScene, { canUseImmersiveScene } from './game/ui/ImmersiveScene';
 import ImmersiveSpecialStage, { canUseImmersiveSpecialStage } from './game/ui/ImmersiveSpecialStage';
 import PilotLogin from './pilot/PilotLogin';
@@ -1507,6 +1513,7 @@ function GameApp({ pilotSession }) {
   const [v4View, setV4View] = useState('home');
   const [assignmentState, setAssignmentState] = useState(() => getSavedAssignmentState());
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [selectedSeasonQuestId, setSelectedSeasonQuestId] = useState(null);
 
   const node = expandedNodes[nodeId];
   const dailyMission = missionForDate();
@@ -1515,6 +1522,12 @@ function GameApp({ pilotSession }) {
   const weeklyCount = weeklyCompletionCount(v4State);
   const pendingAssignments = activeAssignments(assignmentState);
   const selectedAssignment = assignmentState.assignments.find((item) => item.assignmentId === selectedAssignmentId) || null;
+  const completedSeasonQuests = Object.keys(v4State.weeklyQuestCompletions || {});
+  const activeSeasonQuest = nextSeasonQuest(v4State);
+  const selectedSeasonQuest =
+    activeSeasonQuest?.id === selectedSeasonQuestId
+      ? activeSeasonQuest
+      : null;
   const [hasSave, setHasSave] = useState(() => Boolean(localStorage.getItem(SAVE_KEY)));
   const [justSaved, setJustSaved] = useState(false);
 
@@ -1739,6 +1752,54 @@ function GameApp({ pilotSession }) {
 
     setSelectedAssignmentId(null);
     setV4View('missions');
+  }
+
+  function openSeasonQuest(quest) {
+    setSelectedSeasonQuestId(quest.id);
+    setV4View('weekly-quest');
+  }
+
+  function completeSeasonQuest(reflection) {
+    if (!selectedSeasonQuest) {
+      setV4View('season');
+      return;
+    }
+
+    const nextV4 = markWeeklyQuestComplete(v4State, selectedSeasonQuest, reflection);
+    persistV4(nextV4);
+
+    setPlayerProfile((currentProfile) => {
+      const updatedProfile = applyWeeklyQuestToProfile(
+        currentProfile,
+        selectedSeasonQuest,
+        reflection,
+      );
+
+      if (agent) {
+        const snapshot = {
+          agent,
+          nodeId,
+          scores,
+          path,
+          inventory,
+          tradeoffSelection,
+          mission,
+          decisiveItem,
+          visitedNodeIds,
+          usedItems,
+          usedPowerCards,
+          powerTokens,
+          playerProfile: updatedProfile,
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        setHasSave(true);
+      }
+
+      return updatedProfile;
+    });
+
+    setSelectedSeasonQuestId(null);
+    setV4View('season');
   }
 
   function enterContinuousJourney() {
@@ -1987,12 +2048,27 @@ function GameApp({ pilotSession }) {
     );
   }
 
+  if (v4State.onboardingComplete && v4View === 'weekly-quest' && selectedSeasonQuest) {
+    return (
+      <WeeklyQuestView
+        quest={selectedSeasonQuest}
+        onComplete={completeSeasonQuest}
+        onBack={() => {
+          setSelectedSeasonQuestId(null);
+          setV4View('season');
+        }}
+      />
+    );
+  }
+
   if (v4State.onboardingComplete && v4View === 'season') {
     return (
       <SeasonView
         profile={playerProfile}
+        completedQuestIds={completedSeasonQuests}
         onBack={() => setV4View('home')}
         onOpenProfile={() => setProfileOpen(true)}
+        onOpenQuest={openSeasonQuest}
       />
     );
   }
