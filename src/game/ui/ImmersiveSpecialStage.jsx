@@ -2,6 +2,7 @@ import React from 'react';
 import { assets } from '../data/assets';
 import { OrbitaWordmark } from './MobileUI';
 import { getImmersiveSceneConfig } from '../data/sceneConfig';
+import SceneAgent from './SceneAgent';
 
 export function canUseImmersiveSpecialStage(node) {
   return ['inventory', 'use-item', 'tradeoff', 'power-challenge', 'mission'].includes(node?.type)
@@ -56,29 +57,12 @@ export default function ImmersiveSpecialStage({
           {inventory.length > 0 && <b>{inventory.length}</b>}
         </div>
 
-        <div
-          className={`immersiveAgentSprite immersiveAgentSprite-${agent.id}`}
-          style={{
-            left: `${config.agent.left}%`,
-            top: `${config.agent.ground}%`,
-            width: `${config.agent.width}%`,
-            zIndex: config.agent.zIndex || 9,
-            '--agent-shadow-width': `${config.agent.shadowWidth || 58}%`,
-            '--agent-shadow-height': `${config.agent.shadowHeight || 9}%`,
-            '--agent-shadow-opacity': config.agent.shadowOpacity ?? 0.34,
-            '--agent-shadow-blur': `${config.agent.shadowBlur || 5}px`,
-            transform: [
-              'translate(-50%, -100%)',
-              `rotate(${config.agent.rotate || 0}deg)`,
-              `skewX(${config.agent.skewX || 0}deg)`,
-              `scaleX(${(config.agent.flip ? -1 : 1) * (config.agent.perspectiveScaleX || 1)})`,
-            ].join(' '),
-          }}
-        >
-          <span className="immersiveAgentGlow" />
-          <img src={assets.agents[agent.id]} alt="" />
-          <i className="immersiveAgentShadow" />
-        </div>
+        <SceneAgent
+          agent={agent}
+          config={config}
+          nodeId={node.id}
+          stageType={node.type}
+        />
 
         <section className="immersiveDecisionSheet immersiveSpecialSheet">
           <div className="immersiveLocationTag">{node.chapter}</div>
