@@ -115,6 +115,40 @@ for (const entry of Object.entries(immersiveSceneConfig)) {
   if (config && config.agent && !Number.isFinite(Number(config.agent.ground))) {
     errors.push('scene ' + world + ': invalid agent.ground');
   }
+
+  const anchors = Array.isArray(config?.anchors) && config.anchors.length
+    ? config.anchors
+    : [config?.agent].filter(Boolean);
+
+  if (anchors.length < 2) {
+    warnings.push('scene ' + world + ': only one semantic anchor');
+  }
+
+  anchors.forEach((anchor, index) => {
+    const prefix = 'scene ' + world + ' anchor ' + index;
+    if (!Number.isFinite(Number(anchor.left)) || anchor.left < 10 || anchor.left > 90) {
+      errors.push(prefix + ': left must stay inside 10-90');
+    }
+    if (!Number.isFinite(Number(anchor.ground)) || anchor.ground < 35 || anchor.ground > 72) {
+      errors.push(prefix + ': ground must stay inside 35-72');
+    }
+    if (!Number.isFinite(Number(anchor.width)) || anchor.width < 10 || anchor.width > 26) {
+      errors.push(prefix + ': width must stay inside 10-26');
+    }
+  });
+
+  (config?.specialAnchors || []).forEach((anchor, index) => {
+    const prefix = 'scene ' + world + ' special anchor ' + index;
+    if (!Number.isFinite(Number(anchor.left)) || anchor.left < 10 || anchor.left > 90) {
+      errors.push(prefix + ': left must stay inside 10-90');
+    }
+    if (!Number.isFinite(Number(anchor.ground)) || anchor.ground < 35 || anchor.ground > 65) {
+      errors.push(prefix + ': ground must stay inside 35-65');
+    }
+    if (!Number.isFinite(Number(anchor.width)) || anchor.width < 10 || anchor.width > 24) {
+      errors.push(prefix + ': width must stay inside 10-24');
+    }
+  });
 }
 
 const roles = new Set(pilotAccounts.map((account) => account.role));
