@@ -9,10 +9,22 @@ function fallbackPlacement(config) {
   const agent = config?.agent;
   if (!agent) return null;
 
+  const xPercent = Number.isFinite(Number(agent.left))
+    ? Number(agent.left)
+    : Number.isFinite(Number(agent.x))
+      ? Number(agent.x) * 100
+      : 50;
+
+  const yPercent = Number.isFinite(Number(agent.ground))
+    ? Number(agent.ground)
+    : Number.isFinite(Number(agent.y))
+      ? Number(agent.y) * 100
+      : 55;
+
   return {
     anchor: agent,
-    xPercent: Number(agent.left ?? agent.x * 100 ?? 50),
-    yPercent: Number(agent.ground ?? agent.y * 100 ?? 55),
+    xPercent,
+    yPercent,
     widthPercent: Number(agent.width || 13),
   };
 }
@@ -69,14 +81,19 @@ export default function SceneAgent({
       });
     };
 
-    const observer = new ResizeObserver(update);
-    observer.observe(shell);
+    const observer = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(update)
+      : null;
+
+    observer?.observe(shell);
+    window.addEventListener('resize', update);
     worldImage.addEventListener('load', update);
     update();
 
     return () => {
       window.cancelAnimationFrame(frame);
-      observer.disconnect();
+      observer?.disconnect();
+      window.removeEventListener('resize', update);
       worldImage.removeEventListener('load', update);
     };
   }, [config, nodeId, stageType]);
