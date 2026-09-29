@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { assets } from '../data/assets';
 import {
   buildReservedElements,
   chooseProjectedPlacement,
@@ -120,7 +121,7 @@ export default function SceneAgent({
       }}
     >
       <span className="immersiveAgentGlow" />
-      <img src={agent.asset} alt="" />
+      <img src={assets.agents[agent.id]} alt="" />
       <i className="immersiveAgentShadow" />
     </div>
   );
