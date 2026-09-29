@@ -296,13 +296,14 @@
   position: absolute;
   z-index: 1;
   left: 50%;
-  bottom: 2%;
-  width: 58%;
-  height: 10%;
+  bottom: -1%;
+  width: var(--agent-shadow-width, 58%);
+  height: var(--agent-shadow-height, 9%);
   transform: translateX(-50%);
   border-radius: 50%;
-  background: rgba(0,0,0,.34);
-  filter: blur(7px);
+  background: rgba(0,0,0,var(--agent-shadow-opacity,.34));
+  filter: blur(var(--agent-shadow-blur,5px));
+  transform-origin: center;
 }
 
 .immersiveChoiceMarkers span {
@@ -440,11 +441,6 @@
   .immersiveDecisionContent .mobileChoiceButton {
     min-height: 46px;
     font-size: 10px;
-  }
-
-  .immersiveAgentSprite {
-    width: 20% !important;
-    top: 40% !important;
   }
 
   .immersiveAgentMiniHud {
@@ -933,9 +929,6 @@
 
 .immersiveAgentShadow {
   bottom: -1%;
-  width: 62%;
-  height: 8%;
-  filter: blur(5px);
 }
 
 .immersiveChoiceMarkers {
@@ -1014,5 +1007,47 @@
   .immersiveDecisionContent .mobileChoiceButton {
     min-height: 42px;
     font-size: 8.8px;
+  }
+}
+
+
+/* Scene-aware agent placement
+   Important: never override top/width in short-height media queries.
+   The scene engine owns those values so the character remains attached
+   to a valid support surface instead of floating at a generic 40%. */
+.immersiveAgentSprite {
+  transition:
+    left 220ms ease,
+    top 220ms ease,
+    width 220ms ease,
+    transform 220ms ease;
+  will-change: left, top, width, transform;
+}
+
+.immersiveAgentSprite::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 0;
+  width: 38%;
+  height: 4%;
+  transform: translate(-50%, 45%);
+  border-radius: 50%;
+  background: rgba(6,20,28,.16);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+@media (max-height: 720px) {
+  .immersiveAgentSprite {
+    /* Placement remains controlled by sceneConfig.js. */
+    max-width: 112px;
+  }
+}
+
+@media (min-height: 900px) and (max-width: 560px) {
+  .immersiveAgentSprite {
+    max-width: 124px;
   }
 }
