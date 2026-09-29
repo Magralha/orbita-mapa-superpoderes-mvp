@@ -266,8 +266,8 @@ export default function AdminPortal({ assignments = [] }) {
                 <span>Visual QA</span>
                 <h2>Calibração dos cenários</h2>
                 <p>
-                  Esta grade usa exatamente as posições do Scene Engine para facilitar o
-                  ajuste de escala, chão e enquadramento por mundo.
+                  Esta grade mostra os pontos de apoio mapeados dentro da própria imagem.
+                  O jogo projeta estes anchors depois do crop para manter o avatar no chão em diferentes telas.
                 </p>
               </div>
               <label>
@@ -295,28 +295,32 @@ export default function AdminPortal({ assignments = [] }) {
                         alt=""
                         style={{ objectPosition: config.worldObjectPosition }}
                       />
+                      {(config.placementCandidates || []).map((anchor, index) => (
+                        <i
+                          className={`adminSceneQaGround ${index === 0 ? 'primary' : ''}`}
+                          key={anchor.id}
+                          title={`${anchor.id} · ${anchor.surface}`}
+                          style={{
+                            left: `${anchor.x * 100}%`,
+                            top: `${anchor.y * 100}%`,
+                          }}
+                        />
+                      ))}
                       <img
                         className="adminSceneQaAgent"
                         src={assets.agents[qaAgentId]}
                         alt=""
                         style={{
-                          left: `${config.agent.left}%`,
-                          top: `${config.agent.ground}%`,
+                          left: `${config.agent.x * 100}%`,
+                          top: `${config.agent.y * 100}%`,
                           width: `${config.agent.width}%`,
                           transform: `translate(-50%,-100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
-                        }}
-                      />
-                      <i
-                        className="adminSceneQaGround"
-                        style={{
-                          left: `${config.agent.left}%`,
-                          top: `${config.agent.ground}%`,
                         }}
                       />
                     </div>
                     <div className="adminSceneQaMeta">
                       <strong>{world}</strong>
-                      <span>L {config.agent.left} · chão {config.agent.ground} · W {config.agent.width}</span>
+                      <span>{config.placementCandidates?.length || 0} anchors · {config.agent.surface}</span>
                     </div>
                   </article>
                 );
