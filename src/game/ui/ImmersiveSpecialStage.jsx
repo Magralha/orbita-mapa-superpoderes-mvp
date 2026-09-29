@@ -16,7 +16,10 @@ export default function ImmersiveSpecialStage({
   onExit,
   children,
 }) {
-  const config = getImmersiveSceneConfig(node.world, agent?.id);
+  const config = getImmersiveSceneConfig(node.world, agent?.id, {
+    nodeId: node.id,
+    stageType: node.type,
+  });
   if (!config) return null;
 
   const progress = Math.min(100, Math.max(4, (visitedCount / 40) * 100));
@@ -59,7 +62,17 @@ export default function ImmersiveSpecialStage({
             left: `${config.agent.left}%`,
             top: `${config.agent.ground}%`,
             width: `${config.agent.width}%`,
-            transform: `translate(-50%, -100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
+            zIndex: config.agent.zIndex || 9,
+            '--agent-shadow-width': `${config.agent.shadowWidth || 58}%`,
+            '--agent-shadow-height': `${config.agent.shadowHeight || 9}%`,
+            '--agent-shadow-opacity': config.agent.shadowOpacity ?? 0.34,
+            '--agent-shadow-blur': `${config.agent.shadowBlur || 5}px`,
+            transform: [
+              'translate(-50%, -100%)',
+              `rotate(${config.agent.rotate || 0}deg)`,
+              `skewX(${config.agent.skewX || 0}deg)`,
+              `scaleX(${(config.agent.flip ? -1 : 1) * (config.agent.perspectiveScaleX || 1)})`,
+            ].join(' '),
           }}
         >
           <span className="immersiveAgentGlow" />
