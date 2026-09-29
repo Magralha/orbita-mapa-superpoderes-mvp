@@ -1051,3 +1051,69 @@
     max-width: 124px;
   }
 }
+
+
+/* V4 scene-projected avatar system.
+   The anchor is stored in source-image coordinates and projected after
+   object-fit: cover, so the avatar stays attached to the same physical
+   surface across iPhone/Android/tablet aspect ratios. */
+.immersiveAgentSprite {
+  max-width: none !important;
+  transform-origin: 50% 100%;
+  transition:
+    left 180ms ease,
+    top 180ms ease,
+    width 180ms ease,
+    transform 180ms ease;
+  will-change: left, top, width, transform;
+  contain: layout style;
+}
+
+.immersiveAgentSprite > img {
+  object-position: bottom center;
+  filter:
+    brightness(var(--agent-brightness, 1))
+    contrast(var(--agent-contrast, 1))
+    saturate(var(--agent-saturate, 1))
+    drop-shadow(0 5px 4px rgba(2, 13, 20, .28))
+    drop-shadow(0 10px 9px rgba(2, 13, 20, .22));
+}
+
+.immersiveAgentGlow {
+  bottom: -3%;
+  width: 70%;
+  opacity: .28;
+  filter: blur(7px);
+}
+
+.immersiveAgentShadow {
+  left: 50%;
+  bottom: -1.5%;
+  width: var(--agent-shadow-width, 58%);
+  height: var(--agent-shadow-height, 8%);
+  transform:
+    translateX(-50%)
+    rotate(var(--agent-shadow-rotate, 0deg))
+    skewX(var(--agent-shadow-skew-x, 0deg));
+  background: rgba(3, 12, 18, var(--agent-shadow-opacity, .34));
+  filter: blur(var(--agent-shadow-blur, 5px));
+  transform-origin: center;
+}
+
+.immersiveAgentSprite::after {
+  width: 30%;
+  height: 2.8%;
+  transform:
+    translate(-50%, 35%)
+    rotate(var(--agent-shadow-rotate, 0deg));
+  background: rgba(3, 13, 18, .22);
+  filter: blur(2px);
+}
+
+/* The projection engine owns avatar scale. Never clamp it again by viewport
+   height; doing so makes the feet drift away from the mapped support point. */
+@media (max-height: 720px), (min-height: 900px) and (max-width: 560px) {
+  .immersiveAgentSprite {
+    max-width: none !important;
+  }
+}
