@@ -16,6 +16,7 @@ export default function ImmersiveSpecialStage({
   visitedCount,
   inventory = [],
   onExit,
+  onRestart,
   children,
 }) {
   const config = getImmersiveSceneConfig(node.world, agent?.id, {
@@ -46,6 +47,17 @@ export default function ImmersiveSpecialStage({
             <i><em style={{ width: `${progress}%` }} /></i>
           </div>
         </header>
+
+        {onRestart && (
+          <button
+            type="button"
+            className="immersiveRestartButton"
+            onClick={onRestart}
+            aria-label="Refazer teste desde o início"
+          >
+            ↻ Refazer teste
+          </button>
+        )}
 
         <aside className="immersiveAgentChip immersiveAgentChipSpecial">
           <strong>{agent.name}</strong>

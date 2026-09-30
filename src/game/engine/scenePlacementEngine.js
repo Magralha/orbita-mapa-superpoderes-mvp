@@ -206,6 +206,7 @@ export function buildReservedElements(shell) {
     '.immersiveTopHud',
     '.immersiveAgentChip',
     '.immersiveInventoryChip',
+    '.immersiveRestartButton',
     '.immersiveDecisionSheet',
   ];
 
