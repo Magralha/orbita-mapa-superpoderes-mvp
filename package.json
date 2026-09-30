@@ -8,9 +8,10 @@
     "dev": "vite --host 0.0.0.0",
     "validate:routes": "node scripts/validate-routes.mjs",
     "validate:v4": "node scripts/validate-v4.mjs",
-    "build": "npm run validate:routes && npm run validate:v4 && vite build",
+    "build": "npm run validate:routes && npm run validate:v4 && npm run validate:scenes && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "validate:scenes": "node scripts/validate-scene-projection.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
