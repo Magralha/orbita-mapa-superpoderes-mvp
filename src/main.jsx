@@ -1268,6 +1268,7 @@ function PowerCard({
   playerProfile,
   onOpenProfile,
   onContinueJourney,
+  onRestartDiagnostic,
 }) {
   const ranked = rankScores(scores);
   const top = ranked.slice(0, 3);
@@ -1424,9 +1425,16 @@ function PowerCard({
                   experiências que você viver até o 9º ano.
                 </p>
               </div>
-              <button type="button" className="sceneAction finalProfileButton" onClick={onContinueJourney || onOpenProfile}>
-                Continuar no Órbita
-              </button>
+              <div className="finalPassaporteActions">
+                <button type="button" className="sceneAction finalProfileButton" onClick={onContinueJourney || onOpenProfile}>
+                  Continuar no Órbita
+                </button>
+                {onRestartDiagnostic && (
+                  <button type="button" className="sceneAction finalRestartButton" onClick={onRestartDiagnostic}>
+                    ↻ Refazer diagnóstico
+                  </button>
+                )}
+              </div>
             </section>
           </div>
         </div>
@@ -1677,6 +1685,44 @@ function GameApp({ pilotSession }) {
     }
 
     setAgent(null);
+  }
+
+  function restartDiagnostic() {
+    const confirmed = window.confirm(
+      'Refazer o diagnóstico desde o início? O progresso desta jornada será apagado, mas as missões da escola e da família serão mantidas.',
+    );
+    if (!confirmed) return;
+
+    trackEvent('diagnostic_restarted', {
+      previousAgentId: agent?.id || null,
+      hadFinalMission: Boolean(mission),
+    });
+
+    localStorage.removeItem(SAVE_KEY);
+    setHasSave(false);
+    setJustSaved(false);
+    setAgent(null);
+    setNodeId('world_entry');
+    setScores(emptyScores());
+    setPath(['Entrada']);
+    setInventory([]);
+    setTradeoffSelection([]);
+    setMission(null);
+    setDecisiveItem(null);
+    setVisitedNodeIds([]);
+    setUsedItems([]);
+    setUsedPowerCards([]);
+    setPowerTokens({});
+    setPlayerProfile(null);
+    setProfileOpen(false);
+    setSelectedAssignmentId(null);
+    setSelectedSeasonQuestId(null);
+    setV4View('home');
+
+    persistV4({
+      ...v4State,
+      onboardingComplete: false,
+    });
   }
 
   function continueFromSave() {
@@ -2228,6 +2274,7 @@ function GameApp({ pilotSession }) {
           trackEvent('season_opened');
           setV4View('season');
         }}
+        onRestartDiagnostic={restartDiagnostic}
       />
     );
   }
@@ -2244,6 +2291,7 @@ function GameApp({ pilotSession }) {
         playerProfile={playerProfile}
         onOpenProfile={() => setProfileOpen(true)}
         onContinueJourney={enterContinuousJourney}
+        onRestartDiagnostic={restartDiagnostic}
       />
     );
   }
