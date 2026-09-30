@@ -1117,3 +1117,33 @@
     max-width: none !important;
   }
 }
+
+
+/* Always-visible restart for the diagnostic while the player is inside a scene. */
+.immersiveRestartButton {
+  position: absolute;
+  z-index: 19;
+  top: calc(max(8px, env(safe-area-inset-top)) + 58px);
+  left: 50%;
+  min-height: 34px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 226, 101, .72);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #fff3ad;
+  background: rgba(3, 31, 51, .86);
+  box-shadow: 0 7px 18px rgba(0,0,0,.24);
+  backdrop-filter: blur(10px);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .immersiveRestartButton {
+    min-height: 30px;
+    padding: 5px 8px;
+    font-size: 7px;
+  }
+}
