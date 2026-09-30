@@ -9142,6 +9142,16 @@ p {
   font-size: 32px;
 }
 
+.mobileSavedActions {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 18px;
+}
+
+.mobileSavedActions .mobileContinueButton {
+  margin: 0;
+}
+
 .mobileContinueButton {
   width: 100%;
   margin: 6px 0 18px;
@@ -9151,6 +9161,11 @@ p {
   color: #fff;
   background: rgba(255,255,255,.08);
   font-weight: 900;
+}
+
+.mobileRestartDiagnosticButton {
+  color: #ffe889;
+  border-color: rgba(255,232,137,.5);
 }
 
 /* Mobile mission header */
