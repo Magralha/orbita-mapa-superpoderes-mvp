@@ -21,7 +21,11 @@ function dominantPower(powers = {}) {
 }
 
 export function canUseImmersiveScene(node) {
-  return Boolean(node?.type === 'choice' && getImmersiveSceneConfig(node?.world));
+  return Boolean(
+    node?.type === 'choice'
+    && assets.worlds[node?.world]
+    && getImmersiveSceneConfig(node?.world)
+  );
 }
 
 export default function ImmersiveScene({
