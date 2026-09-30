@@ -18,6 +18,7 @@ import { OrbitaWordmark } from '../game/ui/MobileUI';
 import { assets } from '../game/data/assets';
 import { agents } from '../game/data/gameData';
 import { immersiveSceneConfig, getImmersiveSceneConfig } from '../game/data/sceneConfig';
+import { getDepthScale } from '../game/engine/scenePlacementEngine';
 import { analyticsSummary } from '../core/analytics/localAnalytics';
 import {
   downloadPilotSnapshot,
@@ -313,14 +314,14 @@ export default function AdminPortal({ assignments = [] }) {
                         style={{
                           left: `${config.agent.x * 100}%`,
                           top: `${config.agent.y * 100}%`,
-                          width: `${config.agent.width}%`,
+                          width: `${config.agent.width * getDepthScale(config.agent).scale}%`,
                           transform: `translate(-50%,-100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
                         }}
                       />
                     </div>
                     <div className="adminSceneQaMeta">
                       <strong>{world}</strong>
-                      <span>{config.placementCandidates?.length || 0} anchors · {config.agent.surface}</span>
+                      <span>{config.placementCandidates?.length || 0} anchors · {config.agent.surface} · Z {getDepthScale(config.agent).scale.toFixed(2)}×</span>
                     </div>
                   </article>
                 );
