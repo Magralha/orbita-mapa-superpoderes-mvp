@@ -9936,3 +9936,19 @@ p {
   color: var(--orbita-cyan);
   font-size: 28px;
 }
+
+
+/* Restart action for non-immersive/fallback gameplay screens. */
+.mobileRestartInGameButton {
+  display: block;
+  width: fit-content;
+  min-height: 38px;
+  margin: 8px auto 0;
+  border: 1px solid rgba(255, 232, 137, .58);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #ffe889;
+  background: rgba(255,255,255,.07);
+  font-size: 11px;
+  font-weight: 950;
+}
