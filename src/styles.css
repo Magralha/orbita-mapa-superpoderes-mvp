@@ -8596,10 +8596,27 @@ p {
   line-height: 1.5;
 }
 
+.finalPassaporteActions {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+}
+
 .finalProfileButton {
   margin: 0;
   background: #ffe24a;
   color: #111;
+  white-space: nowrap;
+}
+
+.finalRestartButton {
+  margin: 0;
+  padding: 12px 18px;
+  border-width: 3px;
+  background: #fff;
+  color: #111;
+  font-size: 14px;
+  box-shadow: 4px 4px 0 #111;
   white-space: nowrap;
 }
 
@@ -8683,7 +8700,8 @@ p {
     font-size: 11px;
   }
 
-  .finalProfileButton {
+  .finalProfileButton,
+  .finalRestartButton {
     width: 100%;
   }
 }
@@ -9124,6 +9142,16 @@ p {
   font-size: 32px;
 }
 
+.mobileSavedActions {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 18px;
+}
+
+.mobileSavedActions .mobileContinueButton {
+  margin: 0;
+}
+
 .mobileContinueButton {
   width: 100%;
   margin: 6px 0 18px;
@@ -9133,6 +9161,11 @@ p {
   color: #fff;
   background: rgba(255,255,255,.08);
   font-weight: 900;
+}
+
+.mobileRestartDiagnosticButton {
+  color: #ffe889;
+  border-color: rgba(255,232,137,.5);
 }
 
 /* Mobile mission header */

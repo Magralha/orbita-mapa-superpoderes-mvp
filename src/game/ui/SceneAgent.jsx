@@ -3,6 +3,7 @@ import { assets } from '../data/assets';
 import {
   buildReservedElements,
   chooseProjectedPlacement,
+  getDepthScale,
 } from '../engine/scenePlacementEngine';
 
 function fallbackPlacement(config) {
@@ -21,11 +22,15 @@ function fallbackPlacement(config) {
       ? Number(agent.y) * 100
       : 55;
 
+  const depthModel = getDepthScale(agent);
+
   return {
     anchor: agent,
     xPercent,
     yPercent,
-    widthPercent: Number(agent.width || 13),
+    widthPercent: Number(agent.width || 13) * depthModel.scale,
+    depth: depthModel.depth,
+    depthScale: depthModel.scale,
   };
 }
 
@@ -99,6 +104,8 @@ export default function SceneAgent({
   }, [config, nodeId, stageType]);
 
   const active = placement?.anchor || config?.agent || {};
+  const renderedDepth = placement?.depth ?? fallback?.depth ?? active.depth ?? active.y ?? 0.56;
+  const renderedDepthScale = placement?.depthScale ?? fallback?.depthScale ?? getDepthScale(active).scale;
   const style = placement
     ? {
         left: `${placement.x}px`,
@@ -117,6 +124,10 @@ export default function SceneAgent({
       className={`immersiveAgentSprite immersiveAgentSprite-${agent.id}`}
       data-scene-anchor={active.id || 'fallback'}
       data-scene-surface={active.surface || 'floor'}
+      data-scene-x={Number(active.x ?? 0.5).toFixed(3)}
+      data-scene-y={Number(active.y ?? 0.56).toFixed(3)}
+      data-scene-z={Number(renderedDepth).toFixed(3)}
+      data-scene-scale={Number(renderedDepthScale).toFixed(3)}
       style={{
         ...style,
         zIndex: active.zIndex || 9,

@@ -12,6 +12,10 @@ const anchor = (id, x, y, width, options = {}) => ({
   rotate: 0,
   skewX: 0,
   perspectiveScaleX: 1,
+  // depth uses the same normalized source-image space as Y. It controls only
+  // perceived Z (avatar scale), while X/Y keep the feet attached to the scene.
+  depth: y,
+  zScale: 1,
   shadowWidth: 58,
   shadowHeight: 8,
   shadowOpacity: 0.34,
@@ -34,7 +38,7 @@ const scene = ({
   agentOverrides,
 }) => ({
   worldObjectPosition,
-  imageSpaceVersion: 2,
+  imageSpaceVersion: 3,
   safeArea: safeArea || { left: 0.10, right: 0.90, top: 0.23, bottom: 0.64 },
   specialSafeArea: specialSafeArea || { left: 0.10, right: 0.90, top: 0.22, bottom: 0.55 },
   anchors,

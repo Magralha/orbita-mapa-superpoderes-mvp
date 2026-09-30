@@ -51,13 +51,38 @@ export function getCoverGeometry({
   };
 }
 
+export function getDepthScale(anchor = {}) {
+  const mappedDepth = Number.isFinite(Number(anchor.depth))
+    ? Number(anchor.depth)
+    : Number.isFinite(Number(anchor.y))
+      ? Number(anchor.y)
+      : 0.56;
+
+  // 0 = farther into the scene, 1 = closer to the camera.
+  // 0.56 is the neutral floor plane used by most mapped scenes.
+  const depth = clamp(mappedDepth, 0, 1);
+  const perspectiveScale = clamp(1 + (depth - 0.56) * 1.5, 0.82, 1.18);
+  const manualScale = Number.isFinite(Number(anchor.zScale))
+    ? clamp(Number(anchor.zScale), 0.72, 1.35)
+    : 1;
+
+  return {
+    depth,
+    scale: clamp(perspectiveScale * manualScale, 0.72, 1.35),
+  };
+}
+
 export function projectSourceAnchor(anchor, geometry, containerWidth) {
   if (!anchor || !geometry) return null;
 
+  // X/Y always come from the source image. The feet stay attached to this
+  // projected point regardless of crop/aspect ratio. Z is simulated only by
+  // changing the avatar scale around its bottom-center transform origin.
   const x = geometry.offsetX + anchor.x * geometry.renderedWidth;
   const y = geometry.offsetY + anchor.y * geometry.renderedHeight;
+  const depthModel = getDepthScale(anchor);
   const rawWidth = geometry.renderedWidth * (Number(anchor.width || 13) / 100);
-  const width = clamp(rawWidth, containerWidth * 0.105, containerWidth * 0.21);
+  const width = clamp(rawWidth * depthModel.scale, containerWidth * 0.09, containerWidth * 0.23);
   const height = width * (4 / 3);
 
   return {
@@ -66,6 +91,8 @@ export function projectSourceAnchor(anchor, geometry, containerWidth) {
     y,
     width,
     height,
+    depth: depthModel.depth,
+    depthScale: depthModel.scale,
     box: {
       left: x - width * 0.5,
       right: x + width * 0.5,

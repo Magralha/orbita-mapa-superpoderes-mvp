@@ -110,8 +110,8 @@ for (const entry of Object.entries(immersiveSceneConfig)) {
   const config = entry[1];
 
   if (!config || !config.agent) errors.push('scene ' + world + ': missing agent placement');
-  if (config?.imageSpaceVersion !== 2) {
-    errors.push('scene ' + world + ': expected imageSpaceVersion 2');
+  if (config?.imageSpaceVersion !== 3) {
+    errors.push('scene ' + world + ': expected imageSpaceVersion 3');
   }
 
   const anchors = Array.isArray(config?.anchors) ? config.anchors : [];
@@ -135,6 +135,12 @@ for (const entry of Object.entries(immersiveSceneConfig)) {
     }
     if (!Number.isFinite(Number(anchor.width)) || anchor.width < 8 || anchor.width > 24) {
       errors.push(prefix + ': width must stay inside 8-24');
+    }
+    if (!Number.isFinite(Number(anchor.depth)) || anchor.depth < 0 || anchor.depth > 1) {
+      errors.push(prefix + ': depth/Z must stay inside 0-1');
+    }
+    if (!Number.isFinite(Number(anchor.zScale)) || anchor.zScale < 0.72 || anchor.zScale > 1.35) {
+      errors.push(prefix + ': zScale must stay inside 0.72-1.35');
     }
 
     // Legacy percent mirrors are intentionally retained for Admin visual QA.
