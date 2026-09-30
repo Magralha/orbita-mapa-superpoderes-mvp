@@ -140,7 +140,7 @@ async function playToCompletion(page, label) {
 
     const choices = page.locator('.mobileChoiceButton');
     if (await choices.count()) {
-      const visible = choices.filter({ visible: true }).first();
+      const visible = page.locator('.mobileChoiceButton:visible').first();
       if (await visible.count()) {
         await visible.click();
         await page.waitForTimeout(20);
@@ -217,9 +217,9 @@ try {
   ]) {
     results.push(await runViewportSmoke(browser, viewport));
   }
-  console.log('ORBÌTA_E2E_RESULT ' + JSON.stringify({ ok: true, results }));
+  console.log('ORBITA_E2E_RESULT ' + JSON.stringify({ ok: true, results }));
 } catch (error) {
-  console.error('ORBÌTA_E2E_RESULT ' + JSON.stringify({ ok: false, results, error: error.stack || error.message }));
+  console.error('ORBITA_E2E_RESULT ' + JSON.stringify({ ok: false, results, error: error.stack || error.message }));
   process.exitCode = 1;
 } finally {
   await browser.close();
