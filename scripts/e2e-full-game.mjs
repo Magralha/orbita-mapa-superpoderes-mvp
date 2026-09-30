@@ -5,10 +5,12 @@ const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:4173';
 
 function getCoreAssetPaths() {
   const source = readFileSync(new URL('../src/game/data/assets.js', import.meta.url), 'utf8');
+  const matches = [...source.matchAll(/p\('([^']+)'\)/g)].map((match) => match[1]);
   return [...new Set(
-    [...source.matchAll(/p\\('([^']+)'\\)/g)]
-      .map((match) => match[1])
-      .filter((path) => /^board\\/v3\\/(agents|worlds|items|badges)\\//.test(path)),
+    matches.filter((path) =>
+      ['agents', 'worlds', 'items', 'badges']
+        .some((kind) => path.startsWith('board/v3/' + kind + '/')),
+    ),
   )];
 }
 
