@@ -108,13 +108,43 @@ for (const world of choiceWorlds) {
 for (const entry of Object.entries(immersiveSceneConfig)) {
   const world = entry[0];
   const config = entry[1];
+
   if (!config || !config.agent) errors.push('scene ' + world + ': missing agent placement');
-  if (config && config.agent && !Number.isFinite(Number(config.agent.left))) {
-    errors.push('scene ' + world + ': invalid agent.left');
+  if (config?.imageSpaceVersion !== 2) {
+    errors.push('scene ' + world + ': expected imageSpaceVersion 2');
   }
-  if (config && config.agent && !Number.isFinite(Number(config.agent.ground))) {
-    errors.push('scene ' + world + ': invalid agent.ground');
+
+  const anchors = Array.isArray(config?.anchors) ? config.anchors : [];
+  const specialAnchors = Array.isArray(config?.specialAnchors) ? config.specialAnchors : [];
+
+  if (anchors.length < 2) {
+    warnings.push('scene ' + world + ': fewer than two mapped support anchors');
   }
+
+  [...anchors, ...specialAnchors].forEach((anchor, index) => {
+    const prefix = 'scene ' + world + ' mapped anchor ' + index;
+
+    if (!anchor?.id) errors.push(prefix + ': missing semantic id');
+    if (!anchor?.surface) warnings.push(prefix + ': missing support-surface label');
+
+    if (!Number.isFinite(Number(anchor.x)) || anchor.x < 0 || anchor.x > 1) {
+      errors.push(prefix + ': source x must stay inside 0-1');
+    }
+    if (!Number.isFinite(Number(anchor.y)) || anchor.y < 0 || anchor.y > 1) {
+      errors.push(prefix + ': source y must stay inside 0-1');
+    }
+    if (!Number.isFinite(Number(anchor.width)) || anchor.width < 8 || anchor.width > 24) {
+      errors.push(prefix + ': width must stay inside 8-24');
+    }
+
+    // Legacy percent mirrors are intentionally retained for Admin visual QA.
+    if (!Number.isFinite(Number(anchor.left)) || Math.abs(anchor.left - anchor.x * 100) > 0.01) {
+      errors.push(prefix + ': legacy left must mirror source x');
+    }
+    if (!Number.isFinite(Number(anchor.ground)) || Math.abs(anchor.ground - anchor.y * 100) > 0.01) {
+      errors.push(prefix + ': legacy ground must mirror source y');
+    }
+  });
 }
 
 const roles = new Set(pilotAccounts.map((account) => account.role));

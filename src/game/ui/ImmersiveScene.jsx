@@ -2,6 +2,7 @@ import React from 'react';
 import { assets } from '../data/assets';
 import { OrbitaWordmark } from './MobileUI';
 import { getImmersiveSceneConfig } from '../data/sceneConfig';
+import SceneAgent from './SceneAgent';
 
 const powerLabels = {
   investigar: 'Investigar',
@@ -32,7 +33,10 @@ export default function ImmersiveScene({
   onExit,
   children,
 }) {
-  const config = getImmersiveSceneConfig(node.world, agent?.id);
+  const config = getImmersiveSceneConfig(node.world, agent?.id, {
+    nodeId: node.id,
+    stageType: node.type,
+  });
   if (!config) return null;
 
   const topPowers = Object.entries(powerTokens)
@@ -96,19 +100,12 @@ export default function ImmersiveScene({
           {inventory.length > 0 && <b>{inventory.length}</b>}
         </div>
 
-        <div
-          className={`immersiveAgentSprite immersiveAgentSprite-${agent.id}`}
-          style={{
-            left: `${config.agent.left}%`,
-            top: `${config.agent.ground}%`,
-            width: `${config.agent.width}%`,
-            transform: `translate(-50%, -100%) ${config.agent.flip ? 'scaleX(-1)' : ''}`,
-          }}
-        >
-          <span className="immersiveAgentGlow" />
-          <img src={assets.agents[agent.id]} alt="" />
-          <i className="immersiveAgentShadow" />
-        </div>
+        <SceneAgent
+          agent={agent}
+          config={config}
+          nodeId={node.id}
+          stageType={node.type}
+        />
 
         <section className={`immersiveDecisionSheet ${node.title.length > 34 ? 'immersiveDecisionSheetLongTitle' : ''} ${node.text.length > 105 ? 'immersiveDecisionSheetLongCopy' : ''}`}>
           <div className="immersiveLocationTag">{node.chapter}</div>

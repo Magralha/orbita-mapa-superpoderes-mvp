@@ -296,13 +296,14 @@
   position: absolute;
   z-index: 1;
   left: 50%;
-  bottom: 2%;
-  width: 58%;
-  height: 10%;
+  bottom: -1%;
+  width: var(--agent-shadow-width, 58%);
+  height: var(--agent-shadow-height, 9%);
   transform: translateX(-50%);
   border-radius: 50%;
-  background: rgba(0,0,0,.34);
-  filter: blur(7px);
+  background: rgba(0,0,0,var(--agent-shadow-opacity,.34));
+  filter: blur(var(--agent-shadow-blur,5px));
+  transform-origin: center;
 }
 
 .immersiveChoiceMarkers span {
@@ -440,11 +441,6 @@
   .immersiveDecisionContent .mobileChoiceButton {
     min-height: 46px;
     font-size: 10px;
-  }
-
-  .immersiveAgentSprite {
-    width: 20% !important;
-    top: 40% !important;
   }
 
   .immersiveAgentMiniHud {
@@ -933,9 +929,6 @@
 
 .immersiveAgentShadow {
   bottom: -1%;
-  width: 62%;
-  height: 8%;
-  filter: blur(5px);
 }
 
 .immersiveChoiceMarkers {
@@ -1014,5 +1007,113 @@
   .immersiveDecisionContent .mobileChoiceButton {
     min-height: 42px;
     font-size: 8.8px;
+  }
+}
+
+
+/* Scene-aware agent placement
+   Important: never override top/width in short-height media queries.
+   The scene engine owns those values so the character remains attached
+   to a valid support surface instead of floating at a generic 40%. */
+.immersiveAgentSprite {
+  transition:
+    left 220ms ease,
+    top 220ms ease,
+    width 220ms ease,
+    transform 220ms ease;
+  will-change: left, top, width, transform;
+}
+
+.immersiveAgentSprite::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 0;
+  width: 38%;
+  height: 4%;
+  transform: translate(-50%, 45%);
+  border-radius: 50%;
+  background: rgba(6,20,28,.16);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+@media (max-height: 720px) {
+  .immersiveAgentSprite {
+    /* Placement remains controlled by sceneConfig.js. */
+    max-width: 112px;
+  }
+}
+
+@media (min-height: 900px) and (max-width: 560px) {
+  .immersiveAgentSprite {
+    max-width: 124px;
+  }
+}
+
+
+/* V4 scene-projected avatar system.
+   The anchor is stored in source-image coordinates and projected after
+   object-fit: cover, so the avatar stays attached to the same physical
+   surface across iPhone/Android/tablet aspect ratios. */
+.immersiveAgentSprite {
+  max-width: none !important;
+  transform-origin: 50% 100%;
+  transition:
+    left 180ms ease,
+    top 180ms ease,
+    width 180ms ease,
+    transform 180ms ease;
+  will-change: left, top, width, transform;
+  contain: layout style;
+}
+
+.immersiveAgentSprite > img {
+  object-position: bottom center;
+  filter:
+    brightness(var(--agent-brightness, 1))
+    contrast(var(--agent-contrast, 1))
+    saturate(var(--agent-saturate, 1))
+    drop-shadow(0 5px 4px rgba(2, 13, 20, .28))
+    drop-shadow(0 10px 9px rgba(2, 13, 20, .22));
+}
+
+.immersiveAgentGlow {
+  bottom: -3%;
+  width: 70%;
+  opacity: .28;
+  filter: blur(7px);
+}
+
+.immersiveAgentShadow {
+  left: 50%;
+  bottom: -1.5%;
+  width: var(--agent-shadow-width, 58%);
+  height: var(--agent-shadow-height, 8%);
+  transform:
+    translateX(-50%)
+    rotate(var(--agent-shadow-rotate, 0deg))
+    skewX(var(--agent-shadow-skew-x, 0deg));
+  background: rgba(3, 12, 18, var(--agent-shadow-opacity, .34));
+  filter: blur(var(--agent-shadow-blur, 5px));
+  transform-origin: center;
+}
+
+.immersiveAgentSprite::after {
+  width: 30%;
+  height: 2.8%;
+  transform:
+    translate(-50%, 35%)
+    rotate(var(--agent-shadow-rotate, 0deg));
+  background: rgba(3, 13, 18, .22);
+  filter: blur(2px);
+}
+
+/* The projection engine owns avatar scale. Never clamp it again by viewport
+   height; doing so makes the feet drift away from the mapped support point. */
+@media (max-height: 720px), (min-height: 900px) and (max-width: 560px) {
+  .immersiveAgentSprite {
+    max-width: none !important;
   }
 }
