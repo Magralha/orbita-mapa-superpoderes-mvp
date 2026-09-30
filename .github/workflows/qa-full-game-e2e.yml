@@ -50,6 +50,11 @@ jobs:
           QA_BASE_URL: http://127.0.0.1:4173
         run: node scripts/e2e-full-game.mjs
 
+      - name: Run full browser QA against Render production
+        env:
+          QA_BASE_URL: https://orbita-mapa-superpoderes-mvp.onrender.com
+        run: node scripts/e2e-full-game.mjs
+
       - name: Preview logs on failure
         if: failure()
         run: cat /tmp/orbita-preview.log || true
