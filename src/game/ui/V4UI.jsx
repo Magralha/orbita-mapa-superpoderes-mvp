@@ -38,6 +38,7 @@ export function V4Home({
   onOpenJourney,
   onOpenMissions,
   onOpenSeason,
+  onRestartDiagnostic,
 }) {
   const top = getTopPowers(profile, 3);
   const level = profile?.progression?.level || 1;
@@ -135,6 +136,16 @@ export function V4Home({
           </div>
           <button type="button" onClick={onOpenSeason}>Explorar</button>
         </section>
+
+        {onRestartDiagnostic && (
+          <section className="v4RestartDiagnostic">
+            <div>
+              <strong>Quer testar o diagnóstico de novo?</strong>
+              <small>Recomeça a jornada inicial sem apagar missões da escola ou da família.</small>
+            </div>
+            <button type="button" onClick={onRestartDiagnostic}>↻ Refazer diagnóstico</button>
+          </section>
+        )}
 
         <MobileBottomNav active="inicio" onHome={() => {}} onMissions={onOpenMissions} onProfile={onOpenProfile} />
       </section>
