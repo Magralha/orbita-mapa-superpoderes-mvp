@@ -70,7 +70,7 @@ import './immersive-game.css';
 import './pilot.css';
 import './admin.css';
 
-function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
+function AgentSelect({ onStart, onContinue, onRestart, onV4Demo, hasSave, onModeChange }) {
   const [selectedAgentId, setSelectedAgentId] = useState('orin');
   const [selectedScenarioId, setSelectedScenarioId] = useState('casa');
 
@@ -157,9 +157,16 @@ function AgentSelect({ onStart, onContinue, onV4Demo, hasSave, onModeChange }) {
         </button>
 
         {hasSave && (
-          <button className="mobileContinueButton" type="button" onClick={onContinue}>
-            Continuar de onde parei
-          </button>
+          <div className="mobileSavedActions">
+            <button className="mobileContinueButton" type="button" onClick={onContinue}>
+              Continuar de onde parei
+            </button>
+            {onRestart && (
+              <button className="mobileContinueButton mobileRestartDiagnosticButton" type="button" onClick={onRestart}>
+                ↻ Reiniciar diagnóstico
+              </button>
+            )}
+          </div>
         )}
 
         {onV4Demo && (
@@ -2162,7 +2169,7 @@ function GameApp({ pilotSession }) {
     );
   }
 
-  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={null} />;
+  if (!agent) return <AgentSelect onStart={chooseAgent} onContinue={continueFromSave} onRestart={restartDiagnostic} onV4Demo={startV4Demo} hasSave={hasSave} onModeChange={null} />;
 
   if (profileOpen) {
     return (
