@@ -6,6 +6,7 @@ import SceneAgent from './SceneAgent';
 
 export function canUseImmersiveSpecialStage(node) {
   return ['inventory', 'use-item', 'tradeoff', 'power-challenge', 'mission'].includes(node?.type)
+    && Boolean(assets.worlds[node?.world])
     && Boolean(getImmersiveSceneConfig(node?.world));
 }
 

@@ -184,6 +184,23 @@ export const immersiveSceneConfig = {
   }),
 };
 
+
+const fallbackSceneConfig = scene({
+  worldObjectPosition: '50% 46%',
+  safeArea: { left: 0.14, right: 0.86, top: 0.26, bottom: 0.60 },
+  specialSafeArea: { left: 0.14, right: 0.86, top: 0.24, bottom: 0.52 },
+  anchors: [
+    anchor('auto-floor-center', 0.50, 0.58, 13.2, { surface: 'auto-floor', priority: 12, shadowWidth: 60 }),
+    anchor('auto-floor-left', 0.34, 0.59, 12.8, { surface: 'auto-floor', priority: 10, shadowRotate: -5 }),
+    anchor('auto-floor-right', 0.66, 0.59, 12.8, { surface: 'auto-floor', priority: 10, flip: true, shadowRotate: 5 }),
+  ],
+  specialAnchors: [
+    anchor('auto-special-center', 0.50, 0.50, 12.4, { surface: 'auto-floor', priority: 12, shadowWidth: 56 }),
+    anchor('auto-special-left', 0.35, 0.50, 12.0, { surface: 'auto-floor', priority: 10, shadowRotate: -5 }),
+    anchor('auto-special-right', 0.65, 0.50, 12.0, { surface: 'auto-floor', priority: 10, flip: true, shadowRotate: 5 }),
+  ],
+});
+
 function hashString(value = '') {
   let hash = 0;
   for (let index = 0; index < value.length; index += 1) {
@@ -216,14 +233,14 @@ function selectLegacyAnchor(base, nodeId, stageType) {
 }
 
 export function getImmersiveSceneConfig(world, agentId, context = {}) {
-  const base = immersiveSceneConfig[world];
-  if (!base) return null;
+  const base = immersiveSceneConfig[world] || fallbackSceneConfig;
 
   const selected = selectLegacyAnchor(base, context.nodeId, context.stageType);
   const override = base.agentOverrides?.[agentId];
 
   return {
     ...base,
+    isFallbackScene: !immersiveSceneConfig[world],
     placementCandidates: getSceneAnchorPool(base, context.stageType),
     agent: {
       ...selected,
