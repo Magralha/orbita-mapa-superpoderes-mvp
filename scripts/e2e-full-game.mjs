@@ -1,6 +1,49 @@
+import { readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:4173';
+
+function getCoreAssetPaths() {
+  const source = readFileSync(new URL('../src/game/data/assets.js', import.meta.url), 'utf8');
+  return [...new Set(
+    [...source.matchAll(/p\\('([^']+)'\\)/g)]
+      .map((match) => match[1])
+      .filter((path) => /^board\\/v3\\/(agents|worlds|items|badges)\\//.test(path)),
+  )];
+}
+
+async function verifyCoreAssets(context, label) {
+  const assetPaths = getCoreAssetPaths();
+  const errors = [];
+
+  for (const path of assetPaths) {
+    const url = new URL(path, BASE_URL.endsWith('/') ? BASE_URL : BASE_URL + '/').toString();
+    const response = await context.request.get(url);
+    const body = await response.body();
+    const contentType = response.headers()['content-type'] || '';
+    const isPng =
+      body.length >= 8
+      && body[0] === 0x89
+      && body[1] === 0x50
+      && body[2] === 0x4e
+      && body[3] === 0x47
+      && body[4] === 0x0d
+      && body[5] === 0x0a
+      && body[6] === 0x1a
+      && body[7] === 0x0a;
+
+    if (!response.ok()) errors.push(`${path}: HTTP ${response.status()}`);
+    if (!contentType.includes('image/png')) errors.push(`${path}: content-type ${contentType || 'missing'}`);
+    if (!isPng) errors.push(`${path}: invalid PNG signature`);
+    if (body.length < 100000) errors.push(`${path}: suspiciously small (${body.length} bytes)`);
+  }
+
+  if (errors.length) {
+    throw new Error(`[${label}] core asset verification failed:\n${errors.join('\n')}`);
+  }
+
+  console.log(`ORBITA_ASSET_RESULT ${JSON.stringify({ ok: true, baseUrl: BASE_URL, count: assetPaths.length })}`);
+}
 
 function makeCollector(page, label) {
   const errors = [];
@@ -9,7 +52,11 @@ function makeCollector(page, label) {
     if (msg.type() === 'error') errors.push(`[${label}] console: ${msg.text()}`);
   });
   page.on('requestfailed', (req) => {
-    errors.push(`[${label}] requestfailed: ${req.method()} ${req.url()} :: ${req.failure()?.errorText || 'unknown'}`);
+    const errorText = req.failure()?.errorText || 'unknown';
+    // Fast automated progression can remove an off-screen scene image before
+    // Chromium finishes it. That cancellation is not a broken visible asset.
+    if (req.resourceType() === 'image' && errorText === 'net::ERR_ABORTED') return;
+    errors.push(`[${label}] requestfailed: ${req.method()} ${req.url()} :: ${errorText}`);
   });
   page.on('response', (res) => {
     if (res.status() >= 400) errors.push(`[${label}] http ${res.status()}: ${res.url()}`);
@@ -161,6 +208,7 @@ async function playToCompletion(page, label) {
 async function runFull(browser) {
   const label = 'full-390x844';
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await verifyCoreAssets(context, label);
   const page = await context.newPage();
   const errors = makeCollector(page, label);
   await installImageErrorProbe(page);
