@@ -1,26 +1,26 @@
 {
-  "name": "orbita-mapa-superpoderes-mvp",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "homepage": "https://magralha.github.io/orbita-mapa-superpoderes-mvp/",
+  "name": "next-million-workshop",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "validate:routes": "node scripts/validate-routes.mjs",
-    "validate:v4": "node scripts/validate-v4.mjs",
-    "build": "npm run validate:routes && npm run validate:v4 && npm run validate:scenes && vite build",
-    "preview": "vite preview --host 0.0.0.0",
-    "deploy": "npm run build && gh-pages -d dist",
-    "validate:scenes": "node scripts/validate-scene-projection.mjs"
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "start:render": "node render-server.mjs"
   },
+  "keywords": [],
+  "author": "",
+  "type": "module",
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "lucide-react": "latest"
+    "@vercel/blob": "^2.9.0",
+    "qrcode": "^1.5.4",
+    "pg": "^8.16.3"
   },
-  "devDependencies": {
-    "gh-pages": "latest"
-  }
+  "engines": {
+    "node": ">=24"
+  },
+  "private": true
 }

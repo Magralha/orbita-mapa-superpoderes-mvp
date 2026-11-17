@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: next-million-workshop-live
+    runtime: node
+    repo: https://github.com/Magralha/orbita-mapa-superpoderes-mvp
+    branch: deploy/next-million-runtime
+    plan: free
+    region: virginia
+    buildCommand: node bootstrap.mjs && npm ci && node --check render-server.mjs && node --check api/index.mjs
+    startCommand: node render-server.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.11.1
+      - key: DATABASE_URL
+        fromDatabase:
+          name: next-million-event-db
+          property: connectionString
+
+databases:
+  - name: next-million-event-db
+    plan: free
+    region: virginia
+    databaseName: next_million_event_db
